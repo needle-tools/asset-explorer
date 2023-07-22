@@ -1,7 +1,7 @@
 import { vitePreprocess } from '@sveltejs/kit/vite';
 import adapter from '@sveltejs/adapter-static';
 
-import { files } from "./dynamicFiles.js";
+// import { files } from "./dynamicFiles.js";
 // const files = global.listOfModelFiles;
 
 // https://github.com/sveltejs/kit/issues/2576#issuecomment-1264586432

@@ -21,6 +21,9 @@ function readableBytes(bytes: number) {
         <a href={data.downloadUri}>Download</a>
     </div>
     <NeedleEngine src={data.downloadUri} />
+    <div class="info">
+        {@html data.readme} 
+    </div>
 </div>
 
 <style>

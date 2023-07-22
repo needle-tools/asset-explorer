@@ -37,14 +37,32 @@ import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 // a) an event directly on needle-engine for the context being loaded that we can listen to and do work each time
 // b) adding the callbacks globally but so that they're still only on the client
 onMount(async () => {
+    console.log("MOUNTED")
     if (isInitialized) return;
     isInitialized = true;
 
+    window.NEEDLE_ENGINE_META = { version: "custom", generator: "svelte-kit" };
+    window.NEEDLE_USE_RAPIER = false;
+    const { NeedleEngine, GameObject, WebXR, WebARSessionRoot, USDZExporter } = await import('@needle-tools/engine');
+    NeedleEngine.addContextCreatedCallback((evt) => {
+        console.log("CREATED");
+        const ctx = evt.context;
+        if (ctx.mainCameraComponent)
+            ctx.mainCameraComponent.backgroundBlurriness = 0; 
+        const xr = new Object3D();
+        xr.name = "XR";
+        GameObject.addNewComponent(xr, WebXR);
+        GameObject.addNewComponent(xr, WebARSessionRoot);
+        GameObject.addNewComponent(xr, USDZExporter);
+        ctx.scene.add(xr);
+    });
+
+    /*
     // meshopt support for model-viewer
     window.ModelViewerElement = window.ModelViewerElement || {};
     window.ModelViewerElement.meshoptDecoderLocation = 'https://cdn.jsdelivr.net/npm/meshoptimizer/meshopt_decoder.js';
     await import('@google/model-viewer');
-
+    */
 
     let loadedTexture: Texture | undefined = undefined;
 
@@ -64,8 +82,8 @@ function loadFinished(evt: CustomEvent) {
 
 </script>
 
-<model-viewer camera-controls autoplay src={src} skybox-image={texture} environment-image={texture}></model-viewer>
-<needle-engine camera-controls src={src} on:loadfinished={loadFinished} skybox-image={texture} environment-image={texture}></needle-engine>
+<!-- <model-viewer camera-controls autoplay src={src} skybox-image={texture} environment-image={texture}></model-viewer> -->
+<needle-engine camera-controls src={src} on:loadfinished={loadFinished} skybox-image={texture} environment-image={texture} autoplay></needle-engine>
 
 <style>
     needle-engine {

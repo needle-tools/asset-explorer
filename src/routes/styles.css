@@ -55,7 +55,8 @@ h1 {
 }
 
 h2 {
-	font-size: 1rem;
+	font-size: 1.0rem;
+	font-weight: bold;
 }
 
 pre {
@@ -74,7 +75,6 @@ pre {
 	max-width: 48rem;
 	flex: 0.6;
 	flex-direction: column;
-	justify-content: center;
 	margin: 0 auto;
 }
 
