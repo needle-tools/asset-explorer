@@ -1,7 +1,7 @@
 import fs from "fs";
 import { files, sourceDir } from "./../../../../dynamicFiles";
 
-export const prerender = true;
+// export const prerender = true;
 
 export async function load({ params }) {
   const name = params.slug;
