@@ -5,11 +5,7 @@ import Model from "./Model.svelte";
 
 export let data;
 
-$: array = [
-    data.previous, 
-    data.current, 
-    data.next,
-];
+$: array = data.entries;
 
 onMount(() => {
 	console.log("mounted, setting data");

@@ -1,7 +1,9 @@
-import { files } from "./../../../../dynamicFiles";
+import { collectFileInformation } from "./../../../../dynamicFiles";
 
 export async function load({ params }) {
   const name = params.slug;
+
+  const { files } = await collectFileInformation();
 
   console.log("Page parameters: slug=" + params.slug);
 
@@ -15,9 +17,8 @@ export async function load({ params }) {
 
 
   return {
-    previous,
-    current,
-    next,
+    // entries: [previous, current, next],
+    entries: [current],
   };
 
   /*

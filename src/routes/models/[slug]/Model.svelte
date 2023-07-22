@@ -16,7 +16,7 @@ function readableBytes(bytes: number) {
 
 <div class="text-column">
     <div class="info">
-        <h1><a href={data.uri}>{data.name}</a></h1>
+        <h1><a href={data.uri}>{data.displayName}</a></h1>
         <h2>Size: {readableBytes(data.size)}</h2>
         <a href={data.downloadUri}>Download</a>
     </div>
@@ -37,5 +37,9 @@ function readableBytes(bytes: number) {
 
 .info {
     padding: 10px;
+}
+
+:global(.info img) {
+    max-width: 100%;
 }
 </style>

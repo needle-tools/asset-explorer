@@ -10,10 +10,13 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
 	},
 	"devDependencies": {
+		"@gltf-transform/core": "^3.4.8",
+		"@gltf-transform/extensions": "^3.4.8",
 		"@sveltejs/adapter-static": "^2.0.2",
 		"@sveltejs/kit": "^1.22.3",
 		"@types/cookie": "^0.5.1",
 		"@types/node": "^20.4.4",
+		"draco3dgltf": "^1.5.6",
 		"glob": "^10.3.3",
 		"marked": "^5.1.1",
 		"marked-base-url": "^1.0.2",
