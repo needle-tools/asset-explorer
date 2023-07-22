@@ -1,14 +1,7 @@
-import fs from "fs";
-import { files, sourceDir } from "./../../../../dynamicFiles";
-
-// export const prerender = true;
+import { files } from "./../../../../dynamicFiles";
 
 export async function load({ params }) {
   const name = params.slug;
-
-  // slug is without extension and relative to the root folder
-
-  const fullFileName = sourceDir + name + ".glb";
 
   console.log("Page parameters: slug=" + params.slug);
 
@@ -20,27 +13,6 @@ export async function load({ params }) {
   const current = files[index];
   const next = index < files.length - 1 ? files[index + 1] : null;
 
-  // add additional info to them, e.g. file size
-
-  /*
-  // check existance
-  if (!fs.existsSync(fullFileName)) {
-    return {
-      name,
-      size: -1,
-    };
-  }
-
-  const buffer = fs.readFileSync(fullFileName, (err, data) => {
-    console.log(data);
-  });
-
-  console.log(buffer.length);
-  */
-
-  // fetch file and display info about it
-
-  // check if file exists
 
   return {
     previous,

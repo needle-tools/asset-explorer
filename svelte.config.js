@@ -29,6 +29,7 @@ const config = {
             strict: true,
         }),
 		prerender: {
+			// entries: [],
 			// Not needed because the models overview page has links to all the models – and sveltekit will automatically pre-render all reachable links!
 			// entries: ['*', ...files.map((file) => file.uri)],
 			handleHttpError: 'warn',
