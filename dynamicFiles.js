@@ -65,8 +65,33 @@ const renderer = {
     },
     link(href, title, text) {
         // TODO probably need to handle relative URLs and decide what to do with them.
-        // console.log("Found link: " + href);
-        return false;
+        if (!href.startsWith("http"))
+            console.log("Found link: " + href);
+
+        if (href.toLowerCase().endsWith("/readme.md"))
+            // strip it out
+            href = href.substring(0, href.length - 10);
+
+        /*
+        switch(href) {
+            case "/NormalTangentTest":
+                href ="/models/NormalTangentTest";
+                break;
+            case "/NormalTangentMirrorTest":
+                href ="/models/NormalTangentMirrorTest";
+                break;
+            case "/WaterBottle/":
+                href ="/models/WaterBottle";
+                break;
+            case "/TextureTransformTest":
+                href ="/models/TextureTransformTest";
+                break;
+            default:
+                break;
+        }
+        */
+
+        return originalRenderer.link(href, title, text);
     }
 };
 

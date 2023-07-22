@@ -1,26 +1,6 @@
 <script lang="ts" context="module">
 export let isInitialized = false;
 import texture from './../lib/images/neutral.hdr?url';
-
-import { browser } from '$app/environment';
-
-if(browser) {
-    window.NEEDLE_ENGINE_META = { version: "custom", generator: "svelte-kit" };
-    window.NEEDLE_USE_RAPIER = false;
-    const { NeedleEngine, GameObject, WebXR, WebARSessionRoot, USDZExporter } = await import('@needle-tools/engine');
-    NeedleEngine.addContextCreatedCallback((evt) => {
-        console.log("CREATED");
-        const ctx = evt.context;
-        if (ctx.mainCameraComponent)
-            ctx.mainCameraComponent.backgroundBlurriness = 0; 
-        const xr = new Object3D();
-        xr.name = "XR";
-        GameObject.addNewComponent(xr, WebXR);
-        GameObject.addNewComponent(xr, WebARSessionRoot);
-        GameObject.addNewComponent(xr, USDZExporter);
-        ctx.scene.add(xr);
-    });
-}
 </script>
 
 <script lang="ts">
