@@ -28,6 +28,12 @@ declare type File = {
 
 let mdPath = "";
 let mdDirName = "";
+
+/** @type{string | null} */
+let firstFoundH1 = null;
+/** @type{string | null} */
+let firstFoundImage = null;
+
 const slugger = new marked.Slugger()
 const originalRenderer = new marked.Renderer();
 const renderer = {
@@ -55,6 +61,9 @@ const renderer = {
         // seems we can't just call the base implementation, so
         // this is a rough copy of the base implementation that does less sanitization.
         // return false;
+
+        if (!firstFoundImage)
+            firstFoundImage = "/" + targetPath;
 
         let out = `<img src="/${targetPath}" alt="${text}"`;
         if (title) {
@@ -92,10 +101,25 @@ const renderer = {
         */
 
         return originalRenderer.link(href, title, text);
-    }
+    },
+
+    heading(text, level) {
+        const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
+    
+        if (level === 1 && !firstFoundH1)
+            firstFoundH1 = text;
+
+        return `
+                <h${level}>
+                  <a name="${escapedText}" class="anchor" href="#${escapedText}">
+                    <span class="header-link"></span>
+                  </a>
+                  ${text}
+                </h${level}>`;
+      },
 };
 
-/** @type {Array<{path:string, name:string, uri:string, downloadUri:string, size: number, key: number, readme: string}>} */
+/** @type {Array<{path:string, name:string, displayName: string, uri:string, previewUri: string | null, downloadUri:string, size: number, key: number, readme: string}>} */
 const array = [];
 
 marked.use({renderer});
@@ -112,29 +136,35 @@ for (const [index, file] of files.entries()) {
     const dirName = path.parse(baseUrlPath).name;
     mdPath = baseUrlPath;
     mdDirName = dirName;
+
+    firstFoundH1 = null;
+    firstFoundImage = null;
+    const readmeText = marked.parse(
+        fs.readFileSync(
+            readmePath,
+            {
+                encoding: 'utf8',
+            }
+        ),
+        { 
+            headerIds: false, 
+            mangle: false, 
+            gfm: true,
+        },
+    )
     
     array.push({
         // make canonical path
         path: path.resolve(file).replaceAll("\\", "/"),
         name: path.parse(file).name,
+        displayName: firstFoundH1 || path.parse(file).name,
+        previewUri: firstFoundImage,
         uri: "/models/" + path.parse(file).name,
         downloadUri: "/downloads/" + path.parse(file).name + ".glb",
         size: fs.existsSync(file) ? fs.statSync(file).size : 0,
         key: index,
         // get readme file related to this one by traversing directory up and looking for Readme.md (in any casing)
-        readme: marked.parse(
-            fs.readFileSync(
-                readmePath,
-                {
-                    encoding: 'utf8',
-                }
-            ),
-            { 
-                headerIds: false, 
-                mangle: false, 
-                gfm: true,
-            },
-        ),
+        readme: readmeText,
     })
 }
 

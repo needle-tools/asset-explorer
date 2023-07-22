@@ -22,7 +22,7 @@ onMount(() => {
 </script>
 
 <svelte:head>
-	<title>Model: {data.current.name}</title>
+	<title>Model: {data.current?.displayName}</title>
 	<meta name="description" content="About this app" /> 
 </svelte:head>
 
