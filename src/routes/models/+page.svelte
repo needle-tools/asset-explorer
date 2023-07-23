@@ -43,7 +43,7 @@ $: filter = $page.url.searchParams.get('tag');
 	<meta name="description" content="About this app" />
 </svelte:head>
 
-<ModelTags tags={getAndCountTags(data)} filter={filter}/>
+<ModelTags tags={getAndCountTags(data)} filter={filter} ignoreValuesForTags={["copyright"]}/>
 
 <ul class="models">
     {#each data.models.filter(x => !filter || showInfo(x.extras.info, filter)) as model (model.slug)}
@@ -52,7 +52,7 @@ $: filter = $page.url.searchParams.get('tag');
                 <img src="{model.thumbnail}" alt="{model.name}" />
                 <p class="name">{model.name}</p>
 
-                <ModelTags tags={model.extras.info} filter={filter}/>
+                <ModelTags tags={model.extras.info} filter={filter} ignoreValuesForTags={["copyright"]}/>
             </a>
         </li>
     {/each}
@@ -76,7 +76,6 @@ $: filter = $page.url.searchParams.get('tag');
     a {
         text-decoration: none;
         color: black;
-        white-space: nowrap;
     }
 
     .models a {

@@ -8,14 +8,62 @@ import fs from 'fs';
 
 import { marked } from 'marked';
 
-import { Document, NodeIO } from '@gltf-transform/core';
+import { NodeIO } from '@gltf-transform/core';
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
 import draco3d from 'draco3dgltf';
+
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { USDZExporter } from 'three/examples/jsm/exporters/USDZExporter.js';
+import { FileLoader, Cache } from 'three';
 
 // find all glb files in folder
 // const files = import.meta.glob("D:/git/pfc-packages-master/development/pfc-modelexporter/development/ModelConversion/Exports/**.glb", { eager: true });
 
 export const sourceDir = "/Users/herbst/git/glTF-Sample-Models/2.0/"; //"E:/git/glTF-Sample-Models/2.0/";
+
+// experimental - allows us to use three.js from node
+class ProgressEvent {}
+globalThis["ProgressEvent"] = ProgressEvent;
+globalThis["self"] = globalThis;
+Cache.enabled = true;
+
+// patch FileLoader to use fs instead of fetch
+const originalLoad = FileLoader.prototype.load;
+FileLoader.prototype.load = function (url, onLoad, onProgress, onError) {
+
+    console.log("file loader: " + url);
+    try {
+        const data = fs.readFileSync(url);
+        Cache.add(url, data.buffer);
+    }
+    catch (e) {
+        console.log("Error loading file", e);
+    }
+    return originalLoad.call(this, url, onLoad, onProgress, onError);
+
+    /*
+    if (url.startsWith('blob:')) return originalLoad.call(this, url, onLoad, onProgress, onError);
+
+    fs.readFile(url, (err, data) => {
+        if (err) {
+            onError(err);
+            return;
+        }
+        else {
+            onLoad(data);
+        }
+    });
+
+    console.log("loading", url);
+
+    */
+    /*
+    // fetch the file with fs and create a in-memory URL 
+    // that we can pass on.
+    const blob = URL.createObjectURL(new Blob([fs.readFileSync(url)]));
+    return originalLoad.call(this, blob, onLoad, onProgress, onError);
+    */
+}
 
 async function collectFileInformation() {
 
@@ -132,7 +180,6 @@ async function collectFileInformation() {
             'draco3d.decoder': await draco3d.createDecoderModule(),
         });
 
-
     /** @type {Array<{path:string, name:string, displayName: string, uri:string, previewUri: string | null, downloadUri:string, size: number, key: number, readme: string}>} */
     const array = [];
 
@@ -168,6 +215,7 @@ async function collectFileInformation() {
         )
 
         // parse file, get extensions and other data
+        /*
         const doc = await io.read(file);
         const usedExtensions = doc.getRoot().listExtensionsUsed().map((extension) => extension.extensionName);
         const vertexColors = doc.getRoot().listMeshes().some((mesh) => mesh.listPrimitives().some((primitive) => primitive.getAttribute('COLOR_0')));
@@ -179,6 +227,23 @@ async function collectFileInformation() {
         const cameras = doc.getRoot().listCameras().length;
         const anyUsesMask = doc.getRoot().listMaterials().some((material) => material.getAlphaMode() === 'MASK');
         const anyUsesBlend = doc.getRoot().listMaterials().some((material) => material.getAlphaMode() === 'BLEND');
+        const generator = doc.getRoot().getAsset().generator;
+        const copyright = doc.getRoot().getAsset().copyright;
+        */
+
+        const doc = (await io.readAsJSON(file)).json;
+        const usedExtensions = doc.extensionsUsed || [];
+        const vertexColors = doc.meshes?.some((mesh) => mesh.primitives.some((primitive) => primitive.attributes.COLOR_0));
+        const blendShapes = doc.meshes?.some((mesh) => mesh.primitives.some((primitive) => primitive.targets?.length ?? 0 > 0));
+        const textures = doc.textures?.length ?? 0;
+        const scenes = doc.scenes?.length ?? 0;
+        const animations = doc.animations?.length ?? 0;
+        const skins = doc.skins?.length ?? 0;
+        const cameras = doc.cameras?.length ?? 0;
+        const anyUsesMask = doc.materials?.some((material) => material.alphaMode === 'MASK');
+        const anyUsesBlend = doc.materials?.some((material) => material.alphaMode === 'BLEND');
+        const generator = doc.asset?.generator;
+        const copyright = doc.asset?.copyright;
         const docInfo = {
             vertexColors,
             blendShapes,
@@ -189,6 +254,8 @@ async function collectFileInformation() {
             cameras,
             alphaMask: anyUsesMask,
             alphaBlend: anyUsesBlend,
+            generator,
+            copyright,
         };
 
         for (const ext of usedExtensions) {
@@ -196,6 +263,40 @@ async function collectFileInformation() {
         }
 
         // console.log(usedExtensions, docInfo)
+
+        /*
+        // USDZ conversion
+        await new Promise((resolve, reject) => {
+
+            try {
+                const loader = new GLTFLoader();
+                loader.load(file, async function (gltf) {
+                    console.log("✓ " + file + " loaded successfully");
+    
+                    const exporter = new USDZExporter();
+                    // console.log("exporter: ", exporter + ", scene: ", gltf.scene)
+
+                    exporter.parse( gltf.scene, function ( result ) {
+                        console.log("✓✓✓ " + result);
+                        resolve(result);
+                    }, undefined, function ( error ) {
+                        console.log(error);
+                        reject(error);
+                    });
+                    resolve("ok");
+
+                }, undefined, function (error) { 
+                    console.log("❌ " + file + " failed to load: " + error);
+                    reject(error);
+                });
+            }
+            catch (e) {
+                console.log("❌ " + file + " failed to load: " + e);
+                reject(e);
+            }
+
+        });
+        */
 
         array.push({
             // make canonical path

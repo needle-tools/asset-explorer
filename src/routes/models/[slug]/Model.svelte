@@ -25,7 +25,7 @@ $: {
 
     <div class="info">
         <ModelTags tags={data.info} />
-        <a href={data.downloadUri}>Download .glb</a>
+        <a href={data.downloadUri} download>Download .glb</a>
     </div>
 
     <div class="info">

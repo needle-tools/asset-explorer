@@ -87,6 +87,7 @@ pre {
 	flex: 0.6;
 	flex-direction: column;
 	margin: 0 auto;
+    max-width: min(95vw, 48rem);
 }
 
 input,

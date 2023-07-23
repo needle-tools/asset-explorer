@@ -28,6 +28,7 @@ onMount(async () => {
         console.log("CREATED");
         const ctx = evt.context;
         if (ctx.mainCameraComponent) {
+            ctx.mainCameraComponent.fieldOfView = 25;   
             ctx.mainCameraComponent.backgroundBlurriness = 1; 
             ctx.mainCameraComponent.backgroundColor = new RGBAColor(0,0,0,0);
         }
@@ -78,12 +79,15 @@ function loadFinished(evt: CustomEvent) {
 <needle-engine camera-controls src={src} on:loadfinished={loadFinished} environment-image={texture} autoplay></needle-engine>
 
 <style>
-    needle-engine {
-        display: block; 
-        height: 400px;
-        position: relative;
-        /* width: 100%; */
-        width: 100vw;
-        left: calc((100% - 100vw) / 2);
-    }
+needle-engine {
+    display: block; 
+    height: 400px;
+    position: relative;
+    /* width: 100%; */
+    width: 100vw;
+    left: calc((100% - 100vw) / 2);
+
+    margin-top: -35px;
+    margin-bottom: -10px;
+}
 </style>
