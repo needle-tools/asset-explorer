@@ -1,11 +1,9 @@
 <script lang="ts">
-import { onMount } from 'svelte';
 import { page } from '$app/stores'
-import { fly, scale } from 'svelte/transition';
-import { cubicInOut, elasticOut } from 'svelte/easing';
-import Tag from './Tag.svelte';
+import { cubicInOut } from 'svelte/easing';
 import ModelTags, { showInfo } from './ModelTags.svelte';
 import { browser } from "$app/environment";
+import { base } from '$app/paths';
 
 export let data;
 
@@ -49,7 +47,7 @@ $: filter = browser && $page.url.searchParams.get('tag');
 <ul class="models">
     {#each data.models.filter(x => !filter || showInfo(x.extras.info, filter)) as model (model.slug)}
         <li transition:whoosh>
-            <a href="/models/{model.slug}">
+            <a href="{base}/models/{model.slug}">
                 <img src="{model.thumbnail}" alt="{model.name}" />
                 <p class="name">{model.name}</p>
 

@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { base } from "$app/paths";
+
 import Tag from "./Tag.svelte";
 
 export let tags: any;
@@ -22,7 +24,7 @@ export function showInfo(array: any, key: string) {
     {#each Object.keys(tags).filter(x => ignoreTags.indexOf(x) < 0)  as info}
         {#if showInfo(tags, info)}
             <Tag
-                href="/models?tag={filter == info ? '' : info}"
+                href="{base}/models?tag={filter == info ? '' : info}"
                 selected={filter == info}
                 name={info}
                 value={tags[info]}

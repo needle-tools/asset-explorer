@@ -21,6 +21,8 @@ import { FileLoader, Cache } from 'three';
 
 export const sourceDir = "submodules/glTF-Sample-Models/2.0/"; //"E:/git/glTF-Sample-Models/2.0/";
 
+const basePath = process.env.BASE_PATH || "";
+
 // experimental - allows us to use three.js from node
 class ProgressEvent {}
 globalThis["ProgressEvent"] = ProgressEvent;
@@ -104,7 +106,7 @@ async function collectFileInformation() {
                 return false;
             }
 
-            const targetPath = `resources/` + mdDirName + `/` + href;
+            const targetPath = basePath + "/" + `resources/` + mdDirName + `/` + href;
             const directoryPart = path.dirname(href);
             images.push({
                 absolutePath: path.resolve(mdPath, href),
@@ -116,9 +118,9 @@ async function collectFileInformation() {
             // return false;
 
             if (!firstFoundImage)
-                firstFoundImage = "/" + targetPath;
+                firstFoundImage = targetPath;
 
-            let out = `<img src="/${targetPath}" alt="${text}"`;
+            let out = `<img src="${targetPath}" alt="${text}"`;
             if (title) {
             out += ` title="${title}"`;
             }
@@ -304,8 +306,8 @@ async function collectFileInformation() {
             name: path.parse(file).name,
             displayName: firstFoundH1 || path.parse(file).name,
             previewUri: firstFoundImage,
-            uri: "/models/" + path.parse(file).name,
-            downloadUri: "/downloads/" + path.parse(file).name + ".glb",
+            uri: basePath + "/models/" + path.parse(file).name,
+            downloadUri: basePath + "/downloads/" + path.parse(file).name + ".glb",
             size: fs.existsSync(file) ? fs.statSync(file).size : 0,
             key: index,
             // get readme file related to this one by traversing directory up and looking for Readme.md (in any casing)
