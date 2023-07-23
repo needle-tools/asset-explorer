@@ -1,6 +1,8 @@
 import { vitePreprocess } from '@sveltejs/kit/vite';
 import adapter from '@sveltejs/adapter-static';
 
+const dev = process.argv.includes('dev');
+
 // import { files } from "./dynamicFiles.js";
 // const files = global.listOfModelFiles;
 
@@ -28,6 +30,9 @@ const config = {
             precompress: false,
             strict: true,
         }),
+		paths: {
+            base: dev ? '' : process.env.BASE_PATH, // process.env.BASE_PATH,
+        },
 		prerender: {
 			// entries: [],
 			// Not needed because the models overview page has links to all the models – and sveltekit will automatically pre-render all reachable links!
