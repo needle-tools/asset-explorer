@@ -29,8 +29,8 @@ function readableBytes(bytes: number) {
 <style>
 .text-column {
     background-color: white;
-    border: 1px solid black;
     border-radius: 10px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
     margin: 20px;
     /* overflow: hidden; */
 }

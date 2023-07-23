@@ -27,8 +27,10 @@ onMount(async () => {
     NeedleEngine.addContextCreatedCallback((evt) => {
         console.log("CREATED");
         const ctx = evt.context;
-        if (ctx.mainCameraComponent)
-            ctx.mainCameraComponent.backgroundBlurriness = 0; 
+        if (ctx.mainCameraComponent) {
+            ctx.mainCameraComponent.backgroundBlurriness = 1; 
+            ctx.mainCameraComponent.backgroundIntensity = 0.02; 
+        }
         const xr = new Object3D();
         xr.name = "XR";
         GameObject.addNewComponent(xr, WebXR);
@@ -68,7 +70,8 @@ function loadFinished(evt: CustomEvent) {
 <style>
     needle-engine {
         display: block; 
-        height: 300px;
+        height: 400px;
         position: relative;
+        width: 100%;
     }
 </style>

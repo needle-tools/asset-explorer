@@ -86,7 +86,6 @@ async function collectFileInformation() {
                 // strip it out
                 href = href.substring(0, href.length - 10);
 
-            /*
             switch(href) {
                 case "/NormalTangentTest":
                     href ="/models/NormalTangentTest";
@@ -100,10 +99,12 @@ async function collectFileInformation() {
                 case "/TextureTransformTest":
                     href ="/models/TextureTransformTest";
                     break;
+                case "/AnimatedMorphCube":
+                    href ="/models/AnimatedMorphCube";
+                    break;
                 default:
                     break;
             }
-            */
 
             return originalRenderer.link(href, title, text);
         },
@@ -190,6 +191,12 @@ async function collectFileInformation() {
             alphaBlend: anyUsesBlend,
         };
 
+        for (const ext of usedExtensions) {
+            docInfo[ext] = true;
+        }
+
+        // console.log(usedExtensions, docInfo)
+
         array.push({
             // make canonical path
             path: path.resolve(file).replaceAll("\\", "/"),
@@ -202,7 +209,6 @@ async function collectFileInformation() {
             key: index,
             // get readme file related to this one by traversing directory up and looking for Readme.md (in any casing)
             readme: readmeText,
-            extensions: usedExtensions,
             info: docInfo,
         })
     }

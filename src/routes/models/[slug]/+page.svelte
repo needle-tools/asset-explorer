@@ -34,7 +34,7 @@ onMount(() => {
     div {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: space-evenly;
         align-items: flex-start;
     }
 </style>
