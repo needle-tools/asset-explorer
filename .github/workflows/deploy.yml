@@ -30,7 +30,8 @@ jobs:
 
       - name: build
         env:
-          BASE_PATH: '/gltf-asset-explorer'
+          # '/gltf-asset-explorer' - not used since custom domain
+          BASE_PATH: ''
         run: |
           npm run build
           touch build/.nojekyll
