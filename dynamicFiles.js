@@ -19,7 +19,7 @@ import { FileLoader, Cache } from 'three';
 // find all glb files in folder
 // const files = import.meta.glob("D:/git/pfc-packages-master/development/pfc-modelexporter/development/ModelConversion/Exports/**.glb", { eager: true });
 
-export const sourceDir = "/Users/herbst/git/glTF-Sample-Models/2.0/"; //"E:/git/glTF-Sample-Models/2.0/";
+export const sourceDir = "submodules/glTF-Sample-Models/2.0/"; //"E:/git/glTF-Sample-Models/2.0/";
 
 // experimental - allows us to use three.js from node
 class ProgressEvent {}
