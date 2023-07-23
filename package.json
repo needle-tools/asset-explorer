@@ -3,9 +3,9 @@
 	"version": "0.0.1",
 	"scripts": {
 		"start": "npm run dev",
-		"dev": "vite dev",
+		"dev": "vite dev --host",
 		"build": "vite build",
-		"preview": "vite preview",
+		"preview": "vite preview --host",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
 	},
@@ -25,6 +25,7 @@
 		"tslib": "^2.6.0",
 		"typescript": "^5.1.6",
 		"vite": "4.3.9",
+		"vite-plugin-mkcert": "^1.16.0",
 		"vite-plugin-static-copy": "^0.17.0"
 	},
 	"type": "module",

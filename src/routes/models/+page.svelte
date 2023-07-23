@@ -1,32 +1,23 @@
 <script lang="ts">
 import { onMount } from 'svelte';
 import { page } from '$app/stores'
-    import { fly, scale } from 'svelte/transition';
-    import { cubicInOut, elasticOut } from 'svelte/easing';
+import { fly, scale } from 'svelte/transition';
+import { cubicInOut, elasticOut } from 'svelte/easing';
+import Tag from './Tag.svelte';
+import ModelTags, { showInfo } from './ModelTags.svelte';
 
 export let data;
 
-function showInfo(array, key) {
-    if (key === "scenes")
-        return array[key] > 1;
-    return array[key];
-}
+function getAndCountTags(_data) {
+    const tags: any = {};
 
-function getInfoString(array, key) {
-    if (typeof array[key] === "boolean")
-        return key;
-    return key  + ": " + array[key];
-}
-
-function getAndCountTags() {
-    const tags = new Map<string, number>();
-    for (const model of data.models) {
+    for (const model of _data.models) {
         for (const tag of Object.keys(model.extras.info)) {
             if (!showInfo(model.extras.info, tag))
                 continue;
-            if (tags.get(tag) === undefined)
-                tags.set(tag, 0);
-            tags.set(tag, tags.get(tag) + 1);
+            if (tags[tag] === undefined)
+                tags[tag] = 0;
+            tags[tag]++;
         }
     }
     return tags;
@@ -37,7 +28,7 @@ function whoosh(node, params) {
 
     return {
       delay: params.delay || 0,
-      duration: params.duration || 100,
+      duration: params.duration || 200,
       easing: params.easing || cubicInOut,
       css: (t, u) => `opacity: ${t}; scale: ${t * 1};`
     };
@@ -52,16 +43,7 @@ $: filter = $page.url.searchParams.get('tag');
 	<meta name="description" content="About this app" />
 </svelte:head>
 
-<ul class="extensions group">
-    {#each getAndCountTags() as tag}
-        <li class="{filter == tag[0] ? 'selected' : ''}">
-            <a href="/models?tag={filter == tag[0] ? '' : tag[0]}">
-                <span class="tag-name">{tag[0]}</span>
-                <span class="tag-count">{tag[1]}</span>
-            </a>
-        </li>
-    {/each}
-</ul>
+<ModelTags tags={getAndCountTags(data)} filter={filter}/>
 
 <ul class="models">
     {#each data.models.filter(x => !filter || showInfo(x.extras.info, filter)) as model (model.slug)}
@@ -69,13 +51,8 @@ $: filter = $page.url.searchParams.get('tag');
             <a href="/models/{model.slug}">
                 <img src="{model.thumbnail}" alt="{model.name}" />
                 <p class="name">{model.name}</p>
-                <ul class="extensions">
-                    {#each Object.keys(model.extras.info) as info}
-                        {#if showInfo(model.extras.info, info)}
-                            <li class="{info}">{getInfoString(model.extras.info, info)}</li>
-                        {/if}
-                    {/each}
-                </ul>
+
+                <ModelTags tags={model.extras.info} filter={filter}/>
             </a>
         </li>
     {/each}
@@ -109,41 +86,6 @@ $: filter = $page.url.searchParams.get('tag');
     p {
         margin: 0;
         padding: 0;
-    }
-
-    ul.extensions {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        margin: 0px -7px;
-    }
-
-    ul.extensions.group {
-        margin: 4px;
-    }
-
-    ul.extensions li {
-        /*background-color: #b1b1b1;*/
-        border: 1px solid rgba(0,0,0,0.05);
-        padding: 2px 6px;
-        margin: 2px;
-        border-radius: 10px;
-        font-size: 0.6rem;
-        color: hsl(0, 0%, 55%);
-        overflow: hidden;
-    }
-
-    ul.extensions li.selected {
-        background-color: rgba(114, 163, 206, 0.216);
-        border: 1px solid rgba(0,0,0,0.2);
-        color: hsl(0, 0%, 20%);
-    }
-
-    ul.extensions li .tag-count {
-        background-color: rgba(114, 163, 206, 0.216);
-        padding: 6px;
-        margin-right: -5px;
     }
 
     ul {

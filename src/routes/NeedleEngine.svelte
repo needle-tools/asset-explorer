@@ -8,7 +8,7 @@ import texture from './../lib/images/neutral.hdr?url';
 export let src: string | null = null;
 
 import { onDestroy, onMount } from 'svelte';
-import { EquirectangularReflectionMapping, Object3D, Texture } from 'three';
+import { EquirectangularReflectionMapping, Object3D, Texture, ACESFilmicToneMapping } from 'three';
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 // import { USDZExporter } from '@needle-tools/engine/src/engine-components/export/usdz/ThreeUSDZExporter';
 
@@ -23,14 +23,24 @@ onMount(async () => {
 
     window.NEEDLE_ENGINE_META = { version: "custom", generator: "svelte-kit" };
     window.NEEDLE_USE_RAPIER = false;
-    const { NeedleEngine, GameObject, WebXR, WebARSessionRoot, USDZExporter } = await import('@needle-tools/engine');
+    const { NeedleEngine, GameObject, WebXR, WebARSessionRoot, USDZExporter, RGBAColor, OrbitControls } = await import('@needle-tools/engine');
     NeedleEngine.addContextCreatedCallback((evt) => {
         console.log("CREATED");
         const ctx = evt.context;
         if (ctx.mainCameraComponent) {
             ctx.mainCameraComponent.backgroundBlurriness = 1; 
-            ctx.mainCameraComponent.backgroundIntensity = 0.02; 
+            ctx.mainCameraComponent.backgroundColor = new RGBAColor(0,0,0,0);
         }
+
+        // AcesFilmicToneMapping
+        ctx.renderer.toneMapping = ACESFilmicToneMapping;
+
+        const controls = GameObject.findObjectOfType(OrbitControls, ctx);
+        setTimeout(() => {
+            controls!.enableZoom = false;
+        }, 1000)
+        
+
         const xr = new Object3D();
         xr.name = "XR";
         GameObject.addNewComponent(xr, WebXR);
@@ -65,13 +75,15 @@ function loadFinished(evt: CustomEvent) {
 </script>
 
 <!-- <model-viewer camera-controls autoplay src={src} skybox-image={texture} environment-image={texture}></model-viewer> -->
-<needle-engine camera-controls src={src} on:loadfinished={loadFinished} skybox-image={texture} environment-image={texture} autoplay></needle-engine>
+<needle-engine camera-controls src={src} on:loadfinished={loadFinished} environment-image={texture} autoplay></needle-engine>
 
 <style>
     needle-engine {
         display: block; 
         height: 400px;
         position: relative;
-        width: 100%;
+        /* width: 100%; */
+        width: 100vw;
+        left: calc((100% - 100vw) / 2);
     }
 </style>

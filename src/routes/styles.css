@@ -20,7 +20,7 @@ body {
 	margin: 0;
 	background-attachment: fixed;
 	background-color: var(--color-bg-1);
-	background-size: 100vw 100vh;
+	/* background-size: 100vw 100vh; */
 	background-image: radial-gradient(
 			50% 50% at 50% 50%,
 			rgba(255, 255, 255, 0.75) 0%,

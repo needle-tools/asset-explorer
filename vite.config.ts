@@ -1,5 +1,6 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
+import mkcert from "vite-plugin-mkcert";
 
 // https://github.com/sapphi-red/vite-plugin-static-copy#usage
 import { viteStaticCopy, type Target } from 'vite-plugin-static-copy'
@@ -29,6 +30,7 @@ export default defineConfig(async ({ command, mode }) => {
 
 	return {
 		plugins: [
+			mkcert(),
 			viteStaticCopy({
 				targets: copyTargets,
 			}),
