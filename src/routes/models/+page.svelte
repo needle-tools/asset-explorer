@@ -5,6 +5,7 @@ import { fly, scale } from 'svelte/transition';
 import { cubicInOut, elasticOut } from 'svelte/easing';
 import Tag from './Tag.svelte';
 import ModelTags, { showInfo } from './ModelTags.svelte';
+import { browser } from "$app/environment";
 
 export let data;
 
@@ -34,7 +35,7 @@ function whoosh(node, params) {
     };
   }
 
-$: filter = $page.url.searchParams.get('tag');
+$: filter = browser && $page.url.searchParams.get('tag');
 
 </script>
 
