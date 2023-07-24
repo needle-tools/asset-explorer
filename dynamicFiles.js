@@ -15,6 +15,7 @@ import draco3d from 'draco3dgltf';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { USDZExporter } from 'three/examples/jsm/exporters/USDZExporter.js';
 import { FileLoader, Cache } from 'three';
+import subProcess from 'child_process';
 
 // find all glb files in folder
 // const files = import.meta.glob("D:/git/pfc-packages-master/development/pfc-modelexporter/development/ModelConversion/Exports/**.glb", { eager: true });
@@ -29,47 +30,27 @@ globalThis["ProgressEvent"] = ProgressEvent;
 globalThis["self"] = globalThis;
 Cache.enabled = true;
 
-// patch FileLoader to use fs instead of fetch
-const originalLoad = FileLoader.prototype.load;
-FileLoader.prototype.load = function (url, onLoad, onProgress, onError) {
-
-    console.log("file loader: " + url);
-    try {
-        const data = fs.readFileSync(url);
-        Cache.add(url, data.buffer);
-    }
-    catch (e) {
-        console.log("Error loading file", e);
-    }
-    return originalLoad.call(this, url, onLoad, onProgress, onError);
-
-    /*
-    if (url.startsWith('blob:')) return originalLoad.call(this, url, onLoad, onProgress, onError);
-
-    fs.readFile(url, (err, data) => {
-        if (err) {
-            onError(err);
-            return;
-        }
-        else {
-            onLoad(data);
-        }
-    });
-
-    console.log("loading", url);
-
-    */
-    /*
-    // fetch the file with fs and create a in-memory URL 
-    // that we can pass on.
-    const blob = URL.createObjectURL(new Blob([fs.readFileSync(url)]));
-    return originalLoad.call(this, blob, onLoad, onProgress, onError);
-    */
-}
-
 async function collectFileInformation() {
 
-    const files = globSync(sourceDir + "**/**.glb").sort();
+
+    // patch FileLoader to use fs instead of fetch
+    const originalLoad = FileLoader.prototype.load;
+    FileLoader.prototype.load = function (url, onLoad, onProgress, onError) {
+
+        // console.log("file loader: " + url);
+        try {
+            const data = fs.readFileSync(url);
+            Cache.add(url, data.buffer);
+        }
+        catch (e) {
+            console.log("Error loading file", e);
+        }
+        return originalLoad.call(this, url, onLoad, onProgress, onError);
+    }
+
+    let files = globSync(sourceDir + "**/**.glb").sort();
+    // take only 1
+    files = files.slice(0, 9);
     const images = [];
     // console.log("ALL FILES", files);
 
@@ -216,23 +197,6 @@ async function collectFileInformation() {
             },
         )
 
-        // parse file, get extensions and other data
-        /*
-        const doc = await io.read(file);
-        const usedExtensions = doc.getRoot().listExtensionsUsed().map((extension) => extension.extensionName);
-        const vertexColors = doc.getRoot().listMeshes().some((mesh) => mesh.listPrimitives().some((primitive) => primitive.getAttribute('COLOR_0')));
-        const blendShapes = doc.getRoot().listMeshes().some((mesh) => mesh.listPrimitives().some((primitive) => primitive.listTargets().length > 0));
-        const textures = doc.getRoot().listTextures().length;
-        const scenes = doc.getRoot().listScenes().length;
-        const animations = doc.getRoot().listAnimations().length;
-        const skins = doc.getRoot().listSkins().length;
-        const cameras = doc.getRoot().listCameras().length;
-        const anyUsesMask = doc.getRoot().listMaterials().some((material) => material.getAlphaMode() === 'MASK');
-        const anyUsesBlend = doc.getRoot().listMaterials().some((material) => material.getAlphaMode() === 'BLEND');
-        const generator = doc.getRoot().getAsset().generator;
-        const copyright = doc.getRoot().getAsset().copyright;
-        */
-
         const doc = (await io.readAsJSON(file)).json;
         const usedExtensions = doc.extensionsUsed || [];
         const vertexColors = doc.meshes?.some((mesh) => mesh.primitives.some((primitive) => primitive.attributes.COLOR_0));
@@ -266,39 +230,59 @@ async function collectFileInformation() {
 
         // console.log(usedExtensions, docInfo)
 
-        /*
+        
         // USDZ conversion
-        await new Promise((resolve, reject) => {
+        const fileName = path.parse(file).name;
+        console.log("Converting " + fileName + " to USDZ");
+        console.group();
+        const usdzArrayBuffer = await new Promise((resolve, reject) => {
 
             try {
                 const loader = new GLTFLoader();
                 loader.load(file, async function (gltf) {
-                    console.log("✓ " + file + " loaded successfully");
+                    console.log("✓ " + fileName + " loaded with GLTFLoader");
     
                     const exporter = new USDZExporter();
                     // console.log("exporter: ", exporter + ", scene: ", gltf.scene)
 
-                    exporter.parse( gltf.scene, function ( result ) {
-                        console.log("✓✓✓ " + result);
-                        resolve(result);
-                    }, undefined, function ( error ) {
-                        console.log(error);
-                        reject(error);
-                    });
-                    resolve("ok");
+                    const arrayBuffer = await exporter.parse( gltf.scene);
+                    console.log("✓ " + fileName + " exported with USDZExporter")
+                    resolve(arrayBuffer);
 
                 }, undefined, function (error) { 
-                    console.log("❌ " + file + " failed to load: " + error);
+                    console.log("❌ " + fileName + " failed to load: " + error);
                     reject(error);
                 });
             }
             catch (e) {
-                console.log("❌ " + file + " failed to load: " + e);
+                console.log("❌ " + fileName + " failed to load: " + e);
                 reject(e);
             }
 
         });
-        */
+
+        // save to disk
+        const usdzFilePath = file + ".usdz";
+        fs.writeFileSync(usdzFilePath, Buffer.from(usdzArrayBuffer));
+        // get abs path
+        const usdzFilePathAbs = path.resolve(usdzFilePath);
+        
+        await new Promise((resolve, reject) => {
+            // run through usdchecker
+            subProcess.exec('usdchecker "' + usdzFilePathAbs + '"', (err, stdout, stderr) => {
+                if (err) {
+                    console.log("❌ " + fileName + " failed usdchecker");
+                    console.group();
+                    console.log(`${stdout.toString()}`);
+                    console.log(`${stderr.toString()}`);
+                    console.groupEnd();
+                    // process.exit(1);
+                } else {
+                }
+                resolve(true);
+            })
+        });
+        console.groupEnd();
 
         array.push({
             // make canonical path
@@ -315,6 +299,9 @@ async function collectFileInformation() {
             info: docInfo,
         })
     }
+
+    // restore monkey patching
+    FileLoader.prototype.load = originalLoad;
 
     return {
         files: array,
