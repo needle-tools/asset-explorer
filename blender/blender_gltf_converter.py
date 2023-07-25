@@ -45,13 +45,17 @@ def runner():
     # Custom logic may go here
     # You might want to e.g. support various file formats, this example works just with .obj files
 
-    bpy.ops.import_scene.obj(filepath=model_path)
-    output_path = model_path.replace(".obj", "")
+    bpy.ops.import_scene.gltf(filepath=model_path, loglevel=50)
+
+    # bpy.ops.import_scene.obj(filepath=model_path)
+    output_path = model_path.replace(".glb", ".glb.blender.usdz")
+    output_path = output_path.replace(".gltf", ".glb.blender.usdz")
 
     # The list of all parameters for gltf export can be found here:
     # https://docs.blender.org/api/current/bpy.ops.export_scene.html#bpy.ops.export_scene.gltf
     # Parameters that you won't set will use your Blender settings
-    bpy.ops.export_scene.gltf(filepath=output_path)
+    # bpy.ops.export_scene.gltf(filepath=output_path)
+    bpy.ops.wm.usd_export(filepath=output_path, generate_preview_surface=True, relative_paths=True)
 
 
 if __name__ == "__main__":
