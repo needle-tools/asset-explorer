@@ -39,11 +39,5 @@ export default defineConfig(async ({ command, mode }) => {
 		build: {
 			target: "esnext",
 		},
-		optimizeDeps: {
-			exclude: [
-				"three",
-				"@needle-tools/engine",
-			],
-		},
 	}
   })
