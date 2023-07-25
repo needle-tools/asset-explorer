@@ -4,7 +4,7 @@ import mkcert from "vite-plugin-mkcert";
 
 // https://github.com/sapphi-red/vite-plugin-static-copy#usage
 import { viteStaticCopy, type Target } from 'vite-plugin-static-copy'
-import { collectFileInformation } from "./dynamicFiles";
+import { collectFileInformation } from "./src/dynamicFiles";
 
 export default defineConfig(async ({ command, mode }) => {
 	
@@ -38,6 +38,12 @@ export default defineConfig(async ({ command, mode }) => {
 		],
 		build: {
 			target: "esnext",
+		},
+		optimizeDeps: {
+			exclude: [
+				"three",
+				"@needle-tools/engine",
+			],
 		},
 	}
   })

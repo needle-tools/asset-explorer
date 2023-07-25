@@ -2,6 +2,13 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "node_modules/three"
+		},
+		{
+			"name": "needle",
+			"path": "node_modules/@needle-tools/engine"
 		}
 	],
 	"settings": {}

@@ -14,7 +14,7 @@ import draco3d from 'draco3dgltf';
 
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { USDZExporter } from 'three/examples/jsm/exporters/USDZExporter.js';
-import { FileLoader, Cache } from 'three';
+import { FileLoader, Cache, LoadingManager } from 'three';
 import subProcess from 'child_process';
 
 // find all glb files in folder
@@ -50,7 +50,7 @@ async function collectFileInformation() {
 
     let files = globSync(sourceDir + "**/**.glb").sort();
     // take only 1
-    files = files.slice(0, 9);
+    files = files.slice(1, 2);
     const images = [];
     // console.log("ALL FILES", files);
 
@@ -238,6 +238,8 @@ async function collectFileInformation() {
         const usdzArrayBuffer = await new Promise((resolve, reject) => {
 
             try {
+                const manager = new LoadingManager();
+                manager.url
                 const loader = new GLTFLoader();
                 loader.load(file, async function (gltf) {
                     console.log("✓ " + fileName + " loaded with GLTFLoader");
@@ -278,6 +280,7 @@ async function collectFileInformation() {
                     console.groupEnd();
                     // process.exit(1);
                 } else {
+                    console.log("✓ " + fileName + " passed usdchecker");
                 }
                 resolve(true);
             })
