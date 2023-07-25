@@ -50,7 +50,7 @@ async function collectFileInformation() {
 
     let files = globSync(sourceDir + "**/**.glb").sort();
     // take only 1
-    files = files.slice(1, 2);
+    // files = files.slice(1, 2);
     const images = [];
     // console.log("ALL FILES", files);
 
@@ -235,56 +235,81 @@ async function collectFileInformation() {
         const fileName = path.parse(file).name;
         console.log("Converting " + fileName + " to USDZ");
         console.group();
-        const usdzArrayBuffer = await new Promise((resolve, reject) => {
-
-            try {
-                const manager = new LoadingManager();
-                manager.url
-                const loader = new GLTFLoader();
-                loader.load(file, async function (gltf) {
-                    console.log("✓ " + fileName + " loaded with GLTFLoader");
-    
-                    const exporter = new USDZExporter();
-                    // console.log("exporter: ", exporter + ", scene: ", gltf.scene)
-
-                    const arrayBuffer = await exporter.parse( gltf.scene);
-                    console.log("✓ " + fileName + " exported with USDZExporter")
-                    resolve(arrayBuffer);
-
-                }, undefined, function (error) { 
-                    console.log("❌ " + fileName + " failed to load: " + error);
-                    reject(error);
-                });
-            }
-            catch (e) {
-                console.log("❌ " + fileName + " failed to load: " + e);
-                reject(e);
-            }
-
-        });
-
-        // save to disk
-        const usdzFilePath = file + ".usdz";
-        fs.writeFileSync(usdzFilePath, Buffer.from(usdzArrayBuffer));
-        // get abs path
-        const usdzFilePathAbs = path.resolve(usdzFilePath);
+        try {
+            const usdzArrayBuffer = await new Promise((resolve, reject) => {
+                try {
+                    const manager = new LoadingManager();
+                    manager.url
+                    const loader = new GLTFLoader();
+                    loader.load(file, async function (gltf) {
+                        console.log("✓ " + fileName + " loaded with GLTFLoader");
         
-        await new Promise((resolve, reject) => {
-            // run through usdchecker
-            subProcess.exec('usdchecker "' + usdzFilePathAbs + '"', (err, stdout, stderr) => {
-                if (err) {
-                    console.log("❌ " + fileName + " failed usdchecker");
-                    console.group();
-                    console.log(`${stdout.toString()}`);
-                    console.log(`${stderr.toString()}`);
-                    console.groupEnd();
-                    // process.exit(1);
-                } else {
-                    console.log("✓ " + fileName + " passed usdchecker");
+                        const exporter = new USDZExporter();
+                        // console.log("exporter: ", exporter + ", scene: ", gltf.scene)
+
+                        const arrayBuffer = await exporter.parse( gltf.scene);
+                        console.log("✓ " + fileName + " exported with USDZExporter")
+                        resolve(arrayBuffer);
+
+                    }, undefined, function (error) { 
+                        console.log("❌ " + fileName + " failed to load: " + error);
+                        reject(error);
+                    });
                 }
-                resolve(true);
-            })
-        });
+                catch (e) {
+                    console.log("❌ " + fileName + " failed to load: " + e);
+                    reject(e);
+                }
+
+            });
+
+            // save to disk
+            const usdzFilePath = file + ".usdz";
+            fs.writeFileSync(usdzFilePath, Buffer.from(usdzArrayBuffer));
+            // get abs path
+            const usdzFilePathAbs = path.resolve(usdzFilePath);
+        
+            // run usdchecker
+            await new Promise((resolve, reject) => {
+                // run through usdchecker
+                subProcess.exec('usdchecker "' + usdzFilePathAbs + '"', (err, stdout, stderr) => {
+                    if (err) {
+                        console.log("❌ " + fileName + " failed usdchecker");
+                        console.group();
+                        console.log(`${stdout.toString()}`);
+                        console.log(`${stderr.toString()}`);
+                        console.groupEnd();
+                        // process.exit(1);
+                    } else {
+                        console.log("✓ " + fileName + " passed usdchecker");
+                    }
+                    resolve(true);
+                })
+            });
+
+            // run screenshot generation with usdrecord
+            await new Promise((resolve, reject) => {
+                const screenshotPath = path.resolve(file, "..", "..", "screenshot.png");
+                subProcess.exec('usdrecord "' + usdzFilePathAbs + '" ' + screenshotPath, (err, stdout, stderr) => {
+                    if (err) {
+                        console.log("❌ " + fileName + " failed usdrecord");
+                        console.group();
+                        console.log(`${stdout.toString()}`);
+                        console.log(`${stderr.toString()}`);
+                        console.groupEnd();
+                        // process.exit(1);
+                    } else {
+                        console.log("✓ " + fileName + " passed usdchecker");
+                    }
+                    resolve(true);
+                })
+            });
+        }
+        catch (e) {
+            console.log("❌ " + fileName + " failed to convert to usdz: " + e);
+        }
+
+        
         console.groupEnd();
 
         array.push({
