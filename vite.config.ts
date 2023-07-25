@@ -8,16 +8,35 @@ import { collectFileInformation } from "./src/dynamicFiles";
 
 export default defineConfig(async ({ command, mode }) => {
 	
-	const { files, images } = await collectFileInformation();
+	const { files, images } = await collectFileInformation(true);
 
 	(global as any).listOfModelFiles = files;
 
 	const copyTargets: Target[] = [];
-	copyTargets.push(...files.map((file) => {
-		return {
-			src: file.paths.gltf,
-			dest: "downloads",
-		}
+	copyTargets.push(...files.flatMap((file) => {
+		// console.log(file.paths.threeScreenshot, file.paths.gltf)
+		return [
+			{
+				src: file.paths.gltf,
+				dest: "downloads",
+			},
+			{
+				src: file.paths.threeUsdz,
+				dest: "downloads",
+			},
+			{
+				src: file.paths.threeScreenshot,
+				dest: "downloads",
+			},
+			{
+				src: file.paths.blenderUsdz,
+				dest: "downloads",
+			},
+			{
+				src: file.paths.blenderScreenshot,
+				dest: "downloads",
+			},
+		]
 	}));
 	copyTargets.push(...images.map((image) => {
 		return {
@@ -38,6 +57,9 @@ export default defineConfig(async ({ command, mode }) => {
 		],
 		build: {
 			target: "esnext",
+		},
+		optimizeDeps: {
+			exclude: ["three"],
 		},
 	}
   })

@@ -30,7 +30,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@needle-tools/engine": "^3.10.3-beta",
-		"three": "npm:@needle-tools/three@0.154.1"
+		"@needle-tools/engine": "^3.10.3-beta"
 	}
 }

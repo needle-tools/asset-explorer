@@ -22,13 +22,21 @@ $: {
 
 <div class="text-column">
     <NeedleEngine src={data.downloadUri} />
-
+    <!--
+    <model>
+        <source src={data.downloadUri + ".blender.usdz"} type="model/vnd.usdz+zip" />
+    </model>
+    -->
     <div class="info">
         <ModelTags tags={data.info} />
         <a href={data.downloadUri} download>Download .glb</a>
+        <a href={data.downloadUri.replace(".glb", ".glb.three.usdz")} download>Download three .usdz</a>
+        <a href={data.downloadUri.replace(".glb", ".glb.blender.usdz")} download>Download blender .usdz</a>
     </div>
 
     <div class="info">
+        <img src={data.downloadUri.replace(".glb", ".glb.three.png")} alt="screenshot from three.js conversion"/>
+        <img src={data.downloadUri.replace(".glb", ".glb.blender.png")} alt="screenshot from blender conversion"/>
         {@html data.readme} 
     </div>
 </div>

@@ -32,6 +32,10 @@ Cache.enabled = true;
 
 async function collectFileInformation(runConversions = false) {
 
+    const runThreeConversion = false;
+    const runBlenderConversion = false;
+    const runUsdChecksAndRender = true;
+
     // patch FileLoader to use fs instead of fetch
     const originalLoad = FileLoader.prototype.load;
     FileLoader.prototype.load = function (url, onLoad, onProgress, onError) {
@@ -226,10 +230,6 @@ async function collectFileInformation(runConversions = false) {
         for (const ext of usedExtensions) {
             docInfo[ext] = true;
         }
-
-        const runThreeConversion = false;
-        const runBlenderConversion = false;
-        const runUsdChecksAndRender = false;
         
         const checkAndRender = async (usdzFile, outputPrefix) => {
 
@@ -257,7 +257,7 @@ async function collectFileInformation(runConversions = false) {
 
             // run screenshot generation with usdrecord
             await new Promise((resolve, reject) => {
-                const screenshotPath = path.resolve(file, "..", outputPrefix + "_usdz_screenshot.png");
+                const screenshotPath = path.resolve(file, "..", fileName + ".png");
                 subProcess.exec('usdrecord "' + usdzFile + '" ' + screenshotPath, (err, stdout, stderr) => {
                     if (err) {
                         console.log("❌ " + fileName + " failed usdrecord");
@@ -275,6 +275,17 @@ async function collectFileInformation(runConversions = false) {
         
         // USDZ conversion
         const fileName = path.parse(file).name;
+        
+        const usdzFilePath = file + ".three.usdz";
+        const usdzFilePathAbs = path.resolve(usdzFilePath);
+        const usdzScreenshot = file + ".three.png";
+        const usdzScreenshotAbs = path.resolve(usdzScreenshot);
+
+        const blenderUsdzFilePath = file + ".blender.usdz";
+        const blenderUsdzFilePathAbs = path.resolve(blenderUsdzFilePath);
+        const blenderUsdzScreenshot = file + ".blender.png";
+        const blenderUsdzScreenshotAbs = path.resolve(blenderUsdzScreenshot);
+        
         if (runConversions && (runThreeConversion || runBlenderConversion))
             console.log("Converting " + fileName + " to USDZ");
         
@@ -308,10 +319,8 @@ async function collectFileInformation(runConversions = false) {
                 });
 
                 // save to disk
-                const usdzFilePath = file + ".three.usdz";
+                
                 fs.writeFileSync(usdzFilePath, Buffer.from(usdzArrayBuffer));
-                const usdzFilePathAbs = path.resolve(usdzFilePath);
-
                 await checkAndRender(usdzFilePathAbs, "three");
             }
 
@@ -336,8 +345,6 @@ async function collectFileInformation(runConversions = false) {
                     });
                 });
 
-                const blenderUsdzFilePath = file + ".blender.usdz";
-                const blenderUsdzFilePathAbs = path.resolve(blenderUsdzFilePath);
                 await checkAndRender(blenderUsdzFilePathAbs, "blender");
             }
 
@@ -352,6 +359,11 @@ async function collectFileInformation(runConversions = false) {
             // make canonical path
             paths: {
                 gltf: path.resolve(file).replaceAll("\\", "/"),
+                gltfPreviewScreenshot: firstFoundImage,
+                threeUsdz: usdzFilePathAbs,
+                threeScreenshot: usdzScreenshotAbs,
+                blenderUsdz: blenderUsdzFilePathAbs,
+                blenderScreenshot: blenderUsdzScreenshotAbs,
             },
             name: path.parse(file).name,
             displayName: firstFoundH1 || path.parse(file).name,
