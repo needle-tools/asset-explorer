@@ -15,7 +15,7 @@ export default defineConfig(async ({ command, mode }) => {
 	const copyTargets: Target[] = [];
 	copyTargets.push(...files.map((file) => {
 		return {
-			src: file.path,
+			src: file.paths.gltf,
 			dest: "downloads",
 		}
 	}));

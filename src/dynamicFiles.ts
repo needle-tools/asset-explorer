@@ -30,8 +30,7 @@ globalThis["ProgressEvent"] = ProgressEvent;
 globalThis["self"] = globalThis;
 Cache.enabled = true;
 
-async function collectFileInformation() {
-
+async function collectFileInformation(runConversions = false) {
 
     // patch FileLoader to use fs instead of fetch
     const originalLoad = FileLoader.prototype.load;
@@ -228,9 +227,13 @@ async function collectFileInformation() {
             docInfo[ext] = true;
         }
 
-        // console.log(usedExtensions, docInfo)
-
+        const runThreeConversion = false;
+        const runBlenderConversion = false;
+        const runUsdChecksAndRender = false;
+        
         const checkAndRender = async (usdzFile, outputPrefix) => {
+
+            if (!runUsdChecksAndRender) return;
 
             const fileName = path.parse(usdzFile).name;
 
@@ -272,84 +275,93 @@ async function collectFileInformation() {
         
         // USDZ conversion
         const fileName = path.parse(file).name;
-        console.log("Converting " + fileName + " to USDZ");
+        if (runConversions && (runThreeConversion || runBlenderConversion))
+            console.log("Converting " + fileName + " to USDZ");
+        
         console.group();
         try {
-            const usdzArrayBuffer = await new Promise((resolve, reject) => {
-                try {
-                    // const manager = new LoadingManager();
-                    const loader = new GLTFLoader();
-                    loader.load(file, async function (gltf) {
-                        console.log("✓ " + fileName + " loaded with GLTFLoader");
-        
-                        const exporter = new USDZExporter();
-                        // console.log("exporter: ", exporter + ", scene: ", gltf.scene)
+            if (runConversions && runThreeConversion) {
+                const usdzArrayBuffer = await new Promise((resolve, reject) => {
+                    try {
+                        // const manager = new LoadingManager();
+                        const loader = new GLTFLoader();
+                        loader.load(file, async function (gltf) {
+                            console.log("✓ " + fileName + " loaded with GLTFLoader");
+            
+                            const exporter = new USDZExporter();
+                            // console.log("exporter: ", exporter + ", scene: ", gltf.scene)
 
-                        const arrayBuffer = await exporter.parse( gltf.scene);
-                        console.log("✓ " + fileName + " exported with three.js USDZExporter")
-                        resolve(arrayBuffer);
+                            const arrayBuffer = await exporter.parse( gltf.scene);
+                            console.log("✓ " + fileName + " exported with three.js USDZExporter")
+                            resolve(arrayBuffer);
 
-                    }, undefined, function (error) { 
-                        console.log("❌ " + fileName + " failed to load: " + error);
-                        reject(error);
-                    });
-                }
-                catch (e) {
-                    console.log("❌ " + fileName + " failed to load: " + e);
-                    reject(e);
-                }
-
-            });
-
-            // save to disk
-            const usdzFilePath = file + ".three.usdz";
-            fs.writeFileSync(usdzFilePath, Buffer.from(usdzArrayBuffer));
-            const usdzFilePathAbs = path.resolve(usdzFilePath);
-        
-            await checkAndRender(usdzFilePathAbs, "three");
-
-            // blender conversion
-            await new Promise((resolve, reject) => {
-                // /Applications/Blender.app/Contents/MacOS/Blender -b -P blender/blender_gltf_converter.py -- -mp "/Users/herbst/Downloads/2CylinderEngine.glb"
-                const blenderPath = '/Applications/Blender.app/Contents/MacOS/Blender';
-                const cmd = blenderPath + ' -b -P blender/blender_gltf_converter.py -- -mp "' + file + '"';
-
-                subProcess.exec(cmd, (err, stdout, stderr) => {
-                    if (err) {
-                        console.log("❌ " + fileName + " failed blender conversion");
-                        console.group();
-                        console.log(`${stdout.toString()}`);
-                        console.log(`${stderr.toString()}`);
-                        console.groupEnd();
-                    } else {
-                        console.log("✓ " + fileName + " converted to USDZ with Blender");
+                        }, undefined, function (error) { 
+                            console.log("❌ " + fileName + " failed to load: " + error);
+                            reject(error);
+                        });
                     }
-                    resolve(true);
-                });
-            });
+                    catch (e) {
+                        console.log("❌ " + fileName + " failed to load: " + e);
+                        reject(e);
+                    }
 
-            const blenderUsdzFilePath = file + ".blender.usdz";
-            const blenderUsdzFilePathAbs = path.resolve(blenderUsdzFilePath);
-            await checkAndRender(blenderUsdzFilePathAbs, "blender");
+                });
+
+                // save to disk
+                const usdzFilePath = file + ".three.usdz";
+                fs.writeFileSync(usdzFilePath, Buffer.from(usdzArrayBuffer));
+                const usdzFilePathAbs = path.resolve(usdzFilePath);
+
+                await checkAndRender(usdzFilePathAbs, "three");
+            }
+
+            if (runConversions && runBlenderConversion) {
+                // blender conversion
+                await new Promise((resolve, reject) => {
+                    // /Applications/Blender.app/Contents/MacOS/Blender -b -P blender/blender_gltf_converter.py -- -mp "/Users/herbst/Downloads/2CylinderEngine.glb"
+                    const blenderPath = '/Applications/Blender.app/Contents/MacOS/Blender';
+                    const cmd = blenderPath + ' -b -P blender/blender_gltf_converter.py -- -mp "' + file + '"';
+
+                    subProcess.exec(cmd, (err, stdout, stderr) => {
+                        if (err) {
+                            console.log("❌ " + fileName + " failed blender conversion");
+                            console.group();
+                            console.log(`${stdout.toString()}`);
+                            console.log(`${stderr.toString()}`);
+                            console.groupEnd();
+                        } else {
+                            console.log("✓ " + fileName + " converted to USDZ with Blender");
+                        }
+                        resolve(true);
+                    });
+                });
+
+                const blenderUsdzFilePath = file + ".blender.usdz";
+                const blenderUsdzFilePathAbs = path.resolve(blenderUsdzFilePath);
+                await checkAndRender(blenderUsdzFilePathAbs, "blender");
+            }
+
         }
         catch (e) {
             console.log("❌ " + fileName + " failed to convert to usdz: " + e);
         }
 
-        
         console.groupEnd();
 
         array.push({
             // make canonical path
-            path: path.resolve(file).replaceAll("\\", "/"),
+            paths: {
+                gltf: path.resolve(file).replaceAll("\\", "/"),
+            },
             name: path.parse(file).name,
             displayName: firstFoundH1 || path.parse(file).name,
+
             previewUri: firstFoundImage,
             uri: basePath + "/models/" + path.parse(file).name,
             downloadUri: basePath + "/downloads/" + path.parse(file).name + ".glb",
+            
             size: fs.existsSync(file) ? fs.statSync(file).size : 0,
             key: index,
-            // get readme file related to this one by traversing directory up and looking for Readme.md (in any casing)
             readme: readmeText,
             info: docInfo,
         })
