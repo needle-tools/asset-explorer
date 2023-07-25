@@ -32,9 +32,9 @@ Cache.enabled = true;
 
 async function collectFileInformation(runConversions = false) {
 
-    const runThreeConversion = false;
+    const runThreeConversion = true;
     const runBlenderConversion = false;
-    const runUsdChecksAndRender = true;
+    const runUsdChecksAndRender = false;
 
     // patch FileLoader to use fs instead of fetch
     const originalLoad = FileLoader.prototype.load;
