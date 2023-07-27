@@ -13,7 +13,10 @@ import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
 import draco3d from 'draco3dgltf';
 
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { USDZExporter } from 'three/examples/jsm/exporters/USDZExporter.js';
+// import { USDZExporter } from 'three/examples/jsm/exporters/USDZExporter.js';
+import { thing } from "./hacks";
+// import { USDZExporter } from '@needle-tools/engine';
+import { USDZExporter } from './USDZExporter';
 import { FileLoader, Cache, LoadingManager } from 'three';
 import subProcess from 'child_process';
 
@@ -25,14 +28,12 @@ export const sourceDir = "submodules/glTF-Sample-Models/2.0/"; //"E:/git/glTF-Sa
 const basePath = process.env.BASE_PATH || "";
 
 // experimental - allows us to use three.js from node
-class ProgressEvent {}
-globalThis["ProgressEvent"] = ProgressEvent;
-globalThis["self"] = globalThis;
+
 Cache.enabled = true;
 
 async function collectFileInformation(runConversions = false) {
 
-    const runThreeConversion = true;
+    const runThreeConversion = false;
     const runBlenderConversion = false;
     const runUsdChecksAndRender = false;
 
@@ -53,7 +54,7 @@ async function collectFileInformation(runConversions = false) {
 
     let files = globSync(sourceDir + "**/**.glb").sort();
     // take only 1
-    // files = files.slice(1, 2);
+    //files = files.slice(0, 10);
     const images = [];
     // console.log("ALL FILES", files);
 
@@ -291,8 +292,9 @@ async function collectFileInformation(runConversions = false) {
         
         console.group();
         try {
+            let usdzArrayBuffer : ArrayBuffer | null = null;
             if (runConversions && runThreeConversion) {
-                const usdzArrayBuffer = await new Promise((resolve, reject) => {
+                usdzArrayBuffer = await new Promise((resolve, reject) => {
                     try {
                         // const manager = new LoadingManager();
                         const loader = new GLTFLoader();
@@ -300,31 +302,38 @@ async function collectFileInformation(runConversions = false) {
                             console.log("✓ " + fileName + " loaded with GLTFLoader");
             
                             const exporter = new USDZExporter();
+                            gltf.scene.updateMatrixWorld();
                             // console.log("exporter: ", exporter + ", scene: ", gltf.scene)
 
                             const arrayBuffer = await exporter.parse( gltf.scene);
                             console.log("✓ " + fileName + " exported with three.js USDZExporter")
                             resolve(arrayBuffer);
+                            return
 
                         }, undefined, function (error) { 
-                            console.log("❌ " + fileName + " failed to load: " + error);
-                            reject(error);
+                            console.log("❌ " + fileName + " failed to load: ", error);
+                            // reject(error);
+                            resolve(null);
+                            return;
                         });
                     }
                     catch (e) {
-                        console.log("❌ " + fileName + " failed to load: " + e);
-                        reject(e);
+                        console.log("❌ " + fileName + " failed to load: ", e);
+                        // reject(e);
+                        resolve(null);
+                        return;
                     }
 
                 });
 
                 // save to disk
-                
-                fs.writeFileSync(usdzFilePath, Buffer.from(usdzArrayBuffer));
-                await checkAndRender(usdzFilePathAbs, "three");
+                if (usdzArrayBuffer) {
+                    fs.writeFileSync(usdzFilePath, Buffer.from(usdzArrayBuffer));
+                    await checkAndRender(usdzFilePathAbs, "three");
+                }
             }
 
-            if (runConversions && runBlenderConversion) {
+            if (usdzArrayBuffer && runConversions && runBlenderConversion) {
                 // blender conversion
                 await new Promise((resolve, reject) => {
                     // /Applications/Blender.app/Contents/MacOS/Blender -b -P blender/blender_gltf_converter.py -- -mp "/Users/herbst/Downloads/2CylinderEngine.glb"
@@ -350,7 +359,7 @@ async function collectFileInformation(runConversions = false) {
 
         }
         catch (e) {
-            console.log("❌ " + fileName + " failed to convert to usdz: " + e);
+            console.log("❌ " + fileName + " failed to convert to usdz: ", e);
         }
 
         console.groupEnd();
