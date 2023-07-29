@@ -4,18 +4,36 @@
 </svelte:head>
 
 <div class="text-column">
-	<h1>About this app</h1>
+	<h1>Asset Explorer</h1>
 
 	<p>
-		This is a <a href="https://kit.svelte.dev">SvelteKit</a> app. You can make your own by typing the
-		following into your command line and following the prompts:
+		File interoperability is hard. It's getting easier though – modern formats like glTF and USD bring great features and capabilities to the table.  
+		Currently, the 3D world is split: glTF is often used for realtime pipelines, while USD is often used for film productions. However, these worlds start to merge; and so do the capabilities of these formats.
+	</p>
+	<p>
+		Thus, it becomes more important that there are good test files, both for these formats as well as for conversions between them.
+	</p>
+	<p>
+		This page is targeted at implementers, developers, and designers working with these file formats.
+		A clear goal is to allow you to download files for a specific usecase and check if your target viewer/platform supports what you want it to support.
 	</p>
 
-	<pre>npm create svelte@latest</pre>
+	<h2>Source Files</h2>
+	<p>This page: <a href="https://github.com/needle-tools/asset-explorer" target="_blank">needle-tools/asset-explorer</a></p>
+	<p>The glTF sample models:<a href="https://github.com/KhronosGroup/glTF-Sample-Models" target="_blank">KhronosGroup/glTF-Sample-Models</a></p>
+	<p>Generated model files: conversions branch on <a href="https://github.com/needle-tools/glTF-Sample-Models/tree/conversions/2.0" target="_blank">needle-tools/glTF-Sample-Models</a></p>
+	<p>The USD Working Group assets repository: <a href="https://github.com/usd-wg/assets/" target="_blank">usd-wg/assets</a></p>
 
+	<h2>Reach out</h2>
 	<p>
-		The page you're looking at is purely static HTML, with no client-side interactivity needed.
-		Because of that, we don't need to load any JavaScript. Try viewing the page's source, or opening
-		the devtools network panel and reloading.
+		There's more to do! Roundtrips between conversion tools, improvements to existing converters, better visibility into USDZ features, integrating Autodesk' USD viewer directly, integrating "model" and "model-viewer" as alternative display options, ...
+		Feel free to <a href="mailto:felix@needle.tools">contact us</a>!
 	</p>
 </div>
+
+<style>
+	p {
+		margin: 0;
+		margin-bottom: 0.4em;
+	}
+</style>

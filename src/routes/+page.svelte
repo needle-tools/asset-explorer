@@ -42,15 +42,16 @@ $: filter = browser && $page.url.searchParams.get('tag');
 	<meta name="description" content="About this app" />
 </svelte:head>
 
+<h6>Asset capabilities</h6>
 <ModelTags tags={getAndCountTags(data)} filter={filter} ignoreTags={["generator", "source"]}/>
 
+<h6>Assets and conversions</h6>
 <ul class="models">
     {#each data.models.filter(x => !filter || showInfo(x.extras.info, filter)) as model (model.slug)}
         <li transition:whoosh>
             <a href="{base}/{model.slug}">
                 <img src="{model.thumbnail}" alt="{model.name}" />
                 <p class="name">{model.name}</p>
-
                 <ModelTags tags={model.extras.info} filter={filter} ignoreValuesForTags={["copyright"]}/>
             </a>
         </li>
@@ -115,5 +116,9 @@ $: filter = browser && $page.url.searchParams.get('tag');
         border-radius: 10px;
         box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
         z-index: 10;
+    }
+
+    h6 {
+        text-align: center;
     }
 </style>

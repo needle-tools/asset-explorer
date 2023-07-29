@@ -17,7 +17,7 @@
 	<nav>
 		<ul>
 			<li aria-current={$page.url.pathname === base + '/' ? 'page' : undefined}>
-				<a href="{base}/">Asset Explorer</a>
+				<a href="{base}/">Explore</a>
 			</li>
 			<li aria-current={$page.url.pathname === base + '/about' ? 'page' : undefined}>
 				<a href="{base}/about">About</a>
