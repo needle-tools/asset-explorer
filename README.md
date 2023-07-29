@@ -1,5 +1,23 @@
 # Asset Explorer
 
+## Howto
+
+This is currently quite hacky. Vanilla three doesn't run on node.
+To run file conversion,
+- open dynamicFiles.ts
+- set the various "generate" flags at the top to true
+- npm link /path/to/three/on/the/hacky/branch
+- (optional) adjust the file slicing in dynamicFiles.ts to e.g. only test with a few
+- npm run dev
+- this will generate files. However, settings aren't good for actually using the server; local three doesn't work for some reason.
+
+## TODO Hacks
+
+- would be nice not having to hack three for nodejs support
+    - could probably mock ImageBitmapLoader instead of ImageLoader, maybe even from the outside
+- currently can't import the better USDZExporter from needle-tools/engine (same problems running in node)
+    - copied it here but better would be one codecase
+
 ## Goals
 
 - allow for multiple submodules and structure callbacks for each of them (where to find files and readmes)
@@ -33,28 +51,21 @@
     - glTF-sample-models // model source
           README.md
         - Avocado // model name
-            Avocado.glb
-            Avocado.glb.png
-            README.md
-        -   three-usdz // conversion step
+            - Avocado.glb
+            - Avocado.glb.png
+            - README.md
             - Avocado.glb.three.usdz
             - Avocado.glb.three.usdz.png
-            - three-glb // conversion step
-                - Avocado.glb.three.usdz.three.glb
-                - Avocado.glb.three.usdz.three.glb.png
-            - blender-glb
-                - Avocado.glb.three.usdz.blender.glb
-                - Avocado.glb.three.usdz.blender.glb.png
-        -   blender-usdz
+            - Avocado.glb.three.usdz.three.glb
+            - Avocado.glb.three.usdz.three.glb.png
+            - Avocado.glb.three.usdz.blender.glb
+            - Avocado.glb.three.usdz.blender.glb.png
             - Avocado.glb.blender.usdz
             - Avocado.glb.blender.usdz.png
-            - blender-glb
-                - Avocado.glb.blender.usdz.blender.glb
-                - Avocado.glb.blender.usdz.blender.glb.png
-        -   omniverse-usdz
+            - Avocado.glb.blender.usdz.blender.glb
+            - Avocado.glb.blender.usdz.blender.glb.png
             - Avocado.glb.omniverse.usdz
             - Avocado.glb.omniverse.usdz.png
-        - three-glb
             - Avocado.glb.three.glb
             - Avocado.glb.three.glb.png
     - usd-wg-assets

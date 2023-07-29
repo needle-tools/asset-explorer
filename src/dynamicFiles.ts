@@ -58,7 +58,7 @@ async function collectFileInformation(runConversions = false) {
 
     let files = globSync(sourceDir + "**/**.glb").sort();
     // take only 1
-    //files = files.slice(0, 10);
+    // files = files.slice(6, 7);
     const images = [];
     // console.log("ALL FILES", files);
 

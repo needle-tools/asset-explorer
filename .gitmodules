@@ -1,3 +1,6 @@
 [submodule "submodules/glTF-Sample-Models"]
 	path = submodules/glTF-Sample-Models
 	url = https://github.com/needle-tools/glTF-Sample-Models.git
+[submodule "submodules/three.js"]
+	path = submodules/three.js
+	url = https://github.com/needle-tools/three.js.git
