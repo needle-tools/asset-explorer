@@ -383,7 +383,7 @@ async function collectFileInformation(runConversions = false) {
             displayName: firstFoundH1 || path.parse(file).name,
 
             previewUri: firstFoundImage,
-            uri: basePath + "/models/" + path.parse(file).name,
+            uri: basePath + "/" + path.parse(file).name,
             downloadUri: basePath + "/downloads/" + path.parse(file).name + ".glb",
             
             size: fs.existsSync(file) ? fs.statSync(file).size : 0,

@@ -1,5 +1,5 @@
 <script lang="ts">
-import NeedleEngine from "../../NeedleEngine.svelte";
+import NeedleEngine from "../NeedleEngine.svelte";
 import ModelTags from "../ModelTags.svelte";
 
 export let data;

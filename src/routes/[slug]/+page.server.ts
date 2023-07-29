@@ -1,4 +1,4 @@
-import { collectFileInformation } from "../../../dynamicFiles";
+import { collectFileInformation } from "../../dynamicFiles";
 
 export async function load({ params }) {
   const name = params.slug;
