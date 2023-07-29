@@ -35,12 +35,13 @@ onMount(async () => {
 
         // AcesFilmicToneMapping
         ctx.renderer.toneMapping = ACESFilmicToneMapping;
+        ctx.renderer.domElement.style.touchAction = "pan-y";
 
         const controls = GameObject.findObjectOfType(OrbitControls, ctx);
         setTimeout(() => {
             controls!.enableZoom = false;
+            ctx.domElement.style.touchAction = "pan-y";
         }, 1000)
-        
 
         const xr = new Object3D();
         xr.name = "XR";

@@ -230,6 +230,7 @@ async function collectFileInformation(runConversions = false) {
             alphaBlend: anyUsesBlend,
             generator,
             copyright,
+            source: "glTF-Sample-Models",
         };
 
         for (const ext of usedExtensions) {

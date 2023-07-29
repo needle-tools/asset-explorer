@@ -42,7 +42,7 @@ $: filter = browser && $page.url.searchParams.get('tag');
 	<meta name="description" content="About this app" />
 </svelte:head>
 
-<ModelTags tags={getAndCountTags(data)} filter={filter} ignoreValuesForTags={["copyright"]}/>
+<ModelTags tags={getAndCountTags(data)} filter={filter} ignoreTags={["generator", "source"]}/>
 
 <ul class="models">
     {#each data.models.filter(x => !filter || showInfo(x.extras.info, filter)) as model (model.slug)}

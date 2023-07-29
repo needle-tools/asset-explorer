@@ -5,7 +5,7 @@ export let name: string;
 export let value: number | boolean;
 export let showValue: boolean = true;
 
-$: shouldBeLink = name !== "copyright" && name !== "generator";
+$: shouldBeLink = name !== "generator";
 $: _showValue = showValue && typeof value !== "boolean";
 
 </script>

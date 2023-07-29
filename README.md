@@ -11,6 +11,15 @@ To run file conversion,
 - npm run dev
 - this will generate files. However, settings aren't good for actually using the server; local three doesn't work for some reason.
 
+To run the app,
+- open dynamicFiles.ts
+- set the various "generate" flags to false
+- make sure the file slicing line is commented out
+- you may have to delete node_modules and package-lock.json since the local three version is "stuck"
+- npm i
+- npm run dev
+- now things should be back working.
+
 ## TODO Hacks
 
 - would be nice not having to hack three for nodejs support
