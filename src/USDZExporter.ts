@@ -1005,6 +1005,7 @@ function buildMesh( geometry ) {
 	return `
     def Mesh "${name}"
     {
+		float3[] extent = [${buildVector3(geometry.boundingBox.min)}, ${buildVector3(geometry.boundingBox.max)}]
         int[] faceVertexCounts = [${buildMeshVertexCount( geometry )}]
         int[] faceVertexIndices = [${buildMeshVertexIndices( geometry )}]
         normal3f[] normals = [${buildVector3Array( attributes.normal, count )}] (
@@ -1392,6 +1393,12 @@ function buildColor( color ) {
 function buildVector2( vector ) {
 
 	return `(${ vector.x }, ${ vector.y })`;
+
+}
+
+function buildVector3( vector ) {
+
+	return `(${ vector.x }, ${ vector.y }, ${ vector.z })`;
 
 }
 
