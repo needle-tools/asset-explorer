@@ -14,11 +14,15 @@ import draco3d from 'draco3dgltf';
 
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 // import { USDZExporter } from 'three/examples/jsm/exporters/USDZExporter.js';
-import { thing } from "./hacks";
 // import { USDZExporter } from '@needle-tools/engine';
 import { USDZExporter } from './USDZExporter';
 import { FileLoader, Cache, LoadingManager } from 'three';
 import subProcess from 'child_process';
+
+class ProgressEvent {}
+globalThis["ProgressEvent"] = ProgressEvent;
+globalThis["self"] = globalThis;
+globalThis["HTMLElement"] = class HTMLElement {}
 
 // find all glb files in folder
 // const files = import.meta.glob("D:/git/pfc-packages-master/development/pfc-modelexporter/development/ModelConversion/Exports/**.glb", { eager: true });

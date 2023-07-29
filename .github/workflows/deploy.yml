@@ -11,13 +11,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with: 
+          # could also be 'recursive'
           submodules: true
-
-      # If you're using pnpm, add this step then change the commands and cache key below to use `pnpm`
-      # - name: Install pnpm
-      #   uses: pnpm/action-setup@v2
-      #   with:
-      #     version: 8
 
       - name: Install Node.js
         uses: actions/setup-node@v3
@@ -30,7 +25,7 @@ jobs:
 
       - name: build
         env:
-          # '/gltf-asset-explorer' - not used since custom domain
+          # '/asset-explorer' - not used since custom domain
           BASE_PATH: ''
         run: |
           npm run build
