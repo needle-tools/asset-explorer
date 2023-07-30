@@ -169,8 +169,7 @@ async function collectFileInformation(runConversions = false) {
             'draco3d.decoder': await draco3d.createDecoderModule(),
         });
 
-    /** @type {Array<{path:string, name:string, displayName: string, uri:string, previewUri: string | null, downloadUri:string, size: number, key: number, readme: string}>} */
-    const array = [];
+    const array: Array<{path:string, name:string, displayName: string, uri:string, previewUri: string | null, downloadUri:string, size: number, key: number, readme: string}> = [];
 
     marked.use({renderer});
 
