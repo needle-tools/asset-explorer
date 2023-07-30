@@ -1,10 +1,6 @@
 <script>
-	import Header from './Header.svelte';
-	// import NeedleEngine from './NeedleEngine.svelte';
-	import './styles.css';
-
-	// import { fileStore } from "./models/fileStore";
-
+import Header from './Header.svelte';
+import './styles.css';
 </script>
 
 <div class="app">
@@ -12,13 +8,6 @@
 
 	<main>
 		<slot />
-		<!--
-		<div class="models">
-			<NeedleEngine src={$fileStore.prev} />
-			<NeedleEngine src={$fileStore.current} />
-			<NeedleEngine src={$fileStore.next} />
-		</div>
-		-->
 	</main>
 
 	<footer>

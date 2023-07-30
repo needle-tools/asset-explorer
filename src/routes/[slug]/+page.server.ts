@@ -5,8 +5,6 @@ export async function load({ params }) {
 
   const { files } = await collectFileInformation();
 
-  console.log("Page parameters: slug=" + params.slug);
-
   // get index in files array
   const index = files.findIndex((element) => element.name === name);
 
@@ -15,23 +13,10 @@ export async function load({ params }) {
   const current = files[index];
   const next = index < files.length - 1 ? files[index + 1] : null;
 
-
   return {
     // entries: [previous, current, next],
-    entries: [current],
+    model: current,
+    previous: previous,
+    next: next,
   };
-
-  /*
-
-    const post = await import(`../${params.slug}.md`)
-    const { title, date } = post.metadata
-    const content = post.default
-  
-    return {
-      content,
-      title,
-      date,
-    }
-
-    */
 }

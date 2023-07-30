@@ -38,8 +38,8 @@ $: filter = browser && $page.url.searchParams.get('tag');
 </script>
 
 <svelte:head>
-	<title>Model Overview</title>
-	<meta name="description" content="About this app" />
+	<title>Explore Assets</title>
+	<meta name="description" content="glTF and USD sample models and conversions" />
 </svelte:head>
 
 <h6>Asset capabilities</h6>
