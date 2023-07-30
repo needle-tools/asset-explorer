@@ -56,7 +56,10 @@ async function collectFileInformation(runConversions = false) {
         return originalLoad.call(this, url, onLoad, onProgress, onError);
     }
 
-    let files = globSync(sourceDir + "**/**.glb").sort();
+    const fullPath = process.cwd() + "/" + sourceDir;
+    console.log("Loading files from " + fullPath);
+    const files = globSync(fullPath + "**/**.glb").sort();//.map(f => f = process.cwd() + "/" + f);
+    console.log(files, files.length);
     // take only 1
     // files = files.slice(6, 7);
     const images : Array<{absolutePath:string, targetPath:string}> = [];
@@ -172,12 +175,15 @@ async function collectFileInformation(runConversions = false) {
     marked.use({renderer});
 
     for (const [index, file] of files.entries()) {
-        const readmePath = globSync(
-            path.resolve(file, "../..", "**/Readme.md"), 
-            { 
+        const readmeFilePath = path.resolve(file, "../..", "../Readme.md");
+        const readmePath = globSync(readmeFilePath, { 
                 nocase: true 
             }
         )[0];
+        if(readmePath === undefined) {
+            console.warn("> NO README found for " + file + "\nat " + readmeFilePath);
+            continue;
+        }
 
         const baseUrlPath = path.resolve(readmePath, "..");
         const dirName = path.parse(baseUrlPath).name;
