@@ -43,7 +43,7 @@ async function collectFileInformation(runConversions = false) {
 
     // patch FileLoader to use fs instead of fetch
     const originalLoad = FileLoader.prototype.load;
-    FileLoader.prototype.load = function (url, onLoad, onProgress, onError) {
+    FileLoader.prototype.load = function (url: string, onLoad: Function, onProgress: Function, onError: Function) {
 
         // console.log("file loader: " + url);
         try {
@@ -59,7 +59,7 @@ async function collectFileInformation(runConversions = false) {
     let files = globSync(sourceDir + "**/**.glb").sort();
     // take only 1
     // files = files.slice(6, 7);
-    const images = [];
+    const images : Array<{absolutePath:string, targetPath:string}> = [];
     // console.log("ALL FILES", files);
 
     /*
@@ -74,20 +74,15 @@ async function collectFileInformation(runConversions = false) {
     let mdDirName = "";
 
     /** @type{string | null} */
-    let firstFoundH1 = null;
+    let firstFoundH1 : string | null = null;
     /** @type{string | null} */
-    let firstFoundImage = null;
+    let firstFoundImage : string | null = null;
 
     const slugger = new marked.Slugger()
     const originalRenderer = new marked.Renderer();
     const renderer = {
 
-    /**
-     * @param {string} href
-     * @param {string} title
-     * @param {string} text
-     */
-        image(href, title, text) {
+        image(href: string, title: string, text: string) {
 
             // check if this is an absolute URL
             const isAbsoluteUrl = href.startsWith("http://") || href.startsWith("https://");
@@ -116,7 +111,7 @@ async function collectFileInformation(runConversions = false) {
             out += '/>';
             return out;
         },
-        link(href, title, text) {
+        link(href: string, title: string, text: string) {
             // TODO probably need to handle relative URLs and decide what to do with them.
             if (!href.startsWith("http"))
                 console.log("Found link: " + href);
@@ -148,9 +143,9 @@ async function collectFileInformation(runConversions = false) {
             return originalRenderer.link(href, title, text);
         },
 
-        heading(text, level) {
+        heading(text: string, level: number) {
             const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
-        
+
             if (level === 1 && !firstFoundH1)
                 firstFoundH1 = text;
 
@@ -218,7 +213,7 @@ async function collectFileInformation(runConversions = false) {
         const anyUsesBlend = doc.materials?.some((material) => material.alphaMode === 'BLEND');
         const generator = doc.asset?.generator;
         const copyright = doc.asset?.copyright;
-        const docInfo = {
+        const docInfo : {[key:string]:any} = {
             vertexColors,
             blendShapes,
             textures,
@@ -236,8 +231,8 @@ async function collectFileInformation(runConversions = false) {
         for (const ext of usedExtensions) {
             docInfo[ext] = true;
         }
-        
-        const checkAndRender = async (usdzFile, outputPrefix) => {
+
+        const checkAndRender = async (usdzFile: string, outputPrefix: string) => {
 
             if (!runUsdChecksAndRender) return;
 
@@ -303,9 +298,9 @@ async function collectFileInformation(runConversions = false) {
                     try {
                         // const manager = new LoadingManager();
                         const loader = new GLTFLoader();
-                        loader.load(file, async function (gltf) {
+                        loader.load(file, async function (gltf: any) {
                             console.log("✓ " + fileName + " loaded with GLTFLoader");
-            
+
                             const exporter = new USDZExporter();
                             gltf.scene.updateMatrixWorld();
                             // console.log("exporter: ", exporter + ", scene: ", gltf.scene)
@@ -315,7 +310,7 @@ async function collectFileInformation(runConversions = false) {
                             resolve(arrayBuffer);
                             return
 
-                        }, undefined, function (error) { 
+                        }, undefined, function (error: Error) {
                             console.log("❌ " + fileName + " failed to load: ", error);
                             // reject(error);
                             resolve(null);
