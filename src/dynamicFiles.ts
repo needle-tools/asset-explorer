@@ -56,7 +56,7 @@ async function collectFileInformation(runConversions = false) {
         return originalLoad.call(this, url, onLoad, onProgress, onError);
     }
 
-    const fullPath = process.cwd() + "/" + sourceDir;
+    const fullPath = sourceDir;
     console.log("Loading files from " + fullPath);
     const files = globSync(fullPath + "**/**.glb").sort();//.map(f => f = process.cwd() + "/" + f);
     console.log(files, files.length);
