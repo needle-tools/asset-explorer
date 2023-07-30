@@ -77,7 +77,7 @@ function loadFinished(evt: CustomEvent) {
 </script>
 
 <!-- <model-viewer camera-controls autoplay src={src} skybox-image={texture} environment-image={texture}></model-viewer> -->
-<needle-engine camera-controls src={src} on:loadfinished={loadFinished} environment-image={texture} autoplay></needle-engine>
+<needle-engine camera-controls src={src} on:loadfinished={loadFinished} environment-image={texture} autoplay loading-style="light"></needle-engine>
 
 <style>
 needle-engine {
@@ -85,10 +85,11 @@ needle-engine {
     height: 400px;
     position: relative;
     /* width: 100%; */
-    width: 100vw;
-    left: calc((100% - 100vw) / 2);
+    width: max(50vw, 700px);
+    left: calc((100% - max(50vw, 700px)) / 2);
 
-    margin-top: -35px;
-    margin-bottom: -10px;
+    margin-top: -20px;
+    margin-bottom: 5px;
+    border-radius: 2em;
 }
 </style>

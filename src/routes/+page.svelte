@@ -42,10 +42,10 @@ $: filter = browser && $page.url.searchParams.get('tag');
 	<meta name="description" content="glTF and USD sample models and conversions" />
 </svelte:head>
 
-<h6>Asset capabilities</h6>
+<h3 class="title">Asset capabilities</h3>
 <ModelTags tags={getAndCountTags(data)} filter={filter} ignoreTags={["generator", "source"]}/>
 
-<h6>Assets and conversions</h6>
+<h3 class="title">Assets and conversions</h3>
 <ul class="models">
     {#each data.models.filter(x => !filter || showInfo(x.extras.info, filter)) as model (model.slug)}
         <li transition:whoosh>
@@ -63,11 +63,17 @@ $: filter = browser && $page.url.searchParams.get('tag');
         --size: 160px;
     }
 
+    @media only screen and (max-width: 600px) {
+        :root {
+            --size: 80vw;
+        }
+    }
+
     .models li {
         display: flex;
         flex-direction: column; 
         max-width: var(--size);
-        transition: transform 0.2s ease-in-out, background-color 0.2s linear, margin 0.2s linear, padding 0.2s linear;
+        transition: transform 0.1s ease-in-out, background-color 0.2s linear, margin 0.2s linear, padding 0.2s linear;
 
         padding: 5px;
         margin: 0px;  
@@ -109,16 +115,16 @@ $: filter = browser && $page.url.searchParams.get('tag');
     }
 
     li:hover {
-        transform: scale(1.05);
-        background-color: white;
+        transform: scale(1.02);
+        background-color: rgba(255, 255, 255, .5);
         padding: 10px;
         margin: -5px;
         border-radius: 10px;
-        box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        box-shadow: 0px 0px 2px rgba(0,0,0,0.1);
         z-index: 10;
     }
 
-    h6 {
+    .title {
         text-align: center;
     }
 </style>
