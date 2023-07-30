@@ -117,7 +117,9 @@ async function collectFileInformation(runConversions = false) {
         link(href: string, title: string, text: string) {
             // TODO probably need to handle relative URLs and decide what to do with them.
             if (!href.startsWith("http"))
-                console.log("Found link: " + href);
+            { 
+                // console.log("Found link: " + href);
+            }
 
             if (href.toLowerCase().endsWith("/readme.md"))
                 // strip it out
