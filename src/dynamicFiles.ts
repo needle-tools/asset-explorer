@@ -28,6 +28,7 @@ globalThis["HTMLElement"] = class HTMLElement {}
 // const files = import.meta.glob("D:/git/pfc-packages-master/development/pfc-modelexporter/development/ModelConversion/Exports/**.glb", { eager: true });
 
 export const sourceDir = "submodules/glTF-Sample-Models/2.0/"; //"E:/git/glTF-Sample-Models/2.0/";
+const isWindows = process.platform === "win32";
 
 const basePath = process.env.BASE_PATH || "";
 
@@ -59,7 +60,7 @@ async function collectFileInformation(runConversions = false) {
     const fullPath = sourceDir;
     console.log("Loading files from " + fullPath);
     const files = globSync(fullPath + "**/**.glb").sort();//.map(f => f = process.cwd() + "/" + f);
-    console.log(files, files.length);
+    console.log("Files:", files.length);
     // take only 1
     // files = files.slice(6, 7);
     const images : Array<{absolutePath:string, targetPath:string}> = [];
@@ -176,7 +177,7 @@ async function collectFileInformation(runConversions = false) {
     marked.use({renderer});
 
     for (const [index, file] of files.entries()) {
-        const readmeFilePath = path.resolve(file, "../..", "../Readme.md");
+        const readmeFilePath = isWindows ? path.resolve(file, "../..", "../Readme.md") : path.resolve(file, "../..", "**/Readme.md");
         const readmePath = globSync(readmeFilePath, { 
                 nocase: true 
             }
