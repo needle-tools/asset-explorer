@@ -10,7 +10,7 @@ export async function load({ params }){
             }
             return {
                 name: file.displayName,
-                slug: file.name.replace(".glb", ""),
+                slug: file.slug,
                 thumbnail: file.previewUri,
                 size: file.size,
                 extras: {

@@ -52,7 +52,7 @@ $: filter = browser && $page.url.searchParams.get('tag');
             <a href="{base}/{model.slug}">
                 <img src="{model.thumbnail}" alt="{model.name}" />
                 <p class="name">{model.name}</p>
-                <ModelTags tags={model.extras.info} filter={filter} ignoreValuesForTags={["copyright"]}/>
+                <ModelTags tags={model.extras.info} filter={filter} ignoreValuesForTags={["copyright"]} truncate/>
             </a>
         </li>
     {/each}
@@ -116,7 +116,7 @@ $: filter = browser && $page.url.searchParams.get('tag');
 
     li:hover {
         transform: scale(1.02);
-        background-color: rgba(255, 255, 255, .5);
+        background-color: var(--color-bg-0);
         padding: 10px;
         margin: -5px;
         border-radius: 10px;
@@ -126,5 +126,11 @@ $: filter = browser && $page.url.searchParams.get('tag');
 
     .title {
         text-align: center;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        li:hover {
+            border: 1px solid rgba(255,255,255,0.08);
+        }
     }
 </style>

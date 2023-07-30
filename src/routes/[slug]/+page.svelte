@@ -15,7 +15,9 @@ export let data;
 
 <div>
     {#if data.model}
-        <Model data={data.model} />
+    {#key "constant"}
+        <Model model={data.model} next={data.next} previous={data.previous}/>
+    {/key}
     {/if}
 </div>
 

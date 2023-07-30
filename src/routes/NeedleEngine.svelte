@@ -6,11 +6,31 @@ import texture from './../lib/images/neutral.hdr?url';
 <script lang="ts">
 
 export let src: string | null = null;
+export let context;
 
 import { onDestroy, onMount } from 'svelte';
 import { EquirectangularReflectionMapping, Object3D, Texture, ACESFilmicToneMapping } from 'three';
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 // import { USDZExporter } from '@needle-tools/engine/src/engine-components/export/usdz/ThreeUSDZExporter';
+
+let _startARImpl: () => void;
+let _startVRImpl: () => void;
+
+export function startAR() {
+    _startARImpl();
+}
+
+export function startVR() {
+    _startVRImpl();
+}
+
+export function toggleFullscreen() {
+    if (document.fullscreenElement) {
+        document.exitFullscreen();
+    } else {
+        context!.domElement.requestFullscreen();
+    }
+}
 
 // TODO this ain't great as the context callbacks should be global instead of added each time here.
 // better would be 
@@ -27,6 +47,7 @@ onMount(async () => {
     NeedleEngine.addContextCreatedCallback((evt) => {
         console.log("CREATED");
         const ctx = evt.context;
+        context = ctx;
         if (ctx.mainCameraComponent) {
             ctx.mainCameraComponent.fieldOfView = 25;   
             ctx.mainCameraComponent.backgroundBlurriness = 1; 
@@ -45,10 +66,23 @@ onMount(async () => {
 
         const xr = new Object3D();
         xr.name = "XR";
-        GameObject.addNewComponent(xr, WebXR);
+        const webXR = GameObject.addNewComponent(xr, WebXR);
+        webXR.createVRButton = false;
+        webXR.createARButton = false;
         GameObject.addNewComponent(xr, WebARSessionRoot);
         GameObject.addNewComponent(xr, USDZExporter);
         ctx.scene.add(xr);
+        
+        const arStart = WebXR.createARButton(webXR);
+        const vrStart = WebXR.createVRButton(webXR);
+
+        _startARImpl = () => {
+            arStart.click();
+        }
+
+        _startVRImpl = () => {
+            vrStart.click();
+        }
     });
 
     /*
@@ -77,7 +111,7 @@ function loadFinished(evt: CustomEvent) {
 </script>
 
 <!-- <model-viewer camera-controls autoplay src={src} skybox-image={texture} environment-image={texture}></model-viewer> -->
-<needle-engine camera-controls src={src} on:loadfinished={loadFinished} environment-image={texture} autoplay loading-style="light"></needle-engine>
+<needle-engine camera-controls src={src} on:loadfinished={loadFinished} environment-image={texture} autoplay loading-style="auto"></needle-engine>
 
 <style>
 needle-engine {
@@ -85,8 +119,8 @@ needle-engine {
     height: 400px;
     position: relative;
     /* width: 100%; */
-    width: max(50vw, 700px);
-    left: calc((100% - max(50vw, 700px)) / 2);
+    width: max(50vw, min(700px, 100vw));
+    left: calc((100% - max(50vw, min(700px, 100vw))) / 2);
 
     margin-top: -20px;
     margin-bottom: 5px;

@@ -1,7 +1,5 @@
 <script>
 	import { page } from '$app/stores';
-	import logo from '$lib/images/svelte-logo.svg';
-	import github from '$lib/images/github.svg';
 	import { base } from '$app/paths';
 </script>
 
@@ -68,7 +66,6 @@
 	nav {
 		display: flex;
 		justify-content: center;
-		--background: rgba(255, 255, 255, 0.7);
 	}
 
 	svg {
@@ -78,7 +75,7 @@
 	}
 
 	path {
-		fill: var(--background);
+		fill: var(--color-bg-0);
 	}
 
 	ul {
@@ -89,7 +86,7 @@
 		justify-content: center;
 		align-items: center;
 		list-style: none;
-		background: var(--background);
+		background: var(--color-bg-0);
 		background-size: contain;
 		border-radius: 30px;
 		padding: 0 10px;

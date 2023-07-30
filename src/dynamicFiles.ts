@@ -384,6 +384,7 @@ async function collectFileInformation(runConversions = false) {
             },
             name: path.parse(file).name,
             displayName: firstFoundH1 || path.parse(file).name,
+            slug: path.parse(file).name.replace(".glb", ""),
 
             previewUri: firstFoundImage,
             uri: basePath + "/" + path.parse(file).name,
