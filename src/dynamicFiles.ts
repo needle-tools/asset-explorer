@@ -175,7 +175,7 @@ async function collectFileInformation(runConversions = false) {
     marked.use({renderer});
 
     for (const [index, file] of files.entries()) {
-        const readmeFilePath = isWindows ? path.resolve(file, "../..", "../Readme.md") : path.resolve(file, "../..", "**/Readme.md");
+        const readmeFilePath = path.resolve(file, "../..", "Readme.md");
         const readmePath = globSync(readmeFilePath, { 
                 nocase: true 
             }
