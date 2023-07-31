@@ -4,12 +4,14 @@ import ModelTags from "../ModelTags.svelte";
 import { base } from "$app/paths";
 import { onMount } from "svelte";
 import { goto } from "$app/navigation";
+import ButtonOverlay from "../ButtonOverlay.svelte";
 
 export let model;
 export let next;
 export let previous;
 
 let needleEngine: NeedleEngine;
+let showXROverlay = false;
 
 function readableBytes(bytes: number) {
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
@@ -24,6 +26,9 @@ $: {
     // add more info
     model.info.fileSize = readableBytes(model.size);
 }
+
+let arSupported = false;
+let vrSupported = false;
 
 function onKeyDown(evt) {
     if (evt.key === "ArrowLeft" && previous) {
@@ -46,7 +51,7 @@ onMount(() => {
 
 <div class="text-column">
     {#key "constant"}
-    <NeedleEngine src={model.downloadUri} bind:this={needleEngine}/>
+    <NeedleEngine src={model.downloadUri} bind:this={needleEngine} bind:arSupported bind:vrSupported/>
     {/key}
     <!--
     <model>
@@ -66,12 +71,19 @@ onMount(() => {
     <div class="info options">
         <span>{model.displayName}</span>
         <button on:click={needleEngine.toggleFullscreen}>⛶</button>
+        <button on:click={needleEngine.startAR} class={!arSupported ? 'not-supported' : ''}>AR</button>
+        <button on:click={needleEngine.startVR} class={!vrSupported ? 'not-supported' : ''}>VR</button>
         <!--
         <button on:click={() => goto("https://viewer.needle.tools?file=" + model.originalFileSrc)}>Viewer</button>
         -->
         <!--
-        <button on:click={needleEngine.startAR}>AR</button>
-        <button on:click={needleEngine.startVR}>VR</button>
+        <button on:click={() => showXROverlay = true}>XR
+            <ButtonOverlay bind:showXROverlay={showXROverlay}>
+                <button on:click={needleEngine.startAR}>AR</button>
+                <button on:click={needleEngine.startVR}>VR</button>
+                <button on:click={needleEngine.openOnQuest}>Send to Quest</button>
+            </ButtonOverlay>
+        </button>
         -->
     </div>
 
@@ -135,6 +147,9 @@ onMount(() => {
 
 .info.options {
     display: inline-block;
+    position: relative;
+    border-radius: 40px;
+    padding: 10px 20px;
 }
 
 .meta {
@@ -239,6 +254,12 @@ a:hover span.file-description {
 
 :global(.info img) {
     max-width: 100%;
+}
+
+.not-supported {
+    opacity: 0.5;
+    text-decoration: line-through;
+    display: none;
 }
 
 @media only screen and (max-width: 1000px) {

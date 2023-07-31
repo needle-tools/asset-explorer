@@ -6,15 +6,17 @@ import texture from './../lib/images/neutral.hdr?url';
 <script lang="ts">
 
 export let src: string | null = null;
-export let context;
+let context;
 
-import { onDestroy, onMount } from 'svelte';
+import { onMount } from 'svelte';
 import { EquirectangularReflectionMapping, Object3D, Texture, ACESFilmicToneMapping } from 'three';
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
-// import { USDZExporter } from '@needle-tools/engine/src/engine-components/export/usdz/ThreeUSDZExporter';
 
 let _startARImpl: () => void;
 let _startVRImpl: () => void;
+
+export let arSupported = false;
+export let vrSupported = false;
 
 export function startAR() {
     _startARImpl();
@@ -24,11 +26,13 @@ export function startVR() {
     _startVRImpl();
 }
 
-export function toggleFullscreen() {
+export async function toggleFullscreen() {
     if (document.fullscreenElement) {
         document.exitFullscreen();
     } else {
-        context.domElement.requestFullscreen();
+        const { NeedleEngine, RGBAColor } = await import('@needle-tools/engine');
+        NeedleEngine.Current.mainCamera.backgroundColor = new RGBAColor(0,0,255,1);
+        NeedleEngine.Current.domElement.requestFullscreen();
     }
 }
 
@@ -37,7 +41,6 @@ export function toggleFullscreen() {
 // a) an event directly on needle-engine for the context being loaded that we can listen to and do work each time
 // b) adding the callbacks globally but so that they're still only on the client
 onMount(async () => {
-    console.log("MOUNTED")
     if (isInitialized) return;
     isInitialized = true;
 
@@ -45,7 +48,6 @@ onMount(async () => {
     window.NEEDLE_USE_RAPIER = false;
     const { NeedleEngine, GameObject, WebXR, WebARSessionRoot, USDZExporter, RGBAColor, OrbitControls } = await import('@needle-tools/engine');
     NeedleEngine.addContextCreatedCallback((evt) => {
-        console.log("CREATED");
         const ctx = evt.context;
         context = ctx;
         if (ctx.mainCameraComponent) {
@@ -68,14 +70,19 @@ onMount(async () => {
         const xr = new Object3D();
         xr.name = "XR";
         const webXR = GameObject.addNewComponent(xr, WebXR);
+        
         webXR.createVRButton = false;
         webXR.createARButton = false;
+        
         GameObject.addNewComponent(xr, WebARSessionRoot);
         GameObject.addNewComponent(xr, USDZExporter);
         ctx.scene.add(xr);
         
         const arStart = WebXR.createARButton(webXR);
         const vrStart = WebXR.createVRButton(webXR);
+
+        arSupported = WebXR.IsARSupported;
+        vrSupported = WebXR.IsVRSupported;
 
         _startARImpl = () => {
             arStart.click();
@@ -97,7 +104,6 @@ onMount(async () => {
 
     var textureLoader = new EventTarget();
     new RGBELoader().load( texture, function ( tex: Texture ) {
-        console.log ("loaded texture", tex);
         tex.mapping = EquirectangularReflectionMapping;
         loadedTexture = tex;
 
