@@ -77,9 +77,7 @@ async function collectFileInformation(runConversions = false) {
     let mdPath = "";
     let mdDirName = "";
 
-    /** @type{string | null} */
     let firstFoundH1 : string | null = null;
-    /** @type{string | null} */
     let firstFoundImage : string | null = null;
 
     const slugger = new marked.Slugger()
@@ -172,7 +170,7 @@ async function collectFileInformation(runConversions = false) {
             'draco3d.decoder': await draco3d.createDecoderModule(),
         });
 
-    const array: Array<{path:string, name:string, displayName: string, uri:string, previewUri: string | null, downloadUri:string, size: number, key: number, readme: string}> = [];
+    const array: Array<{paths:any, name:string, displayName: string, uri:string, previewUri: string | null, downloadUri:string, size: number, key: number, readme: string}> = [];
 
     marked.use({renderer});
 
