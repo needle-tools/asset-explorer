@@ -118,7 +118,16 @@ function loadFinished(evt: CustomEvent) {
 </script>
 
 <!-- <model-viewer camera-controls autoplay src={src} skybox-image={texture} environment-image={texture}></model-viewer> -->
-<needle-engine camera-controls src={src} on:loadfinished={loadFinished} environment-image={texture} autoplay loading-style="auto"></needle-engine>
+<needle-engine 
+    camera-controls src={src} 
+    on:loadfinished={loadFinished} 
+    environment-image={texture} 
+    autoplay 
+    loading-style="auto">
+    <div class="ar">
+        <slot></slot>
+    </div>
+</needle-engine>
 
 <style>
 needle-engine {

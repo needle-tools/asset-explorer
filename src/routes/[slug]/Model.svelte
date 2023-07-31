@@ -51,7 +51,13 @@ onMount(() => {
 
 <div class="text-column">
     {#key "constant"}
-    <NeedleEngine src={model.downloadUri} bind:this={needleEngine} bind:arSupported bind:vrSupported/>
+    <NeedleEngine src={model.downloadUri} bind:this={needleEngine} bind:arSupported bind:vrSupported>
+        <!--
+        <div class="info options ar-menu">
+            <button>Hello AR</button>
+        </div>
+        -->
+    </NeedleEngine>
     {/key}
     <!--
     <model>
@@ -260,6 +266,11 @@ a:hover span.file-description {
     opacity: 0.5;
     text-decoration: line-through;
     display: none;
+}
+
+.info.options.ar-menu {
+    position: absolute;
+    bottom: 20px;
 }
 
 @media only screen and (max-width: 1000px) {

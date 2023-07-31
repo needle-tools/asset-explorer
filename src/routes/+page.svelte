@@ -106,6 +106,7 @@ $: filter = browser && $page.url.searchParams.get('tag');
 
     li {
         list-style-type: none;
+        border: 1px solid rgba(0,0,0,0);
     }
     
     img {
