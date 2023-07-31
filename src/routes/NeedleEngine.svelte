@@ -59,6 +59,7 @@ onMount(async () => {
         ctx.renderer.domElement.style.touchAction = "pan-y";
 
         const controls = GameObject.findObjectOfType(OrbitControls, ctx);
+        if(controls) controls.enableKeys = false;
         setTimeout(() => {
             controls!.enableZoom = false;
             ctx.domElement.style.touchAction = "pan-y";
