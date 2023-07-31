@@ -65,7 +65,7 @@ onMount(() => {
 
     <div class="info options">
         <span>{model.displayName}</span>
-        <button on:click={needleEngine.toggleFullscreen}>Fullscreen</button>
+        <button on:click={needleEngine.toggleFullscreen}>⛶</button>
         <!--
         <button on:click={() => goto("https://viewer.needle.tools?file=" + model.originalFileSrc)}>Viewer</button>
         -->
