@@ -40,7 +40,7 @@ code {
 }
 
 h2 {
-	font-size: 1.2rem;
+	font-size: 1.4rem;
 }
 
 p {
@@ -49,20 +49,19 @@ p {
     overflow-wrap: anywhere;
 }
 
-a {
-	color: var(--color-theme-1);
+a, button {
+	color: var(--color-text);
 	text-decoration: none;
+	transition: color 0.2s linear;
 }
 
-a:hover {
+a:hover, button:hover {
 	text-decoration: underline;
+	color: var(--color-theme-1);
 }
 
 h1 {
-	text-align: center;
-}
-
-h2 {
+	font-size: 1.8em;
 }
 
 pre {
@@ -93,12 +92,6 @@ button {
 
 button:focus:not(:focus-visible) {
 	outline: none;
-}
-
-@media (min-width: 720px) {
-	h1 {
-		font-size: 2.4rem;
-	}
 }
 
 .visually-hidden {

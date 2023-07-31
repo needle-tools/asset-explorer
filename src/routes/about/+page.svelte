@@ -20,7 +20,7 @@
 
 	<h2>Source Files</h2>
 	<p>This page: <a href="https://github.com/needle-tools/asset-explorer" target="_blank">needle-tools/asset-explorer</a></p>
-	<p>The glTF sample models:<a href="https://github.com/KhronosGroup/glTF-Sample-Models" target="_blank">KhronosGroup/glTF-Sample-Models</a></p>
+	<p>The glTF sample models: <a href="https://github.com/KhronosGroup/glTF-Sample-Models" target="_blank">KhronosGroup/glTF-Sample-Models</a></p>
 	<p>Generated model files: conversions branch on <a href="https://github.com/needle-tools/glTF-Sample-Models/tree/conversions/2.0" target="_blank">needle-tools/glTF-Sample-Models</a></p>
 	<p>The USD Working Group assets repository: <a href="https://github.com/usd-wg/assets/" target="_blank">usd-wg/assets</a></p>
 

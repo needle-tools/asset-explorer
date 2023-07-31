@@ -11,7 +11,7 @@ import './styles.css';
 	</main>
 
 	<footer>
-		<p>made by <a href="https://needle.tools">needle</a></p>
+		<p>made by <a href="https://needle.tools">needle</a> and <a href="https://prefrontalcortex.de">prefrontal cortex</a></p>
 	</footer>
 </div>
 

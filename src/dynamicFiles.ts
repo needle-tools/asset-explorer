@@ -27,7 +27,9 @@ globalThis["HTMLElement"] = class HTMLElement {}
 // find all glb files in folder
 // const files = import.meta.glob("D:/git/pfc-packages-master/development/pfc-modelexporter/development/ModelConversion/Exports/**.glb", { eager: true });
 
-export const sourceDir = "submodules/glTF-Sample-Models/2.0/"; //"E:/git/glTF-Sample-Models/2.0/";
+export const originalRepoDir = "https://github.com/KhronosGroup/glTF-Sample-Models";
+export const sourceDir = "submodules/glTF-Sample-Models"; //"E:/git/glTF-Sample-Models/2.0/";
+export const sourceSubfolder = "/2.0/";
 const isWindows = process.platform === "win32";
 
 const basePath = process.env.BASE_PATH || "";
@@ -57,7 +59,7 @@ async function collectFileInformation(runConversions = false) {
         return originalLoad.call(this, url, onLoad, onProgress, onError);
     }
 
-    const fullPath = sourceDir;
+    const fullPath = sourceDir + sourceSubfolder;
     console.log("Loading files from " + fullPath);
     const files = globSync(fullPath + "**/**.glb").sort();//.map(f => f = process.cwd() + "/" + f);
     console.log("Files:", files.length);
@@ -189,6 +191,9 @@ async function collectFileInformation(runConversions = false) {
         const dirName = path.parse(baseUrlPath).name;
         mdPath = baseUrlPath;
         mdDirName = dirName;
+
+        const readmeInRepo = originalRepoDir + "/tree/master/" + path.relative(sourceDir, readmePath);
+        const srcFileInRepo = originalRepoDir + "/tree/master/" + path.relative(sourceDir, file);
 
         firstFoundH1 = null;
         firstFoundImage = null;
@@ -387,6 +392,8 @@ async function collectFileInformation(runConversions = false) {
             previewUri: firstFoundImage,
             uri: basePath + "/" + path.parse(file).name,
             downloadUri: basePath + "/downloads/" + path.parse(file).name + ".glb",
+            readmeSrc: readmeInRepo,
+            originalFileSrc: srcFileInRepo,
             
             size: fs.existsSync(file) ? fs.statSync(file).size : 0,
             key: index,

@@ -67,6 +67,9 @@ onMount(() => {
         <span>{model.displayName}</span>
         <button on:click={needleEngine.toggleFullscreen}>Fullscreen</button>
         <!--
+        <button on:click={() => goto("https://viewer.needle.tools?file=" + model.originalFileSrc)}>Viewer</button>
+        -->
+        <!--
         <button on:click={needleEngine.startAR}>AR</button>
         <button on:click={needleEngine.startVR}>VR</button>
         -->
@@ -74,6 +77,10 @@ onMount(() => {
 
     <div class="info">
         <h2 class="info-header">Information and Downloads</h2>
+        <div class="meta">
+            <p>glTF information extracted with <a href="https://gltf-transform.dev/" target="_blank">gltf-transform</a>.</p>
+            <p>USDZ verification and preview image created with <a href="https://openusd.org/release/toolset.html#usdchecker" target="_blank">usdchecker</a> and <a href="https://openusd.org/release/toolset.html#usdrecord" target="_blank">usdrecord</a>.</p>
+        </div>
         <ModelTags tags={model.info} />
 
         <ul class="download-links">
@@ -81,28 +88,32 @@ onMount(() => {
                 <a href={model.downloadUri} download>
                     <img src={model.previewUri} alt="screenshot from source"/>
                     <span>Download GLB</span>
-                    <span class="file-description">Original File</span>
+                    <span class="file-description">Source Asset from<br/>glTF-Sample-Models</span>
                 </a>
             </li>
             <li>
                 <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.three.usdz")} download>
                     <img src={model.downloadUri.replace(".glb", ".glb.three.png")} alt="screenshot from three.js conversion"/>
                     <span>Download USDZ</span>
-                    <span class="file-description">Converted with three.js</span>
+                    <span class="file-description">Converted with three.js<br/>r154, Needle Fork</span>
                 </a>
             </li>
             <li>
                 <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.blender.usdz")} download>
                     <img src={model.downloadUri.replace(".glb", ".glb.blender.png")} alt="screenshot from blender conversion"/>
                     <span>Download USDZ</span>
-                    <span class="file-description">Converted with Blender</span>
+                    <span class="file-description">Converted with Blender 3.6</span>
                 </a>
             </li>
         </ul>
     </div>
 
-    <div class="info">
+    <div class="info html">
         <h2 class="info-header">Description</h2>
+        <div class="meta">
+            <p>This asset is part of the <a href="https://github.com/KhronosGroup/glTF-Sample-Models" target="_blank">KhronosGroup/glTF-Sample-Models</a> asset repository.</p>
+            <p><a href="{model.readmeSrc}" target="_blank">Description source</a> • <a href="{model.originalFileSrc}" target="_blank">Asset source</a></p>
+        </div>
         {@html model.readme} 
     </div>
 </div>
@@ -126,12 +137,23 @@ onMount(() => {
     display: inline-block;
 }
 
+.meta {
+    font-style: italic;
+    margin: 10px;
+}
+
+.meta p {
+    font-size: 0.8em;
+    margin: 0;
+    opacity: 0.6;
+}
+
 .info.options button {
     outline: none;
     border: none;
     background: var(--color-bg-0);
-    color: var(--color-text);
     cursor: pointer;
+    text-decoration: none;
 }
 
 .info.options span {
@@ -142,6 +164,10 @@ onMount(() => {
     position: absolute;
     top: 20px;
     width: 100%;
+}
+
+.html a, .meta a {
+    font-weight: bold;
 }
 
 a.left {
@@ -174,8 +200,13 @@ a.nav {
 }
 
 .file-description {
-    color:grey;
+    opacity: 0.5;
+    text-decoration: none;
     font-size: 0.8rem;
+}
+
+a:hover span.file-description {
+    text-decoration: none!important;
 }
 
 .download-links {
@@ -183,7 +214,7 @@ a.nav {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-    align-items: flex-end;
+    align-items: baseline;
     padding: 0;
 }
 
@@ -202,8 +233,8 @@ a.nav {
 }
 
 .download-links img {
+    max-height: 150px;
     max-width: 200px;
-    max-height: 200px;
 }
 
 :global(.info img) {
