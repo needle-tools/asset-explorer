@@ -173,7 +173,7 @@ needle-engine {
     position: relative;
     /* width: 100%; */
     width: max(50vw, min(700px, 100vw));
-    left: calc((100% - max(50vw, min(700px, 100vw))) / 2);
+    /* left: calc((100% - max(50vw, min(700px, 100vw))) / 2);*/
 
     margin-top: -20px;
     margin-bottom: 5px;

@@ -87,8 +87,12 @@ onMount(() => {
     <div class="info options">
         <span>{model.displayName}</span>
         <button on:click={needleEngine.toggleFullscreen}>⛶</button>
+        
+        <!--
         <button on:click={needleEngine.startAR} class={!arSupported ? 'not-supported' : ''}>AR</button>
         <button on:click={needleEngine.startVR} class={!vrSupported ? 'not-supported' : ''}>VR</button>
+        -->
+
         <!--
         <button on:click={() => goto("https://viewer.needle.tools?file=" + model.originalFileSrc)}>Viewer</button>
         -->
