@@ -104,7 +104,7 @@ onMount(() => {
         <div class="meta">
             <p>glTF information extracted with <a href="https://gltf-transform.dev/" target="_blank">gltf-transform</a>.</p>
             <p>USDZ verification and preview image created with <a href="https://openusd.org/release/toolset.html#usdchecker" target="_blank">usdchecker</a> and <a href="https://openusd.org/release/toolset.html#usdrecord" target="_blank">usdrecord</a>.</p>
-            <p><a href="https://usd-viewer.glitch.me/" target="_blank">USD Viewer</a> based on <a href="https://autodesk-forks.github.io/USD/#usd-for-web" target="_blank">Autodesk's USD-for-Web</a></p>
+            <p><a href="https://usd-viewer.glitch.me/" target="_blank">USD Viewer</a> based on <a href="https://autodesk-forks.github.io/USD/#usd-for-web" target="_blank">Autodesk's experimental USD-for-Web</a></p>
         </div>
         <ModelTags tags={model.info} />
 
