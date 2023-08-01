@@ -38,15 +38,13 @@ function onKeyDown(evt) {
     }
 }
 
-let usdzThreeUrl: string;
-let usdzBlenderUrl: string;
+let windowLocation = "https://asset-explorer.needle.tools/";
+$: usdzThreeUrl = "https://usd-viewer.glitch.me/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.blender.usdz");
+$: usdzBlenderUrl = "https://usd-viewer.glitch.me/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.three.usdz");
 
 onMount(() => {
     // bind left/right arrow key to goto
     document.addEventListener("keydown", onKeyDown);
-
-    usdzThreeUrl = "https://usd-viewer.glitch.me/?file=" + window.location.protocol + "//" + window.location.host + model.downloadUri.replace(".glb", ".glb.blender.usdz");
-    usdzBlenderUrl = "https://usd-viewer.glitch.me/?file=" + window.location.protocol + "//" + window.location.host + model.downloadUri.replace(".glb", ".glb.three.usdz");
 
     return () => {
         document.removeEventListener("keydown", onKeyDown);
