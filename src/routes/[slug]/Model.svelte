@@ -54,7 +54,13 @@ onMount(() => {
     <NeedleEngine src={model.downloadUri} bind:this={needleEngine} bind:arSupported bind:vrSupported>
         <!--
         <div class="info options ar-menu">
-            <button>Hello AR</button>
+            {#if previous}
+            <a class="nav left" href="{base}/{previous.slug}"><span></span></a>
+            {/if}
+            <p>{model.displayName}</p>
+            {#if next}
+            <a class="nav right" href="{base}/{next.slug}"><span></span></a>
+            {/if}
         </div>
         -->
     </NeedleEngine>
@@ -98,6 +104,7 @@ onMount(() => {
         <div class="meta">
             <p>glTF information extracted with <a href="https://gltf-transform.dev/" target="_blank">gltf-transform</a>.</p>
             <p>USDZ verification and preview image created with <a href="https://openusd.org/release/toolset.html#usdchecker" target="_blank">usdchecker</a> and <a href="https://openusd.org/release/toolset.html#usdrecord" target="_blank">usdrecord</a>.</p>
+            <p><a href="https://usd-viewer.glitch.me/" target="_blank">USD Viewer</a> based on <a href="https://autodesk-forks.github.io/USD/#usd-for-web" target="_blank">Autodesk's USD-for-Web</a></p>
         </div>
         <ModelTags tags={model.info} />
 
@@ -115,6 +122,7 @@ onMount(() => {
                     <span>Download USDZ</span>
                     <span class="file-description">Converted with three.js<br/>r154, Needle Fork</span>
                 </a>
+                <a href="https://usd-viewer.glitch.me/?file={window.location.host + model.downloadUri.replace(".glb", ".glb.three.usdz")}" target="_blank">Open in USD Viewer</a>
             </li>
             <li>
                 <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.blender.usdz")} download>
@@ -122,6 +130,7 @@ onMount(() => {
                     <span>Download USDZ</span>
                     <span class="file-description">Converted with Blender 3.6</span>
                 </a>
+                <a href="https://usd-viewer.glitch.me/?file={window.location.host + model.downloadUri.replace(".glb", ".glb.blender.usdz")}" target="_blank">Open in USD Viewer</a>
             </li>
         </ul>
     </div>
@@ -251,6 +260,7 @@ a:hover span.file-description {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 7px 0;
 }
 
 .download-links img {

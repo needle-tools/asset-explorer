@@ -9,7 +9,7 @@ export let src: string | null = null;
 let context;
 
 import { onMount } from 'svelte';
-import { EquirectangularReflectionMapping, Object3D, Texture, ACESFilmicToneMapping } from 'three';
+import { EquirectangularReflectionMapping, Object3D, Texture, ACESFilmicToneMapping, Vector3, Vector2, Box3, Box3Helper, GridHelper } from 'three';
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 
 let _startARImpl: () => void;
@@ -48,6 +48,7 @@ onMount(async () => {
     window.NEEDLE_USE_RAPIER = false;
     const { NeedleEngine, GameObject, WebXR, WebARSessionRoot, USDZExporter, RGBAColor, OrbitControls } = await import('@needle-tools/engine');
     NeedleEngine.addContextCreatedCallback((evt) => {
+
         const ctx = evt.context;
         context = ctx;
         if (ctx.mainCameraComponent) {
@@ -66,7 +67,7 @@ onMount(async () => {
             controls!.enableZoom = false;
             ctx.domElement.style.touchAction = "pan-y";
         }, 1000)
-
+        
         const xr = new Object3D();
         xr.name = "XR";
         const webXR = GameObject.addNewComponent(xr, WebXR);
@@ -113,6 +114,42 @@ onMount(async () => {
 });
 
 function loadFinished(evt: CustomEvent) {
+
+    console.log("load finished", evt);
+    const scene = evt.detail.context.scene;
+    // fit(scene);
+}
+
+function fit(scene) {
+
+    const size = new Vector3();
+    const center = new Vector3();
+    const box = new Box3();
+
+    box.makeEmpty();
+    scene.updateMatrixWorld();
+    box.expandByObject(scene, true);
+
+    box.getCenter(center);
+    box.getSize(size);
+
+    console.log("a", size, center);
+
+    const child = scene.children[0];
+    // scale scene up so that result is a 1x1x1m cube sitting so the bottom face is at y=0
+    const scale = 1 / Math.max(size.x, size.y, size.z);
+    child.scale.set(scale, scale, scale);
+    child.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
+
+
+    // check what we have now
+    box.makeEmpty();
+    scene.updateMatrixWorld();
+    box.expandByObject(scene, true);
+    box.getCenter(center);
+    box.getSize(size);
+    console.log("b", size, center, scale);
+
 }
 
 </script>
