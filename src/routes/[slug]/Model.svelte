@@ -38,9 +38,15 @@ function onKeyDown(evt) {
     }
 }
 
+let usdzThreeUrl: string;
+let usdzBlenderUrl: string;
+
 onMount(() => {
     // bind left/right arrow key to goto
     document.addEventListener("keydown", onKeyDown);
+
+    usdzThreeUrl = "https://usd-viewer.glitch.me/?file=" + window.location.protocol + "//" + window.location.host + model.downloadUri.replace(".glb", ".glb.blender.usdz");
+    usdzBlenderUrl = "https://usd-viewer.glitch.me/?file=" + window.location.protocol + "//" + window.location.host + model.downloadUri.replace(".glb", ".glb.three.usdz");
 
     return () => {
         document.removeEventListener("keydown", onKeyDown);
@@ -122,7 +128,7 @@ onMount(() => {
                     <span>Download USDZ</span>
                     <span class="file-description">Converted with three.js<br/>r154, Needle Fork</span>
                 </a>
-                <a href="https://usd-viewer.glitch.me/?file={window.location.protocol + "//" + window.location.host + model.downloadUri.replace(".glb", ".glb.three.usdz")}" target="_blank">Open in USD Viewer</a>
+                <a href="{usdzThreeUrl}" target="_blank">Open in USD Viewer</a>
             </li>
             <li>
                 <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.blender.usdz")} download>
@@ -130,7 +136,7 @@ onMount(() => {
                     <span>Download USDZ</span>
                     <span class="file-description">Converted with Blender 3.6</span>
                 </a>
-                <a href="https://usd-viewer.glitch.me/?file={window.location.protocol + "//" + window.location.host + model.downloadUri.replace(".glb", ".glb.blender.usdz")}" target="_blank">Open in USD Viewer</a>
+                <a href="{usdzBlenderUrl}" target="_blank">Open in USD Viewer</a>
             </li>
         </ul>
     </div>
@@ -278,10 +284,12 @@ a:hover span.file-description {
     display: none;
 }
 
+/*
 .info.options.ar-menu {
     position: absolute;
     bottom: 20px;
 }
+*/
 
 @media only screen and (max-width: 1000px) {
     a.nav span {
