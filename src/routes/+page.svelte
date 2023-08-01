@@ -6,6 +6,7 @@ import { browser } from "$app/environment";
 import { base } from '$app/paths';
 
 export let data;
+let windowLocation = "https://asset-explorer.needle.tools/";
 
 function getAndCountTags(_data) {
     const tags: any = {};
@@ -38,8 +39,12 @@ $: filter = browser && $page.url.searchParams.get('tag');
 </script>
 
 <svelte:head>
-	<title>Explore Assets</title>
+	<title>Explore 3D Assets</title>
 	<meta name="description" content="glTF and USD sample models and conversions" />
+    <meta property="og:image" content="{windowLocation + "asset-explorer.jpg"}" />
+    <meta property="og:title" content="Explore 3D Assets" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:image" content="{windowLocation + "asset-explorer.jpg"}" />
 </svelte:head>
 
 <h3 class="title">Asset capabilities</h3>
