@@ -97,7 +97,7 @@ async function collectFileInformation(runConversions = false) {
             const targetPath = basePath + "/" + `resources/` + mdDirName + `/` + href;
             const directoryPart = path.dirname(href);
             images.push({
-                absolutePath: path.resolve(mdPath, href),
+                absolutePath: path.resolve(mdPath, href).replaceAll("\\", "/"),
                 targetPath: "resources/" + mdDirName + "/" + directoryPart,
             });
             
@@ -289,14 +289,14 @@ async function collectFileInformation(runConversions = false) {
         const fileName = path.parse(file).name;
         
         const usdzFilePath = file + ".three.usdz";
-        const usdzFilePathAbs = path.resolve(usdzFilePath);
+        const usdzFilePathAbs = path.resolve(usdzFilePath).replaceAll("\\", "/");
         const usdzScreenshot = file + ".three.png";
-        const usdzScreenshotAbs = path.resolve(usdzScreenshot);
+        const usdzScreenshotAbs = path.resolve(usdzScreenshot).replaceAll("\\", "/");;
 
         const blenderUsdzFilePath = file + ".blender.usdz";
-        const blenderUsdzFilePathAbs = path.resolve(blenderUsdzFilePath);
+        const blenderUsdzFilePathAbs = path.resolve(blenderUsdzFilePath).replaceAll("\\", "/");;
         const blenderUsdzScreenshot = file + ".blender.png";
-        const blenderUsdzScreenshotAbs = path.resolve(blenderUsdzScreenshot);
+        const blenderUsdzScreenshotAbs = path.resolve(blenderUsdzScreenshot).replaceAll("\\", "/");;
         
         if (runConversions && (runThreeConversion || runBlenderConversion))
             console.log("Converting " + fileName + " to USDZ");

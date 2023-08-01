@@ -45,8 +45,6 @@ export default defineConfig(async ({ command, mode }) => {
 		}
 	}));
 
-	// console.log(copyTargets)
-
 	return {
 		plugins: [
 			mkcert(),

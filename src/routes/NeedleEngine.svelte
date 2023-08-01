@@ -77,6 +77,7 @@ onMount(async () => {
         
         GameObject.addNewComponent(xr, WebARSessionRoot);
         GameObject.addNewComponent(xr, USDZExporter);
+
         ctx.scene.add(xr);
         
         const arStart = WebXR.createARButton(webXR);

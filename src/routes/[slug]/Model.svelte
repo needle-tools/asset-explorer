@@ -41,9 +41,13 @@ function onKeyDown(evt) {
 let windowLocation = "https://asset-explorer.needle.tools/";
 $: usdzThreeUrl = "https://usd-viewer.glitch.me/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.blender.usdz");
 $: usdzBlenderUrl = "https://usd-viewer.glitch.me/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.three.usdz");
+let hasQuickLook = false;
 
 onMount(() => {
     // bind left/right arrow key to goto
+    const a = document.createElement("a");
+    hasQuickLook = a.relList.supports("ar");
+
     document.addEventListener("keydown", onKeyDown);
 
     return () => {
@@ -121,24 +125,32 @@ onMount(() => {
                 <a href={model.downloadUri} download>
                     <img src={model.previewUri} alt="screenshot from source"/>
                     <span>Download GLB</span>
-                    <span class="file-description">Source Asset from<br/>glTF-Sample-Models</span>
                 </a>
+                <span class="file-description">Source Asset from<br/>glTF-Sample-Models</span>
             </li>
             <li>
                 <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.three.usdz")} download>
                     <img src={model.downloadUri.replace(".glb", ".glb.three.png")} alt="screenshot from three.js conversion"/>
-                    <span>Download USDZ</span>
-                    <span class="file-description">Converted with three.js<br/>r154, Needle Fork</span>
                 </a>
-                <a href="{usdzThreeUrl}" target="_blank">Open in USD Viewer</a>
+                {#if hasQuickLook}  
+                <span>View in AR</span>
+                {/if}
+                <a href="{usdzThreeUrl}" target="_blank">Open in USD Web Viewer</a>
+                <a href="{model.downloadUri.replace(".glb", ".glb.three.usdz")}" download>Download USDZ</a>
+                
+                <span class="file-description">Converted with three.js<br/>r154, Needle Fork</span>                
             </li>
             <li>
                 <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.blender.usdz")} download>
                     <img src={model.downloadUri.replace(".glb", ".glb.blender.png")} alt="screenshot from blender conversion"/>
-                    <span>Download USDZ</span>
-                    <span class="file-description">Converted with Blender 3.6</span>
                 </a>
-                <a href="{usdzBlenderUrl}" target="_blank">Open in USD Viewer</a>
+                {#if hasQuickLook}
+                <span>View in AR</span>
+                {/if}
+                <a href="{usdzBlenderUrl}" target="_blank">Open in USD Web Viewer</a>
+                <a href="{model.downloadUri.replace(".glb", ".glb.blender.usdz")}" download>Download USDZ</a>
+
+                <span class="file-description">Converted with Blender 3.6</span>
             </li>
         </ul>
     </div>
