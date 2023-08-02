@@ -1193,9 +1193,9 @@ function buildMaterial( material: MeshBasicMaterial, textures, quickLookCompatib
 
 		const needsTextureScale = mapType !== 'normal' && (color && (color.r !== 1 || color.g !== 1 || color.b !== 1 || opacity !== 1)) || false;
 		const needsNormalScaleAndBias = mapType === 'normal';
-		const normalScaleValueString = material instanceof MeshStandardMaterial
-			? (material.normalScale ? material.normalScale.x * 2 : 2).toFixed( PRECISION )
-			: "1";
+		const normalScale = material instanceof MeshStandardMaterial ? (material.normalScale ? material.normalScale.x * 2 : 2) : 2;
+		const normalScaleValueString = normalScale.toFixed( PRECISION );
+		const normalBiasString = (-1 * (normalScale / 2)).toFixed( PRECISION );
 
 		return `
         ${needsTextureTransform ? `def Shader "Transform2d_${mapType}" (
@@ -1223,7 +1223,7 @@ function buildMaterial( material: MeshBasicMaterial, textures, quickLookCompatib
 			` : `` }
 			${needsNormalScaleAndBias ? `
 			float4 inputs:scale = (${normalScaleValueString}, ${normalScaleValueString}, ${normalScaleValueString}, 1)
-			float4 inputs:bias = (-1, -1, -1, 0)
+			float4 inputs:bias = (${normalBiasString}, ${normalBiasString}, ${normalBiasString}, 0)
 			` : `` }
             token inputs:wrapS = "${wrapS}"
             token inputs:wrapT = "${wrapT}"
