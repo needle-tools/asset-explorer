@@ -43,6 +43,9 @@ $: usdzThreeUrl = "https://usd-viewer.glitch.me/?file=" + windowLocation + model
 $: usdzBlenderUrl = "https://usd-viewer.glitch.me/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.three.usdz");
 let hasQuickLook = false;
 
+let isFullscreen = false;
+let arSessionActive = false;
+
 onMount(() => {
     // bind left/right arrow key to goto
     const a = document.createElement("a");
@@ -59,18 +62,39 @@ onMount(() => {
 
 <div class="text-column">
     {#key "constant"}
-    <NeedleEngine src={model.downloadUri} bind:this={needleEngine} bind:arSupported bind:vrSupported>
-        <!--
+    <NeedleEngine src={model.downloadUri} bind:this={needleEngine} 
+        bind:arSupported 
+        bind:vrSupported 
+        bind:arSessionActive 
+        bind:isFullscreen>
+        
         <div class="info options ar-menu">
             {#if previous}
-            <a class="nav left" href="{base}/{previous.slug}"><span></span></a>
+            <a class="nav left" href="{base}/{previous.slug}"><span>{previous.displayName}</span></a>
             {/if}
-            <p>{model.displayName}</p>
+
+            <span>{model.displayName}</span>
+
+            {#if !isFullscreen && !arSessionActive}
+            <button on:click={needleEngine.toggleFullscreen}>⛶</button>
+            <button on:click={needleEngine.startAR} class={!arSupported ? 'not-supported' : ''}>AR</button>
+            <button on:click={needleEngine.startVR} class={!vrSupported ? 'not-supported' : ''}>VR</button>
+            {/if}
+
+            <!--
+            <button on:click={() => showXROverlay = true}>XR
+                <ButtonOverlay bind:showXROverlay={showXROverlay}>
+                    <button on:click={needleEngine.startAR}>AR</button>
+                    <button on:click={needleEngine.startVR}>VR</button>
+                    <button on:click={needleEngine.openOnQuest}>Send to Quest</button>
+                </ButtonOverlay>
+            </button>
+            -->
+
             {#if next}
-            <a class="nav right" href="{base}/{next.slug}"><span></span></a>
+            <a class="nav right" href="{base}/{next.slug}"><span>{next.displayName}</span></a>
             {/if}
         </div>
-        -->
     </NeedleEngine>
     {/key}
     <!--
@@ -79,38 +103,7 @@ onMount(() => {
     </model>
     -->
 
-    <div class="topnav">
-        {#if previous}
-        <a class="nav left" href="{base}/{previous.slug}"><span>{previous.displayName}</span></a>
-        {/if}
-        {#if next}
-        <a class="nav right" href="{base}/{next.slug}"><span>{next.displayName}</span></a>
-        {/if}
-    </div>
-
-    <div class="info options">
-        <span>{model.displayName}</span>
-        <button on:click={needleEngine.toggleFullscreen}>⛶</button>
-        
-        <!--
-        <button on:click={needleEngine.startAR} class={!arSupported ? 'not-supported' : ''}>AR</button>
-        <button on:click={needleEngine.startVR} class={!vrSupported ? 'not-supported' : ''}>VR</button>
-        -->
-
-        <!--
-        <button on:click={() => goto("https://viewer.needle.tools?file=" + model.originalFileSrc)}>Viewer</button>
-        -->
-        <!--
-        <button on:click={() => showXROverlay = true}>XR
-            <ButtonOverlay bind:showXROverlay={showXROverlay}>
-                <button on:click={needleEngine.startAR}>AR</button>
-                <button on:click={needleEngine.startVR}>VR</button>
-                <button on:click={needleEngine.openOnQuest}>Send to Quest</button>
-            </ButtonOverlay>
-        </button>
-        -->
-    </div>
-
+    <div class="spacer"></div>
     <div class="info">
         <h2 class="info-header">Information and Downloads</h2>
         <div class="meta">
@@ -135,6 +128,7 @@ onMount(() => {
                 {#if hasQuickLook}  
                 <span>View in AR</span>
                 {/if}
+                <button on:click={needleEngine.generateUsdz}>Export USDZ from scene</button>
                 <a href="{usdzThreeUrl}" target="_blank">Open in USD Web Viewer</a>
                 <a href="{model.downloadUri.replace(".glb", ".glb.three.usdz")}" download>Download USDZ</a>
                 
@@ -166,6 +160,9 @@ onMount(() => {
 </div>
 
 <style>
+.spacer {
+    margin: 30px;
+}
 .text-column {
     margin: 20px;
     align-items: center;
@@ -181,10 +178,12 @@ onMount(() => {
 }
 
 .info.options {
-    display: inline-block;
+    display: flex;
     position: relative;
     border-radius: 40px;
     padding: 10px 20px;
+    align-items: center;
+    max-width: calc(100vw - 130px);
 }
 
 .meta {
@@ -210,34 +209,36 @@ onMount(() => {
     font-weight: bold;
 }
 
-.topnav {
-    position: absolute;
-    top: 20px;
-    width: 100%;
-}
-
 .html a, .meta a {
     font-weight: bold;
 }
 
+a.left, a.right {
+    position: absolute;
+    font-size: 1.5em;
+}
+
 a.left {
-    position:absolute;
-    left: 10px;
+    left: -30px;
 }
 
 a.right {
-    position:absolute;
-    right: 10px;
+    right: -30px;
 }
 
 a.left::before {
     content: "←";
-    margin-right: 20px;
+    left: -10px;
+    display: inline-block;
+    position: relative;
+    text-align: right;
 }
 
 a.right::after {
     content: "→";
-    margin-left: 20px;
+    left: 10px;
+    display: inline-block;
+    position: relative;
 }
 
 a.nav {
@@ -253,10 +254,6 @@ a.nav {
     opacity: 0.5;
     text-decoration: none;
     font-size: 0.8rem;
-}
-
-a:hover span.file-description {
-    text-decoration: none!important;
 }
 
 .download-links {
@@ -276,11 +273,18 @@ a:hover span.file-description {
     margin: 10px;
 }
 
-.download-links li a {
+.download-links li a, .download-links li button {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 7px 0;
+    background: none;
+    border: 0;
+    color: var(--color-text);
+}
+
+.download-links li button:hover {
+    cursor: pointer;
 }
 
 .download-links img {
@@ -304,6 +308,10 @@ a:hover span.file-description {
     bottom: 20px;
 }
 */
+
+a.nav span {
+    display: none;
+}
 
 @media only screen and (max-width: 1000px) {
     a.nav span {

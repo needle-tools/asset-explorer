@@ -70,6 +70,12 @@ $: filter = browser && $page.url.searchParams.get('tag');
 
     @media only screen and (max-width: 600px) {
         :root {
+            --size: min(40vw, 160px);
+        }
+    }
+
+    @media only screen and (max-width: 380px) {
+        :root {
             --size: 80vw;
         }
     }

@@ -28,7 +28,7 @@ $: truncatedValue = (truncate && (typeof value === "string") && value.length > t
 li {
     /*background-color: #b1b1b1;*/
     border: 1px solid rgba(0,0,0,0.08);
-    margin: .2rem .5rem;
+    margin: .2rem .2rem;
     border-radius: 5px;
     font-size: 0.8rem;
     color: var(--color-text);

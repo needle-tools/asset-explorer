@@ -7,7 +7,7 @@ import { viteStaticCopy, type Target } from 'vite-plugin-static-copy'
 import { collectFileInformation } from "./src/dynamicFiles";
 
 export default defineConfig(async ({ command, mode }) => {
-	
+
 	const { files, images } = await collectFileInformation(true);
 
 	(global as any).listOfModelFiles = files;
@@ -45,13 +45,20 @@ export default defineConfig(async ({ command, mode }) => {
 		}
 	}));
 
+	/*
+	const { needlePlugins, useGzip, loadConfig } = await import("@needle-tools/engine/plugins/vite/index.js");
+    const needleConfig = await loadConfig();
+	needleConfig.useRapier = false;
+	*/
+
 	return {
 		plugins: [
 			mkcert(),
 			viteStaticCopy({
 				targets: copyTargets,
 			}),
-			sveltekit(),
+			sveltekit(),            
+			// needlePlugins(command, needleConfig),
 		],
 		build: {
 			target: "esnext",
@@ -59,5 +66,8 @@ export default defineConfig(async ({ command, mode }) => {
 		optimizeDeps: {
 			exclude: ["three"],
 		},
+		define: {
+			NEEDLE_USE_RAPIER: false,
+		}
 	}
   })

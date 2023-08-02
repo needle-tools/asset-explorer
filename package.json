@@ -30,7 +30,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@needle-tools/engine": "^3.11.1-beta",
+		"@needle-tools/engine": "file:///Users/herbst/git/needle-engine-dev/modules/needle-engine/js/package~",
 		"three": "npm:@needle-tools/three@^0.154.1"
 	}
 }

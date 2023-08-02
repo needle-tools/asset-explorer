@@ -6,6 +6,11 @@
 <div class="text-column">
 	<h1>Asset Explorer</h1>
 
+	<h2>What is this?</h2>
+	<p>This page contains glTF models and their USDZ counterparts. As conversion and USDZ rendering are still very much application dependant, multiple conversions of the same glTF file are provided.</p>
+	<p>Currently, conversions are done with the needle-tools/three.js fork r154.1 and Blender 3.6.</p>
+
+	<h2>Why</h2>
 	<p>
 		File interoperability is hard. It's getting easier though – modern formats like glTF and USD bring great features and capabilities to the table.  
 		Currently, the 3D world is split: glTF is often used for realtime pipelines, while USD is often used for film productions. However, these worlds start to merge; and so do the capabilities of these formats.
