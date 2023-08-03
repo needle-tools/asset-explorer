@@ -47,7 +47,7 @@ export async function toggleFullscreen() {
     }
 }
 
-async function loadSrcFile(src: string) {
+async function loadSrcFile(src: string | null) {
 
     const { SceneSwitcher, GameObject, OrbitControls, Context } = await import('@needle-tools/engine');
 

@@ -39,8 +39,8 @@ function onKeyDown(evt) {
 }
 
 let windowLocation = "https://asset-explorer.needle.tools/";
-$: usdzThreeUrl = "https://usd-viewer.glitch.me/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.blender.usdz");
-$: usdzBlenderUrl = "https://usd-viewer.glitch.me/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.three.usdz");
+$: usdzThreeUrl = "https://usd-viewer.glitch.me/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.three.usdz");
+$: usdzBlenderUrl = "https://usd-viewer.glitch.me/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.blender.usdz");
 let hasQuickLook = false;
 
 let isFullscreen = false;
