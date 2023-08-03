@@ -128,7 +128,9 @@ onMount(() => {
                 {#if hasQuickLook}  
                 <span>View in AR</span>
                 {/if}
+                <!-- TODO enable once fix lands in NE
                 <button on:click={needleEngine.generateUsdz}>Export USDZ from scene</button>
+                -->
                 <a href="{usdzThreeUrl}" target="_blank">Open in USD Web Viewer</a>
                 <a href="{model.downloadUri.replace(".glb", ".glb.three.usdz")}" download>Download USDZ</a>
                 
