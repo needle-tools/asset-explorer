@@ -13,8 +13,6 @@ import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
 import draco3d from 'draco3dgltf';
 
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-// import { USDZExporter } from 'three/examples/jsm/exporters/USDZExporter.js';
-// import { USDZExporter } from '@needle-tools/engine';
 import { USDZExporter } from './USDZExporter';
 import { FileLoader, Cache, LoadingManager } from 'three';
 import subProcess from 'child_process';
@@ -30,7 +28,6 @@ globalThis["HTMLElement"] = class HTMLElement {}
 export const originalRepoDir = "https://github.com/KhronosGroup/glTF-Sample-Models";
 export const sourceDir = "submodules/glTF-Sample-Models"; //"E:/git/glTF-Sample-Models/2.0/";
 export const sourceSubfolder = "/2.0/";
-const isWindows = process.platform === "win32";
 
 const basePath = process.env.BASE_PATH || "";
 
@@ -47,8 +44,6 @@ async function collectFileInformation(runConversions = false) {
     // patch FileLoader to use fs instead of fetch
     const originalLoad = FileLoader.prototype.load;
     FileLoader.prototype.load = function (url: string, onLoad: Function, onProgress: Function, onError: Function) {
-
-        // console.log("file loader: " + url);
         try {
             const data = fs.readFileSync(url);
             Cache.add(url, data.buffer);
@@ -61,20 +56,10 @@ async function collectFileInformation(runConversions = false) {
 
     const fullPath = sourceDir + sourceSubfolder;
     console.log("Loading files from " + fullPath);
-    const files = globSync(fullPath + "**/**.glb").sort();//.map(f => f = process.cwd() + "/" + f);
+    const files = globSync(fullPath + "**/**.glb").sort();
     console.log("Files:", files.length);
-    // take only 1
-    // files = files.slice(6, 7);
     const images : Array<{absolutePath:string, targetPath:string}> = [];
-    // console.log("ALL FILES", files);
 
-    /*
-    declare type File = {
-        path: string,
-        name: string,
-        uri: string,
-    }
-    */
 
     let mdPath = "";
     let mdDirName = "";
