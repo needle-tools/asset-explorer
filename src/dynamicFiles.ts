@@ -56,8 +56,29 @@ async function collectFileInformation(filter: string | null, runConversions = fa
 
     const fullPath = sourceDir + sourceSubfolder;
     console.log("Loading files from " + fullPath);
-    const files = globSync(fullPath + "**/**.glb").sort();
-    console.log("Files:", files.length);
+    let files = globSync(fullPath + "**/**.glb").sort();//.map(f => f = process.cwd() + "/" + f);
+    
+    // these files are excluded because of unclear licensing
+    const fileExclusions = [
+        "2CylinderEngine",
+        "GearboxAssy",
+        "ReciprocatingSaw",
+        "Buggy",
+    ];
+
+    // filter out files
+    files = files.filter(f => {
+        for (const exclusion of fileExclusions) {
+            if (f.startsWith(sourceDir + sourceSubfolder + exclusion))
+                return false;
+        }
+        return true;
+    });
+    
+    console.log("Files:", files);
+
+    // take only 1
+    // files = files.slice(6, 7);
     const images : Array<{absolutePath:string, targetPath:string}> = [];
 
 
