@@ -25,7 +25,7 @@ To run the app,
 - would be nice not having to hack three for nodejs support
     - could probably mock ImageBitmapLoader instead of ImageLoader, maybe even from the outside
 - currently can't import the better USDZExporter from needle-tools/engine (same problems running in node)
-    - copied it here but better would be one codecase
+    - copied it here but better would be one codecase; the current approach doesn't have the USDZ animation extension in it
 
 ## Goals
 

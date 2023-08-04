@@ -35,7 +35,7 @@ const basePath = process.env.BASE_PATH || "";
 
 Cache.enabled = true;
 
-async function collectFileInformation(runConversions = false) {
+async function collectFileInformation(filter: string | null, runConversions = false) {
 
     const runThreeConversion = false;
     const runBlenderConversion = false;
