@@ -166,7 +166,8 @@ onMount(async () => {
         webXR.createVRButton = false;
         webXR.createARButton = false;
         
-        GameObject.addNewComponent(xr, WebARSessionRoot);
+        const sessionRoot = GameObject.addNewComponent(xr, WebARSessionRoot);
+        sessionRoot.arScale = 1;
         const usdzExporter = GameObject.addNewComponent(xr, USDZExporter);
         usdzExporter.allowCreateQuicklookButton = false;
 

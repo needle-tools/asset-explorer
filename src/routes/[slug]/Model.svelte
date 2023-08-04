@@ -78,7 +78,9 @@ onMount(() => {
             {#if !isFullscreen && !arSessionActive}
             <button on:click={needleEngine.toggleFullscreen}>⛶</button>
             <button on:click={needleEngine.startAR} class={!arSupported ? 'not-supported' : ''}>AR</button>
+            <!--
             <button on:click={needleEngine.startVR} class={!vrSupported ? 'not-supported' : ''}>VR</button>
+            -->
             {/if}
 
             <!--
