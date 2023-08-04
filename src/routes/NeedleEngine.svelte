@@ -47,9 +47,11 @@ export async function toggleFullscreen() {
     }
 }
 
+let firstLoad = false;
+
 async function loadSrcFile(src: string | null) {
 
-    const { SceneSwitcher, GameObject, OrbitControls, Context, Animation } = await import('@needle-tools/engine');
+    const { SceneSwitcher, GameObject, OrbitControls, Context, Animation, delay } = await import('@needle-tools/engine');
 
     if (!src) return;
     const _src = src;
@@ -67,7 +69,7 @@ async function loadSrcFile(src: string | null) {
         sceneSwitcher.removeEventListener("loadscene-finished", onLoadFinished);
 
         const rawAsset = evt.detail.scene.rawAsset;
-        console.log(rawAsset);
+        // console.log(rawAsset);
         animations = rawAsset.animations;
         addedScene = rawAsset.scene;
     }
@@ -82,18 +84,24 @@ async function loadSrcFile(src: string | null) {
     }
     
     sceneSwitcher.gameObject.updateMatrixWorld();
-    console.log(_src, sceneSwitcher.gameObject.position, sceneSwitcher.gameObject.scale)
+    // console.log(_src, sceneSwitcher.gameObject.position, sceneSwitcher.gameObject.scale)
 
     sceneSwitcher.gameObject.position.set(0,0,0);
     sceneSwitcher.gameObject.scale.set(1,1,1);
 
     if (arSessionActive) // scale so objects fit nicer in AR - currently breaks lighting and transmission
         fit(sceneSwitcher.gameObject);
-
-    if (!arSessionActive)
+        
+    if (!arSessionActive) {
+        sceneSwitcher.gameObject.updateMatrixWorld(); 
+        if (!firstLoad && orbitControls._cameraObject) { // BUG seems _cameraObject can be missing
+            orbitControls._cameraObject.position.set(300,200,1000);
+            firstLoad = true;
+        }
         orbitControls.fitCamera();
+    }
 
-    console.log(_src, sceneSwitcher.gameObject.position, sceneSwitcher.gameObject.scale)
+    // console.log(_src, sceneSwitcher.gameObject.position, sceneSwitcher.gameObject.scale)
 }
 
 $: {
@@ -126,7 +134,7 @@ onMount(async () => {
         }
 
         if (ctx.mainCameraComponent) {
-            ctx.mainCameraComponent.fieldOfView = 25;   
+            ctx.mainCameraComponent.fieldOfView = 25;
             ctx.mainCameraComponent.backgroundBlurriness = 1; 
             ctx.mainCameraComponent.backgroundColor = new RGBAColor(0,0,0,0);
         }
@@ -248,7 +256,7 @@ function keydown(evt: KeyboardEvent) {
 }
 
 onDestroy(async () => {
-    console.log("REMOVING EVENTS AGAIN")
+    // console.log("REMOVING EVENTS AGAIN")
     if (browser) {
         document.removeEventListener("fullscreenchange", fullscreenChange);
         document.removeEventListener("keydown", keydown);
@@ -276,7 +284,7 @@ function fit(scene) {
     box.getCenter(center);
     box.getSize(size);
 
-    console.log("a", size, center);
+    // console.log("a", size, center);
 
     const child = scene;
     // scale scene up so that result is a 1x1x1m cube sitting so the bottom face is at y=0
@@ -290,7 +298,7 @@ function fit(scene) {
     box.expandByObject(scene, true);
     box.getCenter(center);
     box.getSize(size);
-    console.log("b", size, center, scale);
+    // console.log("b", size, center, scale);
 }
 
 </script>
@@ -310,7 +318,7 @@ function fit(scene) {
 <style>
 needle-engine {
     display: block; 
-    height: 400px;
+    height: min(600px, 70vh);
     position: relative;
     /* width: 100%; */
     width: max(50vw, min(700px, 100vw));
