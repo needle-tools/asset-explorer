@@ -3,7 +3,7 @@ import { collectFileInformation } from "../../dynamicFiles";
 export async function load({ params }) {
   const name = params.slug;
 
-  const { files } = await collectFileInformation(name);
+  const { files } = await collectFileInformation(); // can't filter since we need at least next/prev
 
   // get index in files array
   const index = files.findIndex((element) => element.name === name);

@@ -35,7 +35,7 @@ const basePath = process.env.BASE_PATH || "";
 
 Cache.enabled = true;
 
-async function collectFileInformation(filter: string | null, runConversions = false) {
+async function collectFileInformation(filter: string | undefined = undefined, runConversions = false) {
 
     const runThreeConversion = false;
     const runBlenderConversion = false;
@@ -55,7 +55,7 @@ async function collectFileInformation(filter: string | null, runConversions = fa
     }
 
     const fullPath = sourceDir + sourceSubfolder;
-    console.log("Loading files from " + fullPath);
+    // console.log("Loading files from " + fullPath);
     let files = globSync(fullPath + "**/**.glb").sort();//.map(f => f = process.cwd() + "/" + f);
     
     // these files are excluded because of unclear licensing
@@ -74,8 +74,13 @@ async function collectFileInformation(filter: string | null, runConversions = fa
         }
         return true;
     });
-    
-    console.log("Files:", files);
+
+    if (filter !== undefined) {
+        files = files.filter(file => {
+            const slug = path.parse(file).name.replace(".glb", "");
+            return slug === filter;
+        });
+    }
 
     // take only 1
     // files = files.slice(6, 7);

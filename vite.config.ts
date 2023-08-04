@@ -8,7 +8,7 @@ import { collectFileInformation } from "./src/dynamicFiles";
 
 export default defineConfig(async ({ command, mode }) => {
 
-	const { files, images } = await collectFileInformation(true);
+	const { files, images } = await collectFileInformation(undefined, true);
 
 	(global as any).listOfModelFiles = files;
 
