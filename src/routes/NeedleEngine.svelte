@@ -49,7 +49,7 @@ export async function toggleFullscreen() {
 
 async function loadSrcFile(src: string | null) {
 
-    const { SceneSwitcher, GameObject, OrbitControls, Context } = await import('@needle-tools/engine');
+    const { SceneSwitcher, GameObject, OrbitControls, Context, Animation } = await import('@needle-tools/engine');
 
     if (!src) return;
     const _src = src;
@@ -60,20 +60,39 @@ async function loadSrcFile(src: string | null) {
     const orbitControls = GameObject.findObjectOfType(OrbitControls)!;
     if (!sceneSwitcher) return;
 
+    let animations = null;
+    let addedScene = null;
+
+    const onLoadFinished = (evt) => {
+        sceneSwitcher.removeEventListener("loadscene-finished", onLoadFinished);
+
+        const rawAsset = evt.detail.scene.rawAsset;
+        console.log(rawAsset);
+        animations = rawAsset.animations;
+        addedScene = rawAsset.scene;
+    }
+
+    sceneSwitcher.addEventListener("loadscene-finished", onLoadFinished);
     await sceneSwitcher.select(_src);
 
+    if (animations && animations.length > 0) {
+        const animation = GameObject.addNewComponent(addedScene, Animation);
+        animation.clip = animations[0];
+        animation.play();
+    }
+    
     sceneSwitcher.gameObject.updateMatrixWorld();
     console.log(_src, sceneSwitcher.gameObject.position, sceneSwitcher.gameObject.scale)
-    
+
     sceneSwitcher.gameObject.position.set(0,0,0);
     sceneSwitcher.gameObject.scale.set(1,1,1);
-    
+
     if (arSessionActive) // scale so objects fit nicer in AR - currently breaks lighting and transmission
         fit(sceneSwitcher.gameObject);
 
     if (!arSessionActive)
         orbitControls.fitCamera();
-    
+
     console.log(_src, sceneSwitcher.gameObject.position, sceneSwitcher.gameObject.scale)
 }
 
