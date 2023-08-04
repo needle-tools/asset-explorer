@@ -39,12 +39,13 @@ $: filter = browser && $page.url.searchParams.get('tag');
 </script>
 
 <svelte:head>
-	<title>Explore 3D Assets</title>
+	<title>Asset Explorer</title>
 	<meta name="description" content="glTF and USD sample models and conversions" />
     <meta property="og:image" content="{windowLocation + "asset-explorer.jpg"}" />
     <meta property="og:title" content="Explore 3D Assets" />
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:image" content="{windowLocation + "asset-explorer.jpg"}" />
+    <meta property="twitter:description" content="glTF and USD sample models and conversions" />
 </svelte:head>
 
 <h3 class="title">Asset capabilities</h3>
