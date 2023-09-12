@@ -32,14 +32,19 @@ export const sourceSubfolder = "/2.0/";
 const basePath = process.env.BASE_PATH || "";
 
 // experimental - allows us to use three.js from node
-
 Cache.enabled = true;
 
+let lastCollectionResult : {files:Array<any>, images:Array<any>} | null = null;
 async function collectFileInformation(filter: string | undefined = undefined, runConversions = false) {
+
+    if (lastCollectionResult !== null) {
+        return lastCollectionResult;
+    }
 
     const runThreeConversion = false;
     const runBlenderConversion = false;
-    const runUsdChecksAndRender = false;
+    const runOmniverseConversion = false;
+    const runUsdChecksAndRender = true;
 
     // patch FileLoader to use fs instead of fetch
     const originalLoad = FileLoader.prototype.load;
@@ -255,9 +260,7 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
         }
 
         const checkAndRender = async (usdzFile: string, outputPrefix: string) => {
-
-            if (!runUsdChecksAndRender) return;
-
+            
             const fileName = path.parse(usdzFile).name;
 
             // run usdchecker
@@ -279,9 +282,10 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
             });
 
             // run screenshot generation with usdrecord
+            /*
             await new Promise((resolve, reject) => {
                 const screenshotPath = path.resolve(file, "..", fileName + ".png");
-                subProcess.exec('usdrecord "' + usdzFile + '" ' + screenshotPath, (err, stdout, stderr) => {
+                subProcess.exec('  "' + usdzFile + '" ' + screenshotPath, (err, stdout, stderr) => {
                     if (err) {
                         console.log("❌ " + fileName + " failed usdrecord");
                         console.group();
@@ -294,22 +298,50 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
                     resolve(true);
                 })
             });
+            */
+
+            // run screenshot generation with generate_thumbnail
+            await new Promise((resolve, reject) => {
+                const screenshotPath = path.resolve(file, "..", fileName + ".png");
+                const domeLightAbsPath = path.resolve("lib/neutral.hdr").replaceAll("\\", "/");
+                const cmd = 'python usd/generate_thumbnail.py "' + usdzFile + '" ' + '--dome-light ' + '"' + domeLightAbsPath + '"' + ' --width 900 --height 760';
+                subProcess.exec(cmd, (err, stdout, stderr) => {
+                    if (err) {
+                        console.log("❌ " + fileName + " failed generate_thumbnail");
+                        console.group();
+                        console.log(`${stdout.toString()}`);
+                        console.log(`${stderr.toString()}`);
+                        console.groupEnd();
+                    } else {
+                        console.log("✓ " + fileName + " rendered with generate_thumbnail");
+                    }
+                    resolve(true);
+                })
+            });
         };
         
         // USDZ conversion
         const fileName = path.parse(file).name;
         
+        // three.js conversion
         const usdzFilePath = file + ".three.usdz";
         const usdzFilePathAbs = path.resolve(usdzFilePath).replaceAll("\\", "/");
         const usdzScreenshot = file + ".three.png";
-        const usdzScreenshotAbs = path.resolve(usdzScreenshot).replaceAll("\\", "/");;
+        const usdzScreenshotAbs = path.resolve(usdzScreenshot).replaceAll("\\", "/");
 
+        // Blender conversion
         const blenderUsdzFilePath = file + ".blender.usdz";
-        const blenderUsdzFilePathAbs = path.resolve(blenderUsdzFilePath).replaceAll("\\", "/");;
+        const blenderUsdzFilePathAbs = path.resolve(blenderUsdzFilePath).replaceAll("\\", "/");
         const blenderUsdzScreenshot = file + ".blender.png";
-        const blenderUsdzScreenshotAbs = path.resolve(blenderUsdzScreenshot).replaceAll("\\", "/");;
+        const blenderUsdzScreenshotAbs = path.resolve(blenderUsdzScreenshot).replaceAll("\\", "/");
         
-        if (runConversions && (runThreeConversion || runBlenderConversion))
+        // Omniverse conversion
+        const ovUsdzFilePath = file + ".ov.usdz";
+        const ovUsdzFilePathAbs = path.resolve(ovUsdzFilePath).replaceAll("\\", "/");
+        const ovUsdzScreenshot = file + ".ov.png";
+        const ovUsdzScreenshotAbs = path.resolve(ovUsdzScreenshot).replaceAll("\\", "/");
+        
+        if (runConversions && (runThreeConversion || runBlenderConversion || runOmniverseConversion))
             console.log("Converting " + fileName + " to USDZ");
         
         console.group();
@@ -351,11 +383,13 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
                 // save to disk
                 if (usdzArrayBuffer) {
                     fs.writeFileSync(usdzFilePath, Buffer.from(usdzArrayBuffer));
-                    await checkAndRender(usdzFilePathAbs, "three");
                 }
             }
+            
+            if (runUsdChecksAndRender && fs.existsSync(usdzFilePathAbs))
+                await checkAndRender(usdzFilePathAbs, "three");
 
-            if (usdzArrayBuffer && runConversions && runBlenderConversion) {
+            if (runConversions && runBlenderConversion) {
                 // blender conversion
                 await new Promise((resolve, reject) => {
                     // /Applications/Blender.app/Contents/MacOS/Blender -b -P blender/blender_gltf_converter.py -- -mp "/Users/herbst/Downloads/2CylinderEngine.glb"
@@ -375,10 +409,33 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
                         resolve(true);
                     });
                 });
-
-                await checkAndRender(blenderUsdzFilePathAbs, "blender");
             }
 
+            if (runUsdChecksAndRender && fs.existsSync(blenderUsdzFilePathAbs))
+                await checkAndRender(blenderUsdzFilePathAbs, "blender");
+
+            if (runConversions && runOmniverseConversion) {
+                await new Promise((resolve, reject) => {
+                    const kitPath = "C:/Users/herbst/AppData/Local/ov/pkg/code-2023.1.1/kit";
+                    const cmd = kitPath + ' --enable omni.kit.asset_converter --exec "omniverse/convert_to_usdz.py ' + file + ' ' + ovUsdzFilePathAbs + '"';
+
+                    subProcess.exec(cmd, (err, stdout, stderr) => {
+                        if (err) {
+                            console.log("❌ " + fileName + " failed Omniverse conversion");
+                            console.group();
+                            console.log(`${stdout.toString()}`);
+                            console.log(`${stderr.toString()}`);
+                            console.groupEnd();
+                        } else {
+                            console.log("✓ " + fileName + " converted to USDZ with Omniverse");
+                        }
+                        resolve(true);
+                    });
+                });
+            }
+
+            if (runUsdChecksAndRender && fs.existsSync(ovUsdzFilePathAbs))
+                await checkAndRender(ovUsdzFilePathAbs, "ov");
         }
         catch (e) {
             console.log("❌ " + fileName + " failed to convert to usdz: ", e);
@@ -395,6 +452,8 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
                 threeScreenshot: usdzScreenshotAbs,
                 blenderUsdz: blenderUsdzFilePathAbs,
                 blenderScreenshot: blenderUsdzScreenshotAbs,
+                ovUsdz: ovUsdzFilePathAbs,
+                ovScreenshot: ovUsdzScreenshotAbs,
             },
             name: path.parse(file).name,
             displayName: firstFoundH1 || path.parse(file).name,
@@ -416,10 +475,14 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
     // restore monkey patching
     FileLoader.prototype.load = originalLoad;
 
-    return {
+    // cache results
+
+    lastCollectionResult = {
         files: array,
         images: images,
     };
+
+    return lastCollectionResult;
 }
 
 // console.log(images);
