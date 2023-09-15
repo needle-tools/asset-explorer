@@ -303,8 +303,10 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
             // run screenshot generation with generate_thumbnail
             await new Promise((resolve, reject) => {
                 const screenshotPath = path.resolve(file, "..", fileName + ".png");
-                const domeLightAbsPath = path.resolve("lib/neutral.hdr").replaceAll("\\", "/");
-                const cmd = 'python usd/generate_thumbnail.py "' + usdzFile + '" ' + '--dome-light ' + '"' + domeLightAbsPath + '"' + ' --width 900 --height 760';
+                const domeLightAbsPath = path.resolve("src/lib/images/neutral.hdr").replaceAll("\\", "/");
+                const cmd = 'python3 usd/generate_thumbnail.py "' + usdzFile + '" ' + '--dome-light ' + '"' + domeLightAbsPath + '"' + ' --width 900 --height 760';
+                
+                // console.log("        " + cmd)
                 subProcess.exec(cmd, (err, stdout, stderr) => {
                     if (err) {
                         console.log("❌ " + fileName + " failed generate_thumbnail");
