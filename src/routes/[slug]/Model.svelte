@@ -41,6 +41,7 @@ function onKeyDown(evt) {
 let windowLocation = "https://asset-explorer.needle.tools/";
 $: usdzThreeUrl = "https://usd-viewer.glitch.me/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.three.usdz");
 $: usdzBlenderUrl = "https://usd-viewer.glitch.me/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.blender.usdz");
+$: usdzOvUrl = "https://usd-viewer.glitch.me/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.ov.usdz");
 let hasQuickLook = false;
 
 let isFullscreen = false;
@@ -149,6 +150,18 @@ onMount(() => {
                 <a href="{model.downloadUri.replace(".glb", ".glb.blender.usdz")}" download>Download USDZ</a>
 
                 <span class="file-description">Converted with Blender 3.6</span>
+            </li>
+            <li>
+                <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.ov.usdz")} download>
+                    <img src={model.downloadUri.replace(".glb", ".glb.ov.png")} alt="screenshot from Omniverse conversion"/>
+                </a>
+                {#if hasQuickLook}
+                <span>View in AR</span>
+                {/if}
+                <a href="{usdzOvUrl}" target="_blank">Open in USD Web Viewer</a>
+                <a href="{model.downloadUri.replace(".glb", ".glb.ov.usdz")}" download>Download USDZ</a>
+
+                <span class="file-description">Converted with Omniverse Kit 105.0</span>
             </li>
         </ul>
     </div>
@@ -274,7 +287,7 @@ a.nav {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin: 10px;
+    margin: 30px;
 }
 
 .download-links li a, .download-links li button {

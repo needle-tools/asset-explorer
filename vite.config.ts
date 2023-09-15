@@ -36,6 +36,14 @@ export default defineConfig(async ({ command, mode }) => {
 				src: file.paths.blenderScreenshot,
 				dest: "downloads",
 			},
+			{
+				src: file.paths.ovUsdz,
+				dest: "downloads",
+			},
+			{
+				src: file.paths.ovScreenshot,
+				dest: "downloads",
+			},
 		]
 	}));
 	copyTargets.push(...images.map((image) => {
