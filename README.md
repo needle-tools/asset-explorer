@@ -38,6 +38,7 @@ An embedded viewer with drag-drop capabilities would also be nice to have.
 Conversions to USDZ are currently done with
 - three.js r154, needle-tools' fork (supports hierarchy and animations)
 - Blender 3.6
+- guc 0.4
 
 The idea is to re-run conversions when these tools improve in a meaningful way to reflect the current state of the art.  
 Blender 4.x will likely drastically improve the USD support of Blender, and conversions will be redone at that point.  

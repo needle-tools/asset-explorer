@@ -44,6 +44,7 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
     const runThreeConversion = false;
     const runBlenderConversion = false;
     const runOmniverseConversion = false;
+    const runGucConversion = false;
     const runUsdChecksAndRender = false;
 
     // patch FileLoader to use fs instead of fetch
@@ -343,7 +344,13 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
         const ovUsdzScreenshot = file + ".ov.png";
         const ovUsdzScreenshotAbs = path.resolve(ovUsdzScreenshot).replaceAll("\\", "/");
         
-        if (runConversions && (runThreeConversion || runBlenderConversion || runOmniverseConversion))
+        // guc conversion
+        const gucUsdzFilePath = file + ".guc.usdz";
+        const gucUsdzFilePathAbs = path.resolve(gucUsdzFilePath).replaceAll("\\", "/");
+        const gucUsdzScreenshot = file + ".guc.png";
+        const gucUsdzScreenshotAbs = path.resolve(gucUsdzScreenshot).replaceAll("\\", "/");
+
+        if (runConversions && (runThreeConversion || runBlenderConversion || runOmniverseConversion || runGucConversion))
             console.log("Converting " + fileName + " to USDZ");
         
         console.group();
@@ -438,6 +445,29 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
 
             if (runUsdChecksAndRender && fs.existsSync(ovUsdzFilePathAbs))
                 await checkAndRender(ovUsdzFilePathAbs, "ov");
+
+            if (runConversions && runGucConversion) {
+                await new Promise((resolve, reject) => {
+                    const gucPath = "guc"; // must be in PATH
+                    const cmd = gucPath + ' ' + file + ' ' + gucUsdzFilePathAbs;
+
+                    subProcess.exec(cmd, (err, stdout, stderr) => {
+                        if (err) {
+                            console.log("❌ " + fileName + " failed guc conversion");
+                            console.group();
+                            console.log(`${stdout.toString()}`);
+                            console.log(`${stderr.toString()}`);
+                            console.groupEnd();
+                        } else {
+                            console.log("✓ " + fileName + " converted to USDZ with guc");
+                        }
+                        resolve(true);
+                    });
+                });
+            }
+
+            if (runUsdChecksAndRender && fs.existsSync(gucUsdzFilePathAbs))
+                await checkAndRender(gucUsdzFilePathAbs, "guc");
         }
         catch (e) {
             console.log("❌ " + fileName + " failed to convert to usdz: ", e);
@@ -456,6 +486,8 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
                 blenderScreenshot: blenderUsdzScreenshotAbs,
                 ovUsdz: ovUsdzFilePathAbs,
                 ovScreenshot: ovUsdzScreenshotAbs,
+                gucUsdz: gucUsdzFilePathAbs,
+                gucScreenshot: gucUsdzScreenshotAbs,
             },
             name: path.parse(file).name,
             displayName: firstFoundH1 || path.parse(file).name,

@@ -44,6 +44,14 @@ export default defineConfig(async ({ command, mode }) => {
 				src: file.paths.ovScreenshot,
 				dest: "downloads",
 			},
+			{
+				src: file.paths.gucUsdz,
+				dest: "downloads",
+			},
+			{
+				src: file.paths.gucScreenshot,
+				dest: "downloads",
+			},
 		]
 	}));
 	copyTargets.push(...images.map((image) => {

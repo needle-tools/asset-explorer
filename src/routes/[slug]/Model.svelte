@@ -42,6 +42,7 @@ let windowLocation = "https://asset-explorer.needle.tools/";
 $: usdzThreeUrl = "https://usd-viewer.glitch.me/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.three.usdz");
 $: usdzBlenderUrl = "https://usd-viewer.glitch.me/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.blender.usdz");
 $: usdzOvUrl = "https://usd-viewer.glitch.me/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.ov.usdz");
+$: usdzGucUrl = "https://usd-viewer.glitch.me/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.guc.usdz");
 let hasQuickLook = false;
 
 let isFullscreen = false;
@@ -162,6 +163,18 @@ onMount(() => {
                 <a href="{model.downloadUri.replace(".glb", ".glb.ov.usdz")}" download>Download USDZ</a>
 
                 <span class="file-description">Converted with Omniverse Kit 105.0</span>
+            </li>
+            <li>
+                <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.guc.usdz")} download>
+                    <img src={model.downloadUri.replace(".glb", ".glb.guc.png")} alt="screenshot from guc conversion"/>
+                </a>
+                {#if hasQuickLook}
+                <span>View in AR</span>
+                {/if}
+                <a href="{usdzGucUrl}" target="_blank">Open in USD Web Viewer</a>
+                <a href="{model.downloadUri.replace(".glb", ".glb.guc.usdz")}" download>Download USDZ</a>
+
+                <span class="file-description">Converted with guc 0.4</span>
             </li>
         </ul>
     </div>
