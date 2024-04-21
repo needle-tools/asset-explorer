@@ -6,11 +6,44 @@ on:
 
 jobs:
   build_site:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+
     steps:
+# Begin install guc
+      - name: Set up USD binaries
+        run: |
+          export USD_INSTALL=/home/runner/work/USD/USD/INSTALL
+          curl "https://github.com/pablode/USD/releases/download/v24.03-ci-release2/USD24.03_Linux_x64.tar.gz" -L -v -o USD.tar.gz
+          mkdir -p $USD_INSTALL && tar -xvf USD.tar.gz -C $USD_INSTALL
+          echo "LD_LIBRARY_PATH=$USD_INSTALL/lib" >> $GITHUB_ENV
+          echo "$USD_INSTALL/bin" >> $GITHUB_PATH
+          echo "USD_INSTALL=$USD_INSTALL" >> $GITHUB_ENV
+
+      - name: Check out guc
+        uses: actions/checkout@v4
+        with:
+          repository: pablode/guc
+          submodules: true
+          ref: dev
+
+      - name: Create guc folders
+        run: mkdir BUILD INSTALL
+
+      - name: Install guc
+        working-directory: BUILD
+        run: |
+          cmake .. -DCMAKE_BUILD_TYPE=Release
+          cmake --build . --config Release -j 2
+          cmake --install . --config Release --component guc
+          echo "$PWD/bin" >> $GITHUB_PATH
+
+      - name: Print guc help
+        run: guc -h || [ $? -eq 1 ]
+# End install guc
+
       - name: Checkout
         uses: actions/checkout@v3
-        with: 
+        with:
           # could also be 'recursive'
           submodules: true
 
@@ -22,21 +55,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-
-      - name: Fetch binaries
-        run: |
-          curl "https://github.com/pablode/USD/releases/download/v23.08-ci-release/USD23.08_Linux_x64_Python3.8.tar.gz" -L -v -o USD.tar.gz
-          curl "https://github.com/pablode/guc/releases/download/v0.3/guc_USD23.08_Linux_x64_Python3.8.tar.gz" -L -v -o GUC.tar.gz
-
-      - name: Install binaries
-        run: |
-          mkdir -p USD_INSTALL && tar -xvf USD.tar.gz -C $PWD/USD_INSTALL
-          mkdir -p GUC_INSTALL && tar -xvf GUC.tar.gz -C $PWD/GUC_INSTALL
-          echo "LD_LIBRARY_PATH=$PWD/USD_INSTALL/lib" >> $GITHUB_ENV
-          echo "$PWD/GUC_INSTALL/bin" >> $GITHUB_PATH
-
-      - name: Print guc help
-        run: guc || [ $? -eq 1 ]
 
       - name: build
         env:
