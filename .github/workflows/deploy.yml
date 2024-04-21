@@ -2,11 +2,11 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: 'main'
+    branches: 'guc'
 
 jobs:
   build_site:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -22,6 +22,21 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      - name: Fetch binaries
+        run: |
+          curl "https://github.com/pablode/USD/releases/download/v23.08-ci-release/USD23.08_Linux_x64_Python3.8.tar.gz" -L -v -o USD.tar.gz
+          curl "https://github.com/pablode/guc/releases/download/v0.3/guc_USD23.08_Linux_x64_Python3.8.tar.gz" -L -v -o GUC.tar.gz
+
+      - name: Install binaries
+        run: |
+          mkdir -p USD_INSTALL && tar -xvf USD.tar.gz -C $PWD/USD_INSTALL
+          mkdir -p GUC_INSTALL && tar -xvf GUC.tar.gz -C $PWD/GUC_INSTALL
+          echo "LD_LIBRARY_PATH=$PWD/USD_INSTALL/lib" >> $GITHUB_ENV
+          echo "$PWD/GUC_INSTALL/bin" >> $GITHUB_PATH
+
+      - name: Print guc help
+        run: guc || [ $? -eq 1 ]
 
       - name: build
         env:
