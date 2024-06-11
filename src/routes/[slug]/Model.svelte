@@ -164,6 +164,7 @@ onMount(() => {
 
                 <span class="file-description">Converted with Omniverse Kit 105.0</span>
             </li>
+            {#if false}
             <li>
                 <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.guc.usdz")} download>
                     <img src={model.downloadUri.replace(".glb", ".glb.guc.png")} alt="screenshot from guc conversion"/>
@@ -176,6 +177,7 @@ onMount(() => {
 
                 <span class="file-description">Converted with guc 0.4</span>
             </li>
+            {/if}
         </ul>
     </div>
 

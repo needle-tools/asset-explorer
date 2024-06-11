@@ -44,7 +44,7 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
     const runThreeConversion = false;
     const runBlenderConversion = false;
     const runOmniverseConversion = false;
-    const runGucConversion = true;
+    const runGucConversion = false;
     const runUsdChecksAndRender = false;
 
     // patch FileLoader to use fs instead of fetch
@@ -305,12 +305,15 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
             await new Promise((resolve, reject) => {
                 const screenshotPath = path.resolve(file, "..", fileName + ".png");
                 const domeLightAbsPath = path.resolve("src/lib/images/neutral.hdr").replaceAll("\\", "/");
-                const cmd = 'python3 usd/generate_thumbnail.py "' + usdzFile + '" ' + '--dome-light ' + '"' + domeLightAbsPath + '"' + ' --width 900 --height 760';
+
+                // Mac: "python3"
+                // Windows: "python"
+                const cmd = 'python usd/generate_thumbnail.py "' + usdzFile + '" ' + '--dome-light ' + '"' + domeLightAbsPath + '"' + ' --width 900 --height 760';
                 
                 // console.log("        " + cmd)
                 subProcess.exec(cmd, (err, stdout, stderr) => {
                     if (err) {
-                        console.log("❌ " + fileName + " failed generate_thumbnail");
+                        console.log("❌ " + fileName + " failed generate_thumbnail (" + cmd + ")");
                         console.group();
                         console.log(`${stdout.toString()}`);
                         console.log(`${stderr.toString()}`);
@@ -357,6 +360,10 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
         try {
             let usdzArrayBuffer : ArrayBuffer | null = null;
             if (runConversions && runThreeConversion) {
+
+
+                // start puppeteer with non-headless mode and run the conversion incl. animations
+
                 usdzArrayBuffer = await new Promise((resolve, reject) => {
                     try {
                         // const manager = new LoadingManager();
@@ -402,12 +409,13 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
                 // blender conversion
                 await new Promise((resolve, reject) => {
                     // /Applications/Blender.app/Contents/MacOS/Blender -b -P blender/blender_gltf_converter.py -- -mp "/Users/herbst/Downloads/2CylinderEngine.glb"
-                    const blenderPath = '/Applications/Blender.app/Contents/MacOS/Blender';
+                    // const blenderPath = '/Applications/Blender.app/Contents/MacOS/Blender';
+                    const blenderPath = 'D:/SteamLibrary/steamapps/common/Blender/blender.exe';
                     const cmd = blenderPath + ' -b -P blender/blender_gltf_converter.py -- -mp "' + file + '"';
 
                     subProcess.exec(cmd, (err, stdout, stderr) => {
                         if (err) {
-                            console.log("❌ " + fileName + " failed blender conversion");
+                            console.log("❌ " + fileName + " failed blender conversion (" + cmd + ")");
                             console.group();
                             console.log(`${stdout.toString()}`);
                             console.log(`${stderr.toString()}`);
@@ -430,7 +438,7 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
 
                     subProcess.exec(cmd, (err, stdout, stderr) => {
                         if (err) {
-                            console.log("❌ " + fileName + " failed Omniverse conversion");
+                            console.log("❌ " + fileName + " failed Omniverse conversion (" + cmd + ")");
                             console.group();
                             console.log(`${stdout.toString()}`);
                             console.log(`${stderr.toString()}`);
@@ -450,6 +458,7 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
                 await new Promise((resolve, reject) => {
                     const gucPath = "guc"; // must be in PATH
                     const cmd = gucPath + ' ' + file + ' ' + gucUsdzFilePathAbs;
+                    console.log(cmd);
 
                     subProcess.exec(cmd, (err, stdout, stderr) => {
                         if (err) {
@@ -495,7 +504,7 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
 
             previewUri: firstFoundImage,
             uri: basePath + "/" + path.parse(file).name,
-            downloadUri: basePath + "/downloads/" + path.parse(file).name + ".glb",
+            downloadUri: basePath + "downloads/" + path.parse(file).name + ".glb",
             readmeSrc: readmeInRepo,
             originalFileSrc: srcFileInRepo,
             
