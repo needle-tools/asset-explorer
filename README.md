@@ -64,4 +64,4 @@ Generally, USD support is very spotty across the USD ecosystem; always test what
 
 There's more to do! Roundtrips between conversion tools, improvements to existing converters, better visibility into USDZ features, integrating Autodesk' USD viewer directly, integrating "model" and "model-viewer" as alternative display options, ...  
 
-Feel free to <a href="mailto:felix@needle.tools">contact us</a>!
+Feel free to <a href="mailto:hi@needle.tools">contact us</a>!
