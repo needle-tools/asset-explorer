@@ -10,7 +10,7 @@
 			<li>
 				<a
 					class="logo"
-					href="https://needle.tools"
+					href="/"
 					target="_blank"
 				>
 					<img

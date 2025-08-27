@@ -1,6 +1,6 @@
 <script>
-import Header from './Header.svelte';
-import './styles.css';
+	import Header from "./Header.svelte";
+	import "./styles.css";
 </script>
 
 <div class="app">
@@ -11,13 +11,29 @@ import './styles.css';
 	</main>
 
 	<footer>
-		<p>made by <a href="https://needle.tools">needle</a> and <a href="https://prefrontalcortex.de">prefrontal cortex</a></p>
+		<p>
+			Made by <a href="https://needle.tools" target="_blank">Needle</a>
+			and
+			<a href="https://prefrontalcortex.de" target="_blank">
+				prefrontal cortex
+			</a>
+		</p>
 	</footer>
 </div>
 
 <svelte:head>
-	<script defer data-domain="asset-explorer.needle.tools" src="https://analytics.needle.tools/js/script.file-downloads.hash.outbound-links.pageview-props.tagged-events.js"></script>
-	<script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
+	<script
+		defer
+		data-domain="asset-explorer.needle.tools"
+		src="https://analytics.needle.tools/js/script.file-downloads.hash.outbound-links.pageview-props.tagged-events.js"
+	></script>
+	<script>
+		window.plausible =
+			window.plausible ||
+			function () {
+				(window.plausible.q = window.plausible.q || []).push(arguments);
+			};
+	</script>
 </svelte:head>
 
 <style>
