@@ -1,23 +1,37 @@
 <script>
-	import { page } from '$app/stores';
-	import { base } from '$app/paths';
+	import { page } from "$app/stores";
+	import { base } from "$app/paths";
 </script>
 
 <header>
-	<div class="corner">
-		<!--
-		<a href="https://kit.svelte.dev">
-			<img src={logo} alt="SvelteKit" />
-		</a>
-		-->
-	</div>
-
+	<div class="spacer"></div>
 	<nav>
 		<ul>
-			<li aria-current={$page.url.pathname === base + '/' ? 'page' : undefined}>
+			<li>
+				<a
+					class="logo"
+					href="https://needle.tools"
+					target="_blank"
+				>
+					<img
+						src="needle-logo-black.svg"
+						alt="Needle"
+						class="needle-logo"
+					/>
+				</a>
+			</li>
+			<li
+				aria-current={$page.url.pathname === base + "/"
+					? "page"
+					: undefined}
+			>
 				<a href="{base}/">Explore</a>
 			</li>
-			<li aria-current={$page.url.pathname === base + '/about' ? 'page' : undefined}>
+			<li
+				aria-current={$page.url.pathname === base + "/about"
+					? "page"
+					: undefined}
+			>
 				<a href="{base}/about">About</a>
 			</li>
 			<!--
@@ -27,14 +41,7 @@
 			-->
 		</ul>
 	</nav>
-
-	<div class="corner">
-		<!--
-		<a href="https://github.com/sveltejs/kit">
-			<img src={github} alt="GitHub" />
-		</a>
-		-->
-	</div>
+	<div class="spacer"></div>
 </header>
 
 <style>
@@ -42,11 +49,6 @@
 		display: flex;
 		justify-content: space-between;
 		margin-top: 10px;
-	}
-
-	.corner {
-		width: 3em;
-		height: 3em;
 	}
 
 	nav {
@@ -73,7 +75,7 @@
 		height: 100%;
 	}
 
-	li[aria-current='page'] {
+	li[aria-current="page"] {
 		font-weight: bold;
 	}
 
@@ -97,5 +99,10 @@
 		align-items: center;
 		padding: 0 0.5rem;
 		text-decoration: none;
+	}
+
+	.logo {
+		width: 120px;
+		margin-right: 1rem;
 	}
 </style>
