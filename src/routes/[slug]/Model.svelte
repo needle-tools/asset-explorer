@@ -325,20 +325,30 @@ a.nav:hover {
 }
 
 .download-links {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: baseline;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
     padding: 0;
+    margin: 8px 0 0;
+    list-style: none;
+}
+
+@media (max-width: 540px) {
+    .download-links {
+        grid-template-columns: 1fr;
+    }
 }
 
 .download-links li {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    margin: 30px;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 18px 14px;
+    background-color: var(--color-bg-page);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-card);
 }
 
 .download-links li a, .download-links li button {
@@ -379,17 +389,19 @@ a.nav:hover {
 }
 
 .preview {
+    width: 100%;
+    height: 150px;
+    object-fit: contain;
+    background-color: var(--color-bg-panel);
+    border: 1px solid var(--color-border-subtle);
     border-radius: var(--radius-card);
+    box-sizing: border-box;
 }
 
 .download-links li button:hover {
     cursor: pointer;
 }
 
-.download-links img {
-    max-height: 150px;
-    max-width: 200px;
-}
 
 :global(.info img) {
     max-width: 100%;
