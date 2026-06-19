@@ -267,7 +267,10 @@ onDestroy(async () => {
     }
 });
 
-async function loadFinished(evt: CustomEvent) {}
+async function loadFinished(evt: CustomEvent) {
+    const { track } = await import("$lib/analytics");
+    track("viewer_loaded", { src });
+}
 
 function fit(scene) {
 

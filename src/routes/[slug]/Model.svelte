@@ -5,10 +5,23 @@ import { base } from "$app/paths";
 import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import ButtonOverlay from "../ButtonOverlay.svelte";
+import { track } from "$lib/analytics";
 
 export let model;
 export let next;
 export let previous;
+
+$: assetProps = { asset: model.displayName, slug: model.slug };
+
+function startAR() {
+    track("view_in_ar", assetProps);
+    needleEngine.startAR();
+}
+
+function toggleFullscreen() {
+    track("fullscreen", assetProps);
+    needleEngine.toggleFullscreen();
+}
 
 let needleEngine: NeedleEngine;
 let showXROverlay = false;
@@ -48,6 +61,8 @@ let isFullscreen = false;
 let arSessionActive = false;
 
 onMount(() => {
+    track("asset_view", assetProps);
+
     // bind left/right arrow key to goto
     const a = document.createElement("a");
     hasQuickLook = a.relList.supports("ar");
@@ -77,8 +92,8 @@ onMount(() => {
             <span>{model.displayName}</span>
 
             {#if !isFullscreen && !arSessionActive}
-            <button on:click={needleEngine.toggleFullscreen}>⛶</button>
-            <button on:click={needleEngine.startAR} class={!arSupported ? 'not-supported' : ''}>AR</button>
+            <button on:click={toggleFullscreen}>⛶</button>
+            <button on:click={startAR} class={!arSupported ? 'not-supported' : ''}>AR</button>
             <!--
             <button on:click={needleEngine.startVR} class={!vrSupported ? 'not-supported' : ''}>VR</button>
             -->
@@ -118,48 +133,58 @@ onMount(() => {
 
         <ul class="download-links">
             <li>
-                <a href={model.downloadUri} download>
+                <a href={model.downloadUri} download
+                    on:click={() => track("download", { ...assetProps, format: "glb", converter: "source" })}>
                     <img src={model.previewUri} alt="screenshot from source"/>
                     <span>Download GLB</span>
                 </a>
                 <span class="file-description">Source Asset from<br/>glTF-Sample-Models</span>
             </li>
             <li>
-                <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.three.usdz")} download>
+                <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.three.usdz")} download
+                    on:click={() => track("download", { ...assetProps, format: "usdz", converter: "three" })}>
                     <img src={model.downloadUri.replace(".glb", ".glb.three.png")} alt="screenshot from three.js conversion"/>
                 </a>
-                {#if hasQuickLook}  
+                {#if hasQuickLook}
                 <span>View in AR</span>
                 {/if}
                 <!-- TODO enable once fix lands in NE
                 <button on:click={needleEngine.generateUsdz}>Export USDZ from scene</button>
                 -->
-                <a href="{usdzThreeUrl}" target="_blank">Open in USD Web Viewer</a>
-                <a href="{model.downloadUri.replace(".glb", ".glb.three.usdz")}" download>Download USDZ</a>
-                
-                <span class="file-description">Converted with three.js<br/>r154, Needle Fork</span>                
+                <a href="{usdzThreeUrl}" target="_blank"
+                    on:click={() => track("open_usd_viewer", { ...assetProps, converter: "three" })}>Open in USD Web Viewer</a>
+                <a href="{model.downloadUri.replace(".glb", ".glb.three.usdz")}" download
+                    on:click={() => track("download", { ...assetProps, format: "usdz", converter: "three" })}>Download USDZ</a>
+
+                <span class="file-description">Converted with three.js<br/>r154, Needle Fork</span>
             </li>
             <li>
-                <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.blender.usdz")} download>
+                <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.blender.usdz")} download
+                    on:click={() => track("download", { ...assetProps, format: "usdz", converter: "blender" })}>
                     <img src={model.downloadUri.replace(".glb", ".glb.blender.png")} alt="screenshot from blender conversion"/>
                 </a>
                 {#if hasQuickLook}
                 <span>View in AR</span>
                 {/if}
-                <a href="{usdzBlenderUrl}" target="_blank">Open in USD Web Viewer</a>
-                <a href="{model.downloadUri.replace(".glb", ".glb.blender.usdz")}" download>Download USDZ</a>
+                <a href="{usdzBlenderUrl}" target="_blank"
+                    on:click={() => track("open_usd_viewer", { ...assetProps, converter: "blender" })}>Open in USD Web Viewer</a>
+                <a href="{model.downloadUri.replace(".glb", ".glb.blender.usdz")}" download
+                    on:click={() => track("download", { ...assetProps, format: "usdz", converter: "blender" })}>Download USDZ</a>
 
                 <span class="file-description">Converted with Blender 3.6</span>
             </li>
             <li>
-                <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.ov.usdz")} download>
+                <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.ov.usdz")} download
+                    on:click={() => track("download", { ...assetProps, format: "usdz", converter: "omniverse" })}>
                     <img src={model.downloadUri.replace(".glb", ".glb.ov.png")} alt="screenshot from Omniverse conversion"/>
                 </a>
                 {#if hasQuickLook}
                 <span>View in AR</span>
                 {/if}
-                <a href="{usdzOvUrl}" target="_blank">Open in USD Web Viewer</a>
-                <a href="{model.downloadUri.replace(".glb", ".glb.ov.usdz")}" download>Download USDZ</a>
+                <a href="{usdzOvUrl}" target="_blank"
+                    on:click={() => track("open_usd_viewer", { ...assetProps, converter: "omniverse" })}>Open in USD Web Viewer</a>
+                <a href="{model.downloadUri.replace(".glb", ".glb.ov.usdz")}" download
+                    on:click={() => track("download", { ...assetProps, format: "usdz", converter: "omniverse" })}>Download USDZ</a>
 
                 <span class="file-description">Converted with Omniverse Kit 105.0</span>
             </li>

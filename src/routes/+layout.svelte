@@ -23,17 +23,10 @@
 
 <svelte:head>
 	<script
+		src="https://analytics-2.needle.tools/api/script.js"
+		data-site-id="f66265d727f4"
 		defer
-		data-domain="asset-explorer.needle.tools"
-		src="https://analytics.needle.tools/js/script.file-downloads.hash.outbound-links.pageview-props.tagged-events.js"
 	></script>
-	<script>
-		window.plausible =
-			window.plausible ||
-			function () {
-				(window.plausible.q = window.plausible.q || []).push(arguments);
-			};
-	</script>
 </svelte:head>
 
 <style>

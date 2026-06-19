@@ -1,4 +1,6 @@
 <script lang="ts">
+import { track } from "$lib/analytics";
+
 export let href: string;
 export let selected: boolean;
 export let name: string;
@@ -8,6 +10,12 @@ export let truncate: boolean = false;
 
 const truncateLength = 30;
 
+function onTagClick() {
+    if (!shouldBeLink) return;
+    // `selected` reflects the state before navigation: a selected tag toggles the filter off
+    track(selected ? "tag_filter_clear" : "tag_filter", { tag: name });
+}
+
 $: shouldBeLink = name !== "generator";
 $: _showValue = showValue && typeof value !== "boolean";
 $: truncatedValue = (truncate && (typeof value === "string") && value.length > truncateLength + 2)
@@ -16,7 +24,7 @@ $: truncatedValue = (truncate && (typeof value === "string") && value.length > t
 </script>
 
 <li class={selected ? 'selected' : ''}>
-    <a href={shouldBeLink ? href : '#'}>
+    <a href={shouldBeLink ? href : '#'} on:click={onTagClick}>
         <span class="tag-name">{name}</span>
         {#if _showValue}
             <span class="tag-count">{truncatedValue}</span>
