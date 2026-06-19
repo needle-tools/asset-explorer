@@ -2,6 +2,7 @@
 import NeedleEngine from "../NeedleEngine.svelte";
 import ModelInfo from "./ModelInfo.svelte";
 import Icon from "$lib/Icon.svelte";
+import WhatsNew from "$lib/WhatsNew.svelte";
 import { base } from "$app/paths";
 import { onMount } from "svelte";
 import { goto } from "$app/navigation";
@@ -187,6 +188,8 @@ onMount(() => {
         </ul>
     </div>
 
+    <WhatsNew />
+
     <div class="info html">
         <h2 class="info-header">Description</h2>
         <div class="meta">
@@ -203,7 +206,7 @@ onMount(() => {
 }
 
 .text-column {
-    margin: 20px;
+    margin: 20px 20px 0;
     align-items: center;
     /* overflow: hidden; */
 }
@@ -214,7 +217,8 @@ onMount(() => {
     border: 1px solid var(--color-border-subtle);
     border-radius: var(--radius-card);
     box-shadow: 0 4px 16px rgba(26, 26, 26, 0.06);
-    margin: 16px;
+    margin: 16px auto 0;
+    width: 100%;
     max-width: 44rem;
     box-sizing: border-box;
 }
@@ -224,6 +228,9 @@ onMount(() => {
     position: relative;
     padding: 10px 20px;
     align-items: center;
+    /* title bar hugs its content (not the full panel width) and stays centered */
+    width: auto;
+    align-self: center;
     max-width: calc(100vw - 130px);
     /* not a pill: plain title bar, no panel chrome */
     background: transparent;
@@ -314,7 +321,7 @@ a.nav:hover {
 }
 
 .info-header {
-    text-align: center;
+    text-align: left;
     opacity: 0.7;
 }
 
@@ -346,9 +353,6 @@ a.nav:hover {
     justify-content: flex-start;
     margin: 0;
     padding: 18px 14px;
-    background-color: var(--color-bg-page);
-    border: 1px solid var(--color-border-subtle);
-    border-radius: var(--radius-card);
 }
 
 .download-links li a, .download-links li button {
@@ -389,12 +393,11 @@ a.nav:hover {
 }
 
 .preview {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     height: 150px;
     object-fit: contain;
-    background-color: var(--color-bg-panel);
-    border: 1px solid var(--color-border-subtle);
-    border-radius: var(--radius-card);
+    border-radius: 8px;
     box-sizing: border-box;
 }
 

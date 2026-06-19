@@ -1,5 +1,6 @@
 <script>
 	import Header from "./Header.svelte";
+	import WhatsNew from "$lib/WhatsNew.svelte";
 	import "./styles.css";
 </script>
 
@@ -9,6 +10,8 @@
 	<main>
 		<slot />
 	</main>
+
+	<WhatsNew />
 
 	<footer>
 		<p class="made-by">
@@ -42,7 +45,7 @@
 		flex: 1;
 		display: flex;
 		flex-direction: column;
-		padding: 1rem;
+		padding: 1rem 1rem 0;
 		width: 100%;
 		margin: 0 auto;
 		box-sizing: border-box;
