@@ -74,7 +74,7 @@
 	--color-bg-2: var(--color-bg-page);
 	--color-theme-1: var(--color-green-dark);
 	--color-theme-2: var(--color-teal);
-	--color-primary: var(--color-purple);
+	--color-primary: var(--color-text-primary);
 	--color-text: var(--color-text-secondary);
 	--color-accent: var(--color-green);
 
@@ -123,9 +123,9 @@ p {
 
 a,
 button {
-	color: var(--color-purple);
+	color: var(--color-text-primary);
 	text-decoration: none;
-	transition: color 0.2s linear;
+	transition: color 0.12s ease;
 }
 
 a:hover,

@@ -24,14 +24,27 @@
 					? "page"
 					: undefined}
 			>
-				<a href="{base}/">Explore</a>
+				<a href="{base}/">
+					<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<circle cx="12" cy="12" r="10" />
+						<polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+					</svg>
+					<span>Explore</span>
+				</a>
 			</li>
 			<li
 				aria-current={$page.url.pathname === base + "/about"
 					? "page"
 					: undefined}
 			>
-				<a href="{base}/about">About</a>
+				<a href="{base}/about">
+					<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<circle cx="12" cy="12" r="10" />
+						<line x1="12" y1="16" x2="12" y2="12" />
+						<line x1="12" y1="8" x2="12.01" y2="8" />
+					</svg>
+					<span>About</span>
+				</a>
 			</li>
 			<!--
 			<li aria-current={$page.url.pathname === base + '/models' ? 'page' : undefined}>
@@ -48,11 +61,17 @@
 		display: flex;
 		justify-content: space-between;
 		margin-top: 10px;
+		position: sticky;
+		top: 10px;
+		z-index: 50;
+		/* only the pill should capture clicks; transparent sides stay click-through */
+		pointer-events: none;
 	}
 
 	nav {
 		display: flex;
 		justify-content: center;
+		pointer-events: auto;
 	}
 
 	ul {
@@ -110,8 +129,15 @@
 		display: flex;
 		height: 100%;
 		align-items: center;
-		padding: 0 0.5rem;
+		gap: 6px;
+		padding: 0 0.7rem;
 		text-decoration: none;
+	}
+
+	.nav-icon {
+		width: 16px;
+		height: 16px;
+		flex-shrink: 0;
 	}
 
 	.logo {

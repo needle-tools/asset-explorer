@@ -79,6 +79,7 @@ li a.stacked {
 
 .tag-count {
     min-width: 0;
+    max-width: 22rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

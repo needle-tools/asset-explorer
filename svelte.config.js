@@ -34,9 +34,9 @@ const config = {
             base: dev ? '' : process.env.BASE_PATH, // process.env.BASE_PATH,
         },
 		prerender: {
-			// entries: [],
-			// Not needed because the models overview page has links to all the models – and sveltekit will automatically pre-render all reachable links!
-			// entries: ['*', ...files.map((file) => file.uri)],
+			// '*' crawls all reachable pages (the overview links to every model);
+			// the JSON API isn't linked from any page, so list it explicitly.
+			entries: ['*', '/api/models.json'],
 			handleHttpError: 'warn',
 		}
 	}

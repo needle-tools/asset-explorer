@@ -1,6 +1,7 @@
 <script lang="ts">
 import NeedleEngine from "../NeedleEngine.svelte";
-import ModelTags from "../ModelTags.svelte";
+import ModelInfo from "./ModelInfo.svelte";
+import Icon from "$lib/Icon.svelte";
 import { base } from "$app/paths";
 import { onMount } from "svelte";
 import { goto } from "$app/navigation";
@@ -52,9 +53,9 @@ function onKeyDown(evt) {
 }
 
 let windowLocation = "https://asset-explorer.needle.tools/";
-$: usdzThreeUrl = "https://usd-viewer.glitch.me/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.three.usdz");
-$: usdzBlenderUrl = "https://usd-viewer.glitch.me/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.blender.usdz");
-$: usdzOvUrl = "https://usd-viewer.glitch.me/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.ov.usdz");
+$: usdzThreeUrl = "https://usd-viewer.needle.tools/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.three.usdz");
+$: usdzBlenderUrl = "https://usd-viewer.needle.tools/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.blender.usdz");
+$: usdzOvUrl = "https://usd-viewer.needle.tools/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.ov.usdz");
 let hasQuickLook = false;
 
 let isFullscreen = false;
@@ -124,68 +125,63 @@ onMount(() => {
     <div class="spacer"></div>
     <div class="info">
         <h2 class="info-header">Information and Downloads</h2>
-        <div class="meta">
+        <div class="meta credits">
             <p>glTF information extracted with <a href="https://gltf-transform.dev/" target="_blank">gltf-transform</a>.</p>
             <p>USDZ verification and preview image created with <a href="https://openusd.org/release/toolset.html#usdchecker" target="_blank">usdchecker</a> and <a href="https://openusd.org/release/toolset.html#usdrecord" target="_blank">usdrecord</a>.</p>
-            <p><a href="https://usd-viewer.glitch.me/" target="_blank">USD Viewer</a> based on <a href="https://autodesk-forks.github.io/USD/#usd-for-web" target="_blank">Autodesk's experimental USD-for-Web</a></p>
+            <p><a href="https://usd-viewer.needle.tools/" target="_blank">USD Viewer</a> based on <a href="https://autodesk-forks.github.io/USD/#usd-for-web" target="_blank">Autodesk's experimental USD-for-Web</a></p>
         </div>
-        <ModelTags tags={model.info} />
+        <ModelInfo info={model.info} />
 
         <ul class="download-links">
             <li>
-                <a href={model.downloadUri} download
-                    on:click={() => track("download", { ...assetProps, format: "glb", converter: "source" })}>
-                    <img src={model.previewUri} alt="screenshot from source"/>
-                    <span>Download GLB</span>
-                </a>
+                <img class="preview" src={model.previewUri} alt="Source asset preview"/>
+                <span class="card-title">Source glTF</span>
+                <div class="card-links">
+                    <a href={model.downloadUri} download
+                        on:click={() => track("download", { ...assetProps, format: "glb", converter: "source" })}><Icon name="download" />Download GLB</a>
+                </div>
                 <span class="file-description">Source Asset from<br/>glTF-Sample-Models</span>
             </li>
             <li>
-                <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.three.usdz")} download
-                    on:click={() => track("download", { ...assetProps, format: "usdz", converter: "three" })}>
-                    <img src={model.downloadUri.replace(".glb", ".glb.three.png")} alt="screenshot from three.js conversion"/>
-                </a>
-                {#if hasQuickLook}
-                <span>View in AR</span>
-                {/if}
-                <!-- TODO enable once fix lands in NE
-                <button on:click={needleEngine.generateUsdz}>Export USDZ from scene</button>
-                -->
-                <a href="{usdzThreeUrl}" target="_blank"
-                    on:click={() => track("open_usd_viewer", { ...assetProps, converter: "three" })}>Open in USD Web Viewer</a>
-                <a href="{model.downloadUri.replace(".glb", ".glb.three.usdz")}" download
-                    on:click={() => track("download", { ...assetProps, format: "usdz", converter: "three" })}>Download USDZ</a>
-
+                <img class="preview" src={model.downloadUri.replace(".glb", ".glb.three.png")} alt="three.js conversion preview"/>
+                <span class="card-title"><img class="brand-logo" src="{base}/logos/threejs.svg" alt="" />three.js</span>
+                <div class="card-links">
+                    <a href={model.downloadUri.replace(".glb", ".glb.three.usdz")} download
+                        on:click={() => track("download", { ...assetProps, format: "usdz", converter: "three" })}><Icon name="download" />Download USDZ</a>
+                    <a href="{usdzThreeUrl}" target="_blank"
+                        on:click={() => track("open_usd_viewer", { ...assetProps, converter: "three" })}><Icon name="external" />Open in USD Web Viewer</a>
+                    {#if hasQuickLook}
+                    <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.three.usdz")}><Icon name="ar" />View in AR</a>
+                    {/if}
+                </div>
                 <span class="file-description">Converted with three.js<br/>r154, Needle Fork</span>
             </li>
             <li>
-                <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.blender.usdz")} download
-                    on:click={() => track("download", { ...assetProps, format: "usdz", converter: "blender" })}>
-                    <img src={model.downloadUri.replace(".glb", ".glb.blender.png")} alt="screenshot from blender conversion"/>
-                </a>
-                {#if hasQuickLook}
-                <span>View in AR</span>
-                {/if}
-                <a href="{usdzBlenderUrl}" target="_blank"
-                    on:click={() => track("open_usd_viewer", { ...assetProps, converter: "blender" })}>Open in USD Web Viewer</a>
-                <a href="{model.downloadUri.replace(".glb", ".glb.blender.usdz")}" download
-                    on:click={() => track("download", { ...assetProps, format: "usdz", converter: "blender" })}>Download USDZ</a>
-
+                <img class="preview" src={model.downloadUri.replace(".glb", ".glb.blender.png")} alt="Blender conversion preview"/>
+                <span class="card-title"><img class="brand-logo" src="{base}/logos/blender.svg" alt="" />Blender</span>
+                <div class="card-links">
+                    <a href={model.downloadUri.replace(".glb", ".glb.blender.usdz")} download
+                        on:click={() => track("download", { ...assetProps, format: "usdz", converter: "blender" })}><Icon name="download" />Download USDZ</a>
+                    <a href="{usdzBlenderUrl}" target="_blank"
+                        on:click={() => track("open_usd_viewer", { ...assetProps, converter: "blender" })}><Icon name="external" />Open in USD Web Viewer</a>
+                    {#if hasQuickLook}
+                    <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.blender.usdz")}><Icon name="ar" />View in AR</a>
+                    {/if}
+                </div>
                 <span class="file-description">Converted with Blender 3.6</span>
             </li>
             <li>
-                <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.ov.usdz")} download
-                    on:click={() => track("download", { ...assetProps, format: "usdz", converter: "omniverse" })}>
-                    <img src={model.downloadUri.replace(".glb", ".glb.ov.png")} alt="screenshot from Omniverse conversion"/>
-                </a>
-                {#if hasQuickLook}
-                <span>View in AR</span>
-                {/if}
-                <a href="{usdzOvUrl}" target="_blank"
-                    on:click={() => track("open_usd_viewer", { ...assetProps, converter: "omniverse" })}>Open in USD Web Viewer</a>
-                <a href="{model.downloadUri.replace(".glb", ".glb.ov.usdz")}" download
-                    on:click={() => track("download", { ...assetProps, format: "usdz", converter: "omniverse" })}>Download USDZ</a>
-
+                <img class="preview" src={model.downloadUri.replace(".glb", ".glb.ov.png")} alt="Omniverse conversion preview"/>
+                <span class="card-title"><img class="brand-logo" src="{base}/logos/omniverse.svg" alt="" />Omniverse</span>
+                <div class="card-links">
+                    <a href={model.downloadUri.replace(".glb", ".glb.ov.usdz")} download
+                        on:click={() => track("download", { ...assetProps, format: "usdz", converter: "omniverse" })}><Icon name="download" />Download USDZ</a>
+                    <a href="{usdzOvUrl}" target="_blank"
+                        on:click={() => track("open_usd_viewer", { ...assetProps, converter: "omniverse" })}><Icon name="external" />Open in USD Web Viewer</a>
+                    {#if hasQuickLook}
+                    <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.ov.usdz")}><Icon name="ar" />View in AR</a>
+                    {/if}
+                </div>
                 <span class="file-description">Converted with Omniverse Kit 105.0</span>
             </li>
         </ul>
@@ -205,6 +201,7 @@ onMount(() => {
 .spacer {
     margin: 30px;
 }
+
 .text-column {
     margin: 20px;
     align-items: center;
@@ -212,20 +209,27 @@ onMount(() => {
 }
 
 .info {
-    padding: 10px;
-    background-color: var(--color-bg-0);
-    border-radius: 10px;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-    margin: 10px;
+    padding: 24px 28px;
+    background-color: var(--color-bg-panel);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-card);
+    box-shadow: 0 4px 16px rgba(26, 26, 26, 0.06);
+    margin: 16px;
+    max-width: 44rem;
+    box-sizing: border-box;
 }
 
 .info.options {
     display: flex;
     position: relative;
-    border-radius: 40px;
     padding: 10px 20px;
     align-items: center;
     max-width: calc(100vw - 130px);
+    /* not a pill: plain title bar, no panel chrome */
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 .meta {
@@ -239,10 +243,25 @@ onMount(() => {
     opacity: 0.6;
 }
 
+/* credits as an info panel, aligned to the info table width */
+.credits {
+    max-width: 38rem;
+    margin: 0 auto 18px;
+    padding: 12px 16px;
+    background-color: var(--color-bg-callout);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-card);
+}
+
+.credits p {
+    opacity: 0.75;
+    line-height: 1.5;
+}
+
 .info.options button {
     outline: none;
     border: none;
-    background: var(--color-bg-0);
+    background: transparent;
     cursor: pointer;
     text-decoration: none;
 }
@@ -253,6 +272,7 @@ onMount(() => {
 
 .html a, .meta a {
     font-weight: bold;
+    text-decoration: underline;
 }
 
 a.left, a.right {
@@ -284,7 +304,13 @@ a.right::after {
 }
 
 a.nav {
+    color: var(--color-text-secondary);
     opacity: 0.5;
+}
+
+a.nav:hover {
+    color: var(--color-text-primary);
+    opacity: 0.8;
 }
 
 .info-header {
@@ -317,12 +343,43 @@ a.nav {
 
 .download-links li a, .download-links li button {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    margin: 7px 0;
+    justify-content: center;
+    gap: 7px;
+    margin: 4px 0;
     background: none;
     border: 0;
     color: var(--color-text);
+}
+
+.card-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 12px;
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.brand-logo {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+
+.card-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 8px 0 4px;
+}
+
+.preview {
+    border-radius: var(--radius-card);
 }
 
 .download-links li button:hover {
