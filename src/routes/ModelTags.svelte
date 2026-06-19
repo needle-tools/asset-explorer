@@ -7,7 +7,6 @@ export let tags: any;
 export let filter: string | null = null;
 export let ignoreTags: string[] = [];
 export let ignoreValuesForTags: string[] = [];
-export let truncate = false;
 
 </script>
 
@@ -30,7 +29,6 @@ export function showInfo(array: any, key: string) {
                 name={info}
                 value={tags[info]}
                 showValue={ignoreValuesForTags.indexOf(info) < 0}
-                {truncate}
                 />
         {/if}
     {/each}

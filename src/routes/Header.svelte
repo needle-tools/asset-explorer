@@ -10,11 +10,10 @@
 			<li>
 				<a
 					class="logo"
-					href="/"
-					target="_blank"
+					href="{base}/"
 				>
 					<img
-						src="needle-logo-black.svg"
+						src="{base}/needle-logo-black.svg"
 						alt="Needle"
 						class="needle-logo"
 					/>
@@ -64,10 +63,11 @@
 		justify-content: center;
 		align-items: center;
 		list-style: none;
-		background: var(--color-bg-0);
-		background-size: contain;
-		border-radius: 30px;
+		background: var(--color-bg-panel);
+		border: 1px solid var(--color-border-subtle);
+		border-radius: var(--radius-pill);
 		padding: 0 10px;
+		box-shadow: 0 1px 2px rgba(26, 26, 26, 0.04);
 	}
 
 	li {
@@ -75,8 +75,21 @@
 		height: 100%;
 	}
 
+	nav a {
+		color: var(--color-text-primary);
+	}
+
+	nav a:hover {
+		color: var(--color-green-dark);
+		text-decoration: none;
+	}
+
 	li[aria-current="page"] {
-		font-weight: bold;
+		font-weight: 800;
+	}
+
+	li[aria-current="page"] a {
+		color: var(--color-green-dark);
 	}
 
 	/*

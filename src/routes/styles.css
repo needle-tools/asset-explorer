@@ -1,34 +1,104 @@
-@import url('https://fonts.googleapis.com/css2?family=Bitter:wght@400;600;900&family=Libre+Franklin:wght@300;700&display=swap');
+/* ── Needle brand fonts (self-hosted, see static/fonts) ───────────────────── */
+@font-face {
+	font-family: 'Nunito Sans';
+	font-style: normal;
+	font-weight: 400 800;
+	font-stretch: 100%;
+	font-display: swap;
+	src: url('/fonts/nunito-sans-latin.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+		U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+		U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+	font-family: 'Nunito Sans';
+	font-style: normal;
+	font-weight: 400 800;
+	font-stretch: 100%;
+	font-display: swap;
+	src: url('/fonts/nunito-sans-latin-ext.woff2') format('woff2');
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+		U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+		U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+	font-family: 'Monaspace Neon';
+	font-style: normal;
+	font-weight: 400 700;
+	font-display: swap;
+	src: url('/fonts/monaspace-neon-var.woff2') format('woff2');
+}
 
+/* ── Needle brand tokens ───────────────────────────────────────────────────
+   Mirrors the Needle branding system (https://needle.tools). Light-only. */
 :root {
-	--font-body: 'Libre Franklin', Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
-		Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-	--font-header: 'Libre Franklin', monospace;
-	--color-bg-0: rgb(255, 255, 255);
-	--color-bg-1: hsl(209, 36%, 86%);
-	--color-bg-2: hsl(224, 44%, 95%);
-	--color-theme-1: #000000;
-	--color-theme-2: #4075a6;
-	--color-text: rgba(23, 22, 22, 0.7);
+	/* Surfaces */
+	--color-bg-page: #f0f4ef; /* pale green page stage */
+	--color-bg-panel: #ffffff; /* white working surfaces */
+	--color-bg-callout: #eaf5ff; /* information callout */
+	--color-bg-info: #dbebe1; /* success callout */
+
+	/* Brand accents */
+	--color-green: #99cc33;
+	--color-green-dark: #74af52;
+	--color-green-light: #d7db0a;
+	--color-teal: #0ba398;
+	--color-purple: #826aed;
+
+	/* Text */
+	--color-text-primary: #1a1a1a;
+	--color-text-secondary: #4a4e4a;
+	--color-text-muted: #767a76;
+	--color-success: #27835c;
+	--color-error: #ff0051;
+
+	/* Borders */
+	--color-border-subtle: #d9e2d7;
+	--color-border-strong: #c6d0c4;
+
+	/* Radii */
+	--radius-control: 8px;
+	--radius-card: 12px;
+	--radius-pill: 999px;
+
+	/* Fonts */
+	--font-body: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+		Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	--font-header: var(--font-body);
+	--font-mono: 'Monaspace Neon', ui-monospace, 'SF Mono', SFMono-Regular, Menlo,
+		Consolas, monospace;
+
+	/* Compatibility aliases for existing component styles */
+	--color-bg-0: var(--color-bg-panel);
+	--color-bg-1: var(--color-bg-page);
+	--color-bg-2: var(--color-bg-page);
+	--color-theme-1: var(--color-green-dark);
+	--color-theme-2: var(--color-teal);
+	--color-primary: var(--color-purple);
+	--color-text: var(--color-text-secondary);
+	--color-accent: var(--color-green);
+
 	--column-width: 42rem;
 	--column-margin-top: 4rem;
+
 	font-family: var(--font-body);
 	color: var(--color-text);
+	color-scheme: light;
 }
 
 body {
 	min-height: 100vh;
 	margin: 0;
-	background-attachment: fixed;
-	background-color: var(--color-bg-1);
-	/* background-size: 100vw 100vh; */
-	background-image: 
-		linear-gradient(180deg, var(--color-bg-0) 0%, var(--color-bg-1) 15%, var(--color-bg-2) 50%);
+	background-color: var(--color-bg-page);
+	color: var(--color-text-secondary);
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
 	font-family: var(--font-header);
-	font-weight: 400;
+	font-weight: 800;
+	color: var(--color-text-primary);
 }
 
 h2:hover .header-link::before {
@@ -36,7 +106,9 @@ h2:hover .header-link::before {
 }
 
 code {
-	font-size: 1.2em;
+	font-family: var(--font-mono);
+	font-size: 1.1em;
+	color: var(--color-text-primary);
 }
 
 h2 {
@@ -46,18 +118,20 @@ h2 {
 p {
 	line-height: 1.5;
 	color: var(--color-text);
-    overflow-wrap: anywhere;
+	overflow-wrap: anywhere;
 }
 
-a, button {
-	color: var(--color-text);
+a,
+button {
+	color: var(--color-purple);
 	text-decoration: none;
 	transition: color 0.2s linear;
 }
 
-a:hover, button:hover {
+a:hover,
+button:hover {
 	text-decoration: underline;
-	color: var(--color-theme-1);
+	color: var(--color-green-dark);
 }
 
 h1 {
@@ -65,14 +139,14 @@ h1 {
 }
 
 pre {
-	font-size: 16px;
+	font-size: 15px;
 	font-family: var(--font-mono);
-	background-color: rgba(255, 255, 255, 0.45);
-	border-radius: 3px;
-	box-shadow: 2px 2px 6px rgb(255 255 255 / 25%);
-	padding: 0.5em;
+	background-color: var(--color-bg-panel);
+	border: 1px solid var(--color-border-subtle);
+	border-radius: var(--radius-control);
+	padding: 0.75em;
 	overflow-x: auto;
-	color: var(--color-text);
+	color: var(--color-text-primary);
 }
 
 .text-column {
@@ -81,13 +155,20 @@ pre {
 	flex: 0.6;
 	flex-direction: column;
 	margin: 0 auto;
-    max-width: min(95vw, 48rem);
+	max-width: min(95vw, 48rem);
 }
 
 input,
 button {
 	font-size: inherit;
 	font-family: inherit;
+}
+
+/* Brand: visible focus ring for keyboard users */
+:focus-visible {
+	outline: 2px solid var(--color-purple);
+	outline-offset: 2px;
+	border-radius: 4px;
 }
 
 button:focus:not(:focus-visible) {
@@ -106,13 +187,14 @@ button:focus:not(:focus-visible) {
 	white-space: nowrap;
 }
 
-@media (prefers-color-scheme: dark) {
-	:root {
-		--color-bg-0: rgb(23, 22, 22);
-		--color-bg-1: hsl(209, 36%, 16%);
-		--color-bg-2: hsl(224, 44%, 5%);
-		--color-theme-1: #ffffff;
-		--color-theme-2: #4075a6;
-		--color-text: rgba(255, 255, 255, 0.7);
+/* Brand: respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
 	}
 }

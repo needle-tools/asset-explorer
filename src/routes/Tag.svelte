@@ -4,11 +4,8 @@ import { track } from "$lib/analytics";
 export let href: string;
 export let selected: boolean;
 export let name: string;
-export let value: number | boolean;
+export let value: number | boolean | string;
 export let showValue: boolean = true;
-export let truncate: boolean = false;
-
-const truncateLength = 30;
 
 function onTagClick() {
     if (!shouldBeLink) return;
@@ -18,62 +15,88 @@ function onTagClick() {
 
 $: shouldBeLink = name !== "generator";
 $: _showValue = showValue && typeof value !== "boolean";
-$: truncatedValue = (truncate && (typeof value === "string") && value.length > truncateLength + 2)
-    ? value.substring(0, truncateLength) + "..."
-    : value;
+// long string values (e.g. generator, source) stack below the label instead of beside it
+$: _stack = _showValue && typeof value === "string";
+$: fullValue = typeof value === "string" ? value : "";
 </script>
 
 <li class={selected ? 'selected' : ''}>
-    <a href={shouldBeLink ? href : '#'} on:click={onTagClick}>
-        <span class="tag-name">{name}</span>
+    <a class:stacked={_stack} href={shouldBeLink ? href : '#'} on:click={onTagClick}>
+        <span class="tag-name" title={name}>{name}</span>
         {#if _showValue}
-            <span class="tag-count">{truncatedValue}</span>
+            <span class="tag-count" title={fullValue}>{value}</span>
         {/if}
     </a>
 </li>
 
 <style>
 li {
-    /*background-color: #b1b1b1;*/
-    border: 1px solid rgba(0,0,0,0.08);
-    margin: .2rem .2rem;
-    border-radius: 5px;
-    font-size: 0.8rem;
-    color: var(--color-text);
+    background-color: rgba(26, 26, 26, 0.04);
+    border: 1px solid rgba(26, 26, 26, 0.18);
+    border-radius: 6px;
+    margin: 2px;
+    font-size: 0.72rem;
+    color: var(--color-text-secondary);
     overflow: hidden;
+    min-width: 0;
+    max-width: 100%;
+}
+
+li a {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    min-width: 0;
+    padding: 3px 8px;
+    color: inherit;
 }
 
 li a:hover {
     text-decoration: none;
-    background-color: rgba(114, 163, 206, 0.3);
+    background-color: rgba(153, 204, 51, 0.18);
+    color: var(--color-text-primary);
 }
 
-li a {
-    color: var(--color-text);
-    display: flex;
-    align-items: center;
+/* long string values stack below the label instead of beside it */
+li a.stacked {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1px;
+}
+
+.tag-name {
+    white-space: nowrap;
+    color: var(--color-text-muted);
+    min-width: 0;
+}
+
+.stacked .tag-name {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.tag-count {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--color-text-primary);
+    font-weight: 600;
+}
+
+.stacked .tag-count {
+    font-weight: 500;
 }
 
 li.selected {
-    background-color: rgba(114, 163, 206, 0.4);
-    border: 1px solid rgba(0,0,0,0.2);
-}
-li.selected a {
+    background-color: rgba(153, 204, 51, 0.28);
+    border-color: var(--color-green);
 }
 
-span {
-    padding: 2px 6px;
+li.selected a,
+li.selected .tag-name {
+    color: var(--color-text-primary);
 }
-
-li .tag-count {
-    background-color: rgba(114, 163, 206, 0.216);
-    word-break: break-word;
-}
-
-@media (prefers-color-scheme: dark) {
-    li {
-        border: 1px solid rgba(255,255,255,0.08);
-    }
-}
-
 </style>

@@ -58,7 +58,7 @@ $: filter = browser && $page.url.searchParams.get('tag');
             <a href="{base}/{model.slug}">
                 <img src="{model.thumbnail}" alt="{model.name}" />
                 <p class="name">{model.name}</p>
-                <ModelTags tags={model.extras.info} filter={filter} ignoreValuesForTags={["copyright"]} truncate/>
+                <ModelTags tags={model.extras.info} filter={filter} ignoreValuesForTags={["copyright"]}/>
             </a>
         </li>
     {/each}
@@ -93,7 +93,7 @@ $: filter = browser && $page.url.searchParams.get('tag');
 
     a {
         text-decoration: none;
-        color: black;
+        color: var(--color-text-primary);
     }
 
     .models a {
@@ -118,32 +118,41 @@ $: filter = browser && $page.url.searchParams.get('tag');
 
     li {
         list-style-type: none;
-        border: 1px solid rgba(0,0,0,0);
+        border: 1px solid transparent;
     }
-    
+
     img {
         width: var(--size);
         height: var(--size);
         object-fit: contain;
+        background-color: var(--color-bg-panel);
+        border: 1px solid var(--color-border-subtle);
+        border-radius: var(--radius-card);
+        box-shadow: 0 1px 4px rgba(26, 26, 26, 0.08);
+        box-sizing: border-box;
     }
 
     li:hover {
         transform: scale(1.02);
-        background-color: var(--color-bg-0);
+        background-color: var(--color-bg-panel);
         padding: 10px;
         margin: -5px;
-        border-radius: 10px;
-        box-shadow: 0px 0px 2px rgba(0,0,0,0.1);
+        border-radius: var(--radius-card);
+        border: 1px solid var(--color-border-subtle);
+        box-shadow: 0 4px 12px rgba(26, 26, 26, 0.08);
         z-index: 10;
     }
 
+    /* Needle brand "micro-label" type style */
     .title {
         text-align: center;
-    }
-
-    @media (prefers-color-scheme: dark) {
-        li:hover {
-            border: 1px solid rgba(255,255,255,0.08);
-        }
+        color: var(--color-text-muted);
+        font-size: 0.74rem;
+        font-weight: 700;
+        line-height: 1.15;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-top: 2.4rem;
+        margin-bottom: 1rem;
     }
 </style>
