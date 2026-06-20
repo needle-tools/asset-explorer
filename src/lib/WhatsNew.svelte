@@ -118,15 +118,14 @@ function readableOn(hex: string): string {
     box-sizing: border-box;
 }
 
-/* fixed-size wrapper so crossfades never reflow the page */
+/* both crossfading items share one grid cell, so the slot grows to fit its
+   content (no fixed height -> no overflow/overlap on narrow screens) */
 .wn-slot {
-    position: relative;
-    min-height: 76px;
+    display: grid;
 }
 
 .wn-item {
-    position: absolute;
-    inset: 0;
+    grid-area: 1 / 1;
     display: flex;
     align-items: center;
     gap: 14px;
@@ -181,8 +180,9 @@ function readableOn(hex: string): string {
 
 @media (max-width: 540px) {
     .wn-item {
-        flex-wrap: wrap;
-        gap: 8px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
     }
 }
 

@@ -41,8 +41,9 @@ $: modelJsonLd = {
 <style>
     div {
         display: flex;
-        flex-direction: row;
-        justify-content: space-evenly;
+        justify-content: center;
         align-items: flex-start;
+        width: 100%;
+        box-sizing: border-box;
     }
 </style>

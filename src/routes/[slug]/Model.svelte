@@ -201,14 +201,28 @@ onMount(() => {
 </div>
 
 <style>
+/* reserves room for the viewer title bar, which floats at bottom:-70px (NeedleEngine.svelte) */
 .spacer {
-    margin: 30px;
+    height: 80px;
 }
 
 .text-column {
-    margin: 20px 20px 0;
+    width: 100%;
+    max-width: 48rem;
+    margin: 20px auto 0;
+    flex: initial;
+    box-sizing: border-box;
     align-items: center;
-    /* overflow: hidden; */
+    min-width: 0;
+}
+
+@media (max-width: 540px) {
+    .text-column {
+        margin: 12px auto 0;
+    }
+    .info {
+        padding: 18px 16px;
+    }
 }
 
 .info {
@@ -275,6 +289,16 @@ onMount(() => {
 
 .info.options span {
     font-weight: bold;
+}
+
+/* asset name: single line with ellipsis instead of wrapping */
+.info.options > span {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .html a, .meta a {
