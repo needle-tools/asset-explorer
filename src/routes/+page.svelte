@@ -4,9 +4,33 @@ import { cubicInOut } from 'svelte/easing';
 import ModelTags, { showInfo } from './ModelTags.svelte';
 import { browser } from "$app/environment";
 import { base } from '$app/paths';
+import Seo from '$lib/Seo.svelte';
 
 export let data;
+const SITE = "https://asset-explorer.needle.tools";
 let windowLocation = "https://asset-explorer.needle.tools/";
+
+const seoTitle = "Asset Explorer — glTF & USD Sample Models";
+const seoDescription =
+    "Explore glTF and USD sample 3D models with downloadable GLB and USDZ conversions for three.js, Blender, and Omniverse — view them in 3D and AR.";
+
+$: homeJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Asset Explorer",
+    url: SITE + "/",
+    description: seoDescription,
+    mainEntity: {
+        "@type": "ItemList",
+        numberOfItems: data.models.length,
+        itemListElement: data.models.map((m, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            url: `${SITE}/${m.slug}`,
+            name: m.name,
+        })),
+    },
+};
 
 function getAndCountTags(_data) {
     const tags: any = {};
@@ -38,15 +62,12 @@ $: filter = browser && $page.url.searchParams.get('tag');
 
 </script>
 
-<svelte:head>
-	<title>Asset Explorer</title>
-	<meta name="description" content="glTF and USD sample models and conversions" />
-    <meta property="og:image" content="{windowLocation + "asset-explorer.jpg"}" />
-    <meta property="og:title" content="Explore 3D Assets" />
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:image" content="{windowLocation + "asset-explorer.jpg"}" />
-    <meta property="twitter:description" content="glTF and USD sample models and conversions" />
-</svelte:head>
+<Seo
+    title={seoTitle}
+    description={seoDescription}
+    image={SITE + "/asset-explorer.jpg"}
+    jsonLd={homeJsonLd}
+/>
 
 <h3 class="title">Asset capabilities</h3>
 <ModelTags tags={getAndCountTags(data)} filter={filter} ignoreTags={["generator", "source"]}/>

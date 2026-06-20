@@ -1,18 +1,34 @@
 <script>
 import Model from "./Model.svelte";
+import Seo from "$lib/Seo.svelte";
 
 export let data;
-let windowLocation = "https://asset-explorer.needle.tools/";
+const SITE = "https://asset-explorer.needle.tools";
+
+$: model = data.model;
+$: title = `${model.displayName} – Asset Explorer`;
+$: description =
+    `${model.displayName} — glTF and USD sample 3D model. ` +
+    `Download the GLB or USDZ conversions (three.js, Blender, Omniverse) and view it in 3D and AR.`;
+$: imageUrl = model.previewUri ? SITE + model.previewUri : `${SITE}/asset-explorer.jpg`;
+$: modelJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "3DModel",
+    name: model.displayName,
+    url: `${SITE}/${model.slug}`,
+    image: imageUrl,
+    encodingFormat: ["model/gltf-binary", "model/vnd.usdz+zip"],
+    ...(model.info?.copyright ? { copyrightNotice: model.info.copyright } : {}),
+    isPartOf: { "@type": "CollectionPage", name: "Asset Explorer", url: SITE },
+    associatedMedia: {
+        "@type": "MediaObject",
+        contentUrl: SITE + model.downloadUri,
+        encodingFormat: "model/gltf-binary",
+    },
+};
 </script>
 
-<svelte:head>
-	<title>{data.model?.displayName}</title>
-	<meta name="description" content="glTF and USD sample models and conversions" />
-    <meta property="og:image" content="{windowLocation + data.model.previewUri}" />
-    <meta property="og:title" content="{data.model.displayName}" />
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:image" content="{windowLocation + data.model.previewUri}" />
-</svelte:head>
+<Seo {title} {description} image={imageUrl} jsonLd={modelJsonLd} />
 
 <div>
     {#if data.model}

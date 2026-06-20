@@ -1,10 +1,14 @@
 <script>
+import Seo from "$lib/Seo.svelte";
 export let data;
+const SITE = "https://asset-explorer.needle.tools";
 </script>
 
-<svelte:head>
-	<title>About Asset Explorer</title> 
-</svelte:head>
+<Seo
+	title="About – Asset Explorer"
+	description="About the Asset Explorer — a gallery of glTF and USD sample models and their USDZ conversions for three.js, Blender, and Omniverse, by Needle."
+	image={SITE + "/asset-explorer.jpg"}
+/>
 
 <div class="text-column html">
 	{@html data.readme} 

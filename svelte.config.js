@@ -36,7 +36,7 @@ const config = {
 		prerender: {
 			// '*' crawls all reachable pages (the overview links to every model);
 			// the JSON API isn't linked from any page, so list it explicitly.
-			entries: ['*', '/api/models.json'],
+			entries: ['*', '/api/models.json', '/sitemap.xml'],
 			handleHttpError: 'warn',
 		}
 	}
