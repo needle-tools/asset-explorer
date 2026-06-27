@@ -44,7 +44,7 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
     const runThreeConversion = false;
     const runBlenderConversion = false;
     const runOmniverseConversion = false;
-    const runUsdChecksAndRender = false;
+    const runUsdChecksAndRender = true;
 
     // patch FileLoader to use fs instead of fetch
     const originalLoad = FileLoader.prototype.load;
