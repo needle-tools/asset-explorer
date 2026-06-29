@@ -297,11 +297,11 @@ function countLabel(search: string, kind: "group" | "generator" | "tag", value: 
         if (kind === "generator") return hasGenerator(asset, value);
         return hasCapability(asset, value);
     }).length;
-    return matching === total ? total : `${matching}/${total}`;
+    return matching;
 }
 
 function hasMatches(label: number | string) {
-    return !(typeof label === "string" && label.startsWith("0/"));
+    return label !== 0;
 }
 
 function isActiveFacet(kind: "group" | "generator" | "tag", value: string) {
