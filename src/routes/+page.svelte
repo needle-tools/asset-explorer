@@ -105,7 +105,12 @@ function getAndCountTags(_data: PageData) {
         ["cameras", 6],
         ["skins", 7],
         ["vertexColors", 8],
-        ["scenes", 9],
+        ["tangents", 9],
+        ["multipleUvSets", 10],
+        ["doubleSidedMaterials", 11],
+        ["morphAnimations", 12],
+        ["sparseAccessors", 13],
+        ["scenes", 14],
     ]);
 
     for (const model of _data.models) {
@@ -423,7 +428,7 @@ $: visibleExtensionEntries = (() => {
 })();
 
 $: baseMetadataEntries = Object.entries(getAndCountTags(data))
-    .filter(([tag]) => ["source", "copyright"].includes(tag))
+    .filter(([tag]) => ["generator", "source", "copyright"].includes(tag))
     .map(([tag, count]) => ({ value: tag, name: tag, label: countLabel(currentSearch, "tag", tag, count) }));
 
 $: visibleMetadataEntries = (() => {
@@ -507,7 +512,7 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
 </details>
 
 <details class="facet-section" open={facetSectionOpen.capabilities} on:toggle={(event) => onFacetSectionToggle(event, "capabilities")}>
-    <summary><span>Capabilities</span><span>{visibleCapabilityEntries.length}</span></summary>
+    <summary><span>Has special data</span><span>{visibleCapabilityEntries.length}</span></summary>
     <ul class="groups">
         {#each visibleCapabilityEntries as { value, name, label }}
             <Tag
@@ -634,7 +639,7 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
 
                         {#if capabilityCount}
                         <details>
-                            <summary><span class="footer-label">Capabilities</span><span class="footer-count">{capabilityCount}</span></summary>
+                            <summary><span class="footer-label">Has special data</span><span class="footer-count">{capabilityCount}</span></summary>
                             <ModelTags
                                 tags={capabilityEntries}
                                 includeFilters={tagFilters}
@@ -643,7 +648,7 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
                         </details>
                         {:else}
                         <div class="footer-row is-empty">
-                            <span class="footer-label">Capabilities</span><span class="footer-count">{capabilityCount}</span>
+                            <span class="footer-label">Has special data</span><span class="footer-count">{capabilityCount}</span>
                         </div>
                         {/if}
 

@@ -51,7 +51,7 @@ function onContextMenu(event: MouseEvent) {
     window.location.href = excludeHref;
 }
 
-$: shouldBeLink = name !== "generator";
+$: shouldBeLink = href !== "#";
 $: _showValue = showValue && typeof value !== "boolean";
 // long string values (e.g. generator, source) stack below the label instead of beside it
 $: _stack = _showValue && typeof value === "string" && value.length > 14;
