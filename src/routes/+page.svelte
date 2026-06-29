@@ -127,7 +127,7 @@ function generatorFamily(value: unknown) {
     if (!generator) return "";
 
     const knownFamilies: Array<[RegExp, string]> = [
-        [/^(Khronos\s+)?glTF Blender I\/O/i, "Blender"],
+        [/^(Khronos\s+)?(?:glTF Blender I\/O|Blender glTF|glTF Blender)/i, "Blender"],
         [/^Blender/i, "Blender"],
         [/^three\.js/i, "three.js"],
         [/^Needle/i, "Needle"],
@@ -136,15 +136,40 @@ function generatorFamily(value: unknown) {
         [/^FBX2glTF/i, "FBX2glTF"],
         [/^obj2gltf/i, "obj2gltf"],
         [/^Sketchfab/i, "Sketchfab"],
+        [/^RapidCompact/i, "RapidCompact"],
+        [/^RapidPipeline/i, "RapidPipeline"],
         [/^Maya/i, "Maya"],
         [/^3ds\s*Max/i, "3ds Max"],
+        [/^HS\s+glTF exporter for 3dsmax/i, "Satoshi Hayashi glTF exporter + 3ds Max"],
+        [/^babylon\.js\s+glTF exporter/i, "Babylon.js glTF exporter"],
     ];
 
     for (const [pattern, family] of knownFamilies) {
         if (pattern.test(generator)) return family;
     }
 
+    const generatorTools: Array<[RegExp, string]> = [
+        [/\bRapidCompact\b/i, "RapidCompact"],
+        [/\bRapidPipeline(?:\s+3D Processor)?\b/i, "RapidPipeline"],
+        [/\b3ds\s*Max\b/i, "3ds Max"],
+        [/\bV-Ray\b/i, "V-Ray"],
+        [/\bSatoshi Hayashi glTF exporter\b/i, "Satoshi Hayashi glTF exporter"],
+        [/\bHS\s+glTF exporter for 3dsmax\b/i, "Satoshi Hayashi glTF exporter"],
+        [/\bAutodesk glTF exporter\b/i, "Autodesk glTF exporter"],
+        [/\b(?:babylon\.js|Max2Babylon)\s+glTF exporter\b|\bMax2Babylon\b/i, "Babylon.js glTF exporter"],
+        [/\bVisual Studio Code\b|\bVSCode\b/i, "Visual Studio Code"],
+        [/\bglTF Tools\b|\bglTF-Tools\b/i, "glTF Tools"],
+    ];
+    const tools = generatorTools
+        .filter(([pattern]) => pattern.test(generator))
+        .map(([, tool]) => tool)
+        .filter((tool, index, list) => list.indexOf(tool) === index);
+    if (tools.length) return tools.join(" + ");
+
     const prefix = generator
+        .replace(/^Created\s+(?:by|in)\s+/i, "")
+        .replace(/^Generated\s+with\s+/i, "")
+        .replace(/^Edited\s+in\s+/i, "")
         .split(/[;,]/)[0]
         .replace(/\s*\([^)]*\)\s*$/, "")
         .replace(/\s+(?:v|r)?\d[\w.+-]*.*$/i, "")
@@ -720,16 +745,14 @@ function entryCount(value: Record<string, any> | readonly unknown[] | undefined)
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: flex-start;
-        justify-content: space-evenly;
         margin: 0;
         padding: 0;
     }
 
     .groups {
-        justify-content: center;
-        margin-bottom: 1rem;
+        justify-content: left;
     }
 
     li {
@@ -775,15 +798,13 @@ function entryCount(value: Record<string, any> | readonly unknown[] | undefined)
 
     /* Needle brand "micro-label" type style */
     .title {
-        text-align: center;
         color: var(--color-text-muted);
         font-size: 0.74rem;
         font-weight: 700;
         line-height: 1.15;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        margin-top: 2.4rem;
-        margin-bottom: 1rem;
+        margin-top: 1rem;
     }
 
     @media only screen and (max-width: 760px) {
