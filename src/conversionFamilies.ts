@@ -40,6 +40,7 @@ export const conversionFamilies: ConversionFamily[] = [
         description: "Converted with Needle Engine 5.1.2 USDZExporter",
         converter: "needle-engine",
         versionLabel: "5.1.2",
+        logo: "needle-symbol.svg",
     },
     {
         id: "blender-3-6",

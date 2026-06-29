@@ -488,14 +488,15 @@ a.nav:hover {
     opacity: 0.5;
     text-decoration: none;
     font-size: 0.8rem;
+    line-height: 1.35;
 }
 
 .download-links {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
+    gap: 4px 16px;
     padding: 0;
-    margin: 8px 0 0;
+    margin: 6px 0 0;
     list-style: none;
 }
 
@@ -511,7 +512,7 @@ a.nav:hover {
     align-items: center;
     justify-content: flex-start;
     margin: 0;
-    padding: 18px 14px;
+    padding: 10px 14px 12px;
 }
 
 .download-links li a {
@@ -520,7 +521,7 @@ a.nav:hover {
     align-items: center;
     justify-content: center;
     gap: 7px;
-    margin: 4px 0;
+    margin: 2px 0;
     background: none;
     border: 0;
     color: var(--color-text);
@@ -530,7 +531,7 @@ a.nav:hover {
     display: flex;
     align-items: center;
     gap: 7px;
-    margin-top: 12px;
+    margin-top: 6px;
     font-weight: 700;
     font-size: 0.72rem;
     letter-spacing: 0.06em;
@@ -548,13 +549,13 @@ a.nav:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 8px 0 4px;
+    margin: 5px 0 3px;
 }
 
 .preview {
     width: auto;
     max-width: 100%;
-    height: 150px;
+    height: 82px;
     object-fit: contain;
     border-radius: 8px;
     box-sizing: border-box;
