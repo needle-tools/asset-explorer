@@ -117,8 +117,56 @@ function getAndCountGroups(_data: PageData) {
     }));
 }
 
+function generatorFamily(value: unknown) {
+    if (typeof value !== "string") return "";
+    const generator = value.trim();
+    if (!generator) return "";
+
+    const knownFamilies: Array<[RegExp, string]> = [
+        [/^(Khronos\s+)?glTF Blender I\/O/i, "Blender"],
+        [/^Blender/i, "Blender"],
+        [/^three\.js/i, "three.js"],
+        [/^Needle/i, "Needle"],
+        [/^glTF-?Transform/i, "glTF Transform"],
+        [/^COLLADA2GLTF/i, "COLLADA2GLTF"],
+        [/^FBX2glTF/i, "FBX2glTF"],
+        [/^obj2gltf/i, "obj2gltf"],
+        [/^Sketchfab/i, "Sketchfab"],
+        [/^Maya/i, "Maya"],
+        [/^3ds\s*Max/i, "3ds Max"],
+    ];
+
+    for (const [pattern, family] of knownFamilies) {
+        if (pattern.test(generator)) return family;
+    }
+
+    const prefix = generator
+        .split(/[;,]/)[0]
+        .replace(/\s*\([^)]*\)\s*$/, "")
+        .replace(/\s+(?:v|r)?\d[\w.+-]*.*$/i, "")
+        .trim();
+
+    return prefix || generator;
+}
+
+function getAndCountGenerators(_data: PageData) {
+    const generators: Record<string, number> = {};
+
+    for (const model of _data.models) {
+        const family = generatorFamily(model.extras.info?.generator);
+        if (!family) continue;
+        generators[family] = (generators[family] ?? 0) + 1;
+    }
+
+    return Object.fromEntries(Object.entries(generators).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])));
+}
+
 function hasGroup(asset: AssetCard, value: string) {
     return asset.groups?.includes(value) ?? false;
+}
+
+function hasGenerator(asset: AssetCard, value: string) {
+    return generatorFamily(asset.extras.info?.generator) === value;
 }
 
 function hasCapability(asset: AssetCard, value: string) {
@@ -132,6 +180,8 @@ function isExtensionTag(tag: string) {
 function matchesListFilters(asset: AssetCard, filters: {
     groups: string[];
     notGroups: string[];
+    generators: string[];
+    notGenerators: string[];
     tags: string[];
     notTags: string[];
     category: string;
@@ -139,6 +189,8 @@ function matchesListFilters(asset: AssetCard, filters: {
     if (filters.category && !asset.categoryPath?.join("/")?.startsWith(filters.category)) return false;
     if (!filters.groups.every((value) => hasGroup(asset, value))) return false;
     if (filters.notGroups.some((value) => hasGroup(asset, value))) return false;
+    if (!filters.generators.every((value) => hasGenerator(asset, value))) return false;
+    if (filters.notGenerators.some((value) => hasGenerator(asset, value))) return false;
     if (!filters.tags.every((value) => hasCapability(asset, value))) return false;
     if (filters.notTags.some((value) => hasCapability(asset, value))) return false;
     return true;
@@ -166,11 +218,15 @@ $: tagFilters = currentParams.getAll("tag");
 $: tagExcludes = currentParams.getAll("notTag");
 $: groupFilters = currentParams.getAll("group");
 $: groupExcludes = currentParams.getAll("notGroup");
+$: generatorFilters = currentParams.getAll("generator");
+$: generatorExcludes = currentParams.getAll("notGenerator");
 $: category = currentParams.get('category') ?? "";
 $: visibleAssets = (data.assets ?? data.models).filter((asset: AssetCard) => {
     return matchesListFilters(asset, {
         groups: groupFilters,
         notGroups: groupExcludes,
+        generators: generatorFilters,
+        notGenerators: generatorExcludes,
         tags: tagFilters,
         notTags: tagExcludes,
         category,
@@ -183,11 +239,17 @@ function setList(params: URLSearchParams, name: string, values: string[]) {
     for (const value of values) params.append(name, value);
 }
 
-function filterHref(search: string, paramName: "group" | "tag", value: string, exclude = false) {
+function excludeParamName(paramName: "group" | "generator" | "tag") {
+    if (paramName === "group") return "notGroup";
+    if (paramName === "generator") return "notGenerator";
+    return "notTag";
+}
+
+function filterHref(search: string, paramName: "group" | "generator" | "tag", value: string, exclude = false) {
     const params = new URLSearchParams(search);
-    const excludeParamName = paramName === "group" ? "notGroup" : "notTag";
+    const excludeName = excludeParamName(paramName);
     const includes = new Set(params.getAll(paramName));
-    const excludes = new Set(params.getAll(excludeParamName));
+    const excludes = new Set(params.getAll(excludeName));
 
     if (exclude) {
         includes.delete(value);
@@ -204,30 +266,36 @@ function filterHref(search: string, paramName: "group" | "tag", value: string, e
     }
 
     setList(params, paramName, [...includes]);
-    setList(params, excludeParamName, [...excludes]);
+    setList(params, excludeName, [...excludes]);
     params.delete("category");
 
     const query = params.toString();
     return query ? `${base}/?${query}` : `${base}/`;
 }
 
-function countLabel(search: string, kind: "group" | "tag", value: string, total: number) {
+function countLabel(search: string, kind: "group" | "generator" | "tag", value: string, total: number) {
     const params = new URLSearchParams(search);
     const filters = {
         groups: params.getAll("group"),
         notGroups: params.getAll("notGroup"),
+        generators: params.getAll("generator"),
+        notGenerators: params.getAll("notGenerator"),
         tags: params.getAll("tag"),
         notTags: params.getAll("notTag"),
         category: params.get("category") ?? "",
     };
     filters.groups = filters.groups.filter((group) => kind !== "group" || group !== value);
     filters.notGroups = filters.notGroups.filter((group) => kind !== "group" || group !== value);
+    filters.generators = filters.generators.filter((generator) => kind !== "generator" || generator !== value);
+    filters.notGenerators = filters.notGenerators.filter((generator) => kind !== "generator" || generator !== value);
     filters.tags = filters.tags.filter((tag) => kind !== "tag" || tag !== value);
     filters.notTags = filters.notTags.filter((tag) => kind !== "tag" || tag !== value);
 
     const matching = (data.assets ?? data.models).filter((asset: AssetCard) => {
         if (!matchesListFilters(asset, filters)) return false;
-        return kind === "group" ? hasGroup(asset, value) : hasCapability(asset, value);
+        if (kind === "group") return hasGroup(asset, value);
+        if (kind === "generator") return hasGenerator(asset, value);
+        return hasCapability(asset, value);
     }).length;
     return matching === total ? total : `${matching}/${total}`;
 }
@@ -236,15 +304,22 @@ function hasMatches(label: number | string) {
     return !(typeof label === "string" && label.startsWith("0/"));
 }
 
-function isActiveFacet(kind: "group" | "tag", value: string) {
+function isActiveFacet(kind: "group" | "generator" | "tag", value: string) {
     if (kind === "group") return groupFilters.includes(value) || groupExcludes.includes(value);
+    if (kind === "generator") return generatorFilters.includes(value) || generatorExcludes.includes(value);
     return tagFilters.includes(value) || tagExcludes.includes(value);
 }
+
+$: visibleGeneratorEntries = Object.entries(getAndCountGenerators(data))
+    .map(([generator, count]) => ({
+        generator,
+        label: countLabel(currentSearch, "generator", generator, count),
+    }))
+    .filter(({ generator, label }) => hasMatches(label) || isActiveFacet("generator", generator));
 
 $: visibleGroupEntries = Object.entries(getAndCountGroups(data))
     .map(([assetGroup, count]) => ({
         assetGroup,
-        count,
         label: countLabel(currentSearch, "group", assetGroup, count),
     }))
     .filter(({ assetGroup, label }) => hasMatches(label) || isActiveFacet("group", assetGroup));
@@ -263,6 +338,39 @@ $: visibleExtensionTags = Object.fromEntries(
         .filter(([tag, label]) => hasMatches(label) || isActiveFacet("tag", tag))
 );
 
+$: orderedTagKeys = Object.keys(getAndCountTags(data));
+
+function tagSortIndex(tag: string) {
+    const index = orderedTagKeys.indexOf(tag);
+    return index < 0 ? Number.POSITIVE_INFINITY : index;
+}
+
+function capabilityTagEntries(asset: AssetCard) {
+    return Object.fromEntries(
+        Object.entries(asset.extras.info ?? {})
+            .filter(([tag]) => showInfo(asset.extras.info, tag) && !isExtensionTag(tag) && !["generator", "source", "copyright"].includes(tag))
+            .sort((a, b) => tagSortIndex(a[0]) - tagSortIndex(b[0]) || a[0].localeCompare(b[0]))
+    );
+}
+
+function extensionTagEntries(asset: AssetCard) {
+    return Object.fromEntries(
+        Object.entries(asset.extras.info ?? {})
+            .filter(([tag]) => showInfo(asset.extras.info, tag) && isExtensionTag(tag))
+            .sort((a, b) => a[0].localeCompare(b[0]))
+    );
+}
+
+function metadataEntries(asset: AssetCard) {
+    return ["generator", "source", "copyright"]
+        .map((key) => [key, asset.extras.info?.[key]] as const)
+        .filter(([key, value]) => showInfo(asset.extras.info, key) && value);
+}
+
+function hasObjectEntries(value: Record<string, any>) {
+    return Object.keys(value).length > 0;
+}
+
 </script>
 
 <Seo
@@ -271,6 +379,22 @@ $: visibleExtensionTags = Object.fromEntries(
     image={SITE + "/asset-explorer.jpg"}
     jsonLd={homeJsonLd}
 />
+
+{#if visibleGeneratorEntries.length}
+<h3 class="title">Generators</h3>
+<ul class="groups">
+    {#each visibleGeneratorEntries as { generator, label }}
+        <Tag
+            href={filterHref(currentSearch, "generator", generator)}
+            excludeHref={filterHref(currentSearch, "generator", generator, true)}
+            selected={generatorFilters.includes(generator)}
+            excluded={generatorExcludes.includes(generator)}
+            name={generator}
+            value={label}
+        />
+    {/each}
+</ul>
+{/if}
 
 <h3 class="title">Asset groups</h3>
 <ul class="groups">
@@ -315,7 +439,7 @@ $: visibleExtensionTags = Object.fromEntries(
         <ul class="models">
             {#each visibleAssets as model (model.slug)}
                 <li transition:whoosh>
-                    <a href={model.external ? model.url : `${base}/${model.slug}`} target={model.external ? "_blank" : undefined} rel={model.external ? "noreferrer" : undefined}>
+                    <a class="asset-main" href={model.external ? model.url : `${base}/${model.slug}`} target={model.external ? "_blank" : undefined} rel={model.external ? "noreferrer" : undefined}>
                         <span class="preview-wrap">
                             {#if model.thumbnail}
                             <img src={model.thumbnail} alt={model.name} loading="lazy" on:error={hideBrokenImage} />
@@ -325,15 +449,65 @@ $: visibleExtensionTags = Object.fromEntries(
                         {#if model.subheadline}
                         <p class="subheadline">{model.subheadline}</p>
                         {/if}
-                        {#if model.kind === "gltf"}
-                        <ModelTags
-                            tags={model.extras.info}
-                            includeFilters={tagFilters}
-                            excludeFilters={tagExcludes}
-                            ignoreValuesForTags={["copyright"]}
-                        />
-                        {/if}
                     </a>
+                    {#if model.kind === "gltf"}
+                    <div class="asset-footer">
+                        {#if model.groups?.length}
+                        <details>
+                            <summary>Groups</summary>
+                            <ul class="groups footer-tags">
+                                {#each model.groups as assetGroup}
+                                    <Tag
+                                        href={filterHref(currentSearch, "group", assetGroup)}
+                                        excludeHref={filterHref(currentSearch, "group", assetGroup, true)}
+                                        selected={groupFilters.includes(assetGroup)}
+                                        excluded={groupExcludes.includes(assetGroup)}
+                                        name={assetGroup}
+                                        value={true}
+                                        showValue={false}
+                                    />
+                                {/each}
+                            </ul>
+                        </details>
+                        {/if}
+
+                        {#if hasObjectEntries(capabilityTagEntries(model))}
+                        <details>
+                            <summary>Capabilities</summary>
+                            <ModelTags
+                                tags={capabilityTagEntries(model)}
+                                includeFilters={tagFilters}
+                                excludeFilters={tagExcludes}
+                            />
+                        </details>
+                        {/if}
+
+                        {#if hasObjectEntries(extensionTagEntries(model))}
+                        <details>
+                            <summary>Extensions</summary>
+                            <ModelTags
+                                tags={extensionTagEntries(model)}
+                                includeFilters={tagFilters}
+                                excludeFilters={tagExcludes}
+                            />
+                        </details>
+                        {/if}
+
+                        {#if metadataEntries(model).length}
+                        <details>
+                            <summary>Metadata</summary>
+                            <dl class="metadata-tags">
+                                {#each metadataEntries(model) as [key, value]}
+                                <div>
+                                    <dt>{key}</dt>
+                                    <dd title={String(value)}>{value}</dd>
+                                </div>
+                                {/each}
+                            </dl>
+                        </details>
+                        {/if}
+                    </div>
+                    {/if}
                 </li>
             {/each}
         </ul>
@@ -393,6 +567,65 @@ $: visibleExtensionTags = Object.fromEntries(
 
     .models a {
         max-width: var(--size);
+    }
+
+    .asset-main {
+        display: block;
+    }
+
+    .asset-footer {
+        width: var(--size);
+        max-width: var(--size);
+        margin-top: 6px;
+        font-size: 0.68rem;
+        color: var(--color-text-secondary);
+    }
+
+    .asset-footer details {
+        border-top: 1px solid var(--color-border-subtle);
+        padding: 4px 0;
+    }
+
+    .asset-footer summary {
+        cursor: pointer;
+        color: var(--color-text-muted);
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        list-style-position: inside;
+    }
+
+    .asset-footer :global(.extensions) {
+        margin: 4px 0 0;
+    }
+
+    .footer-tags {
+        margin-top: 4px;
+    }
+
+    .metadata-tags {
+        margin: 4px 0 0;
+        display: grid;
+        gap: 4px;
+    }
+
+    .metadata-tags div {
+        min-width: 0;
+    }
+
+    .metadata-tags dt {
+        color: var(--color-text-muted);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .metadata-tags dd {
+        margin: 1px 0 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: var(--color-text-primary);
     }
 
     p {
