@@ -14,6 +14,8 @@ export let next: any;
 export let previous: any;
 export let pageOrigin = "";
 
+const ENABLE_FEATURE_SURVIVAL_TABLE = false;
+
 $: assetProps = { asset: model.displayName, slug: model.slug };
 $: availableConversions = (model.conversions ?? []).filter((conversion: any) => conversion.available);
 $: analyzedConversions = availableConversions.filter((conversion: any) => conversion.analysis?.features);
@@ -288,7 +290,7 @@ onMount(() => {
             {/each}
         </ul>
 
-        {#if model.analysis}
+        {#if ENABLE_FEATURE_SURVIVAL_TABLE && model.analysis}
         <div class="feature-table">
             <h3>Feature Survival</h3>
             <div class="feature-table-scroll">

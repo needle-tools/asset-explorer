@@ -78,6 +78,10 @@ function getAndCountTags(_data: PageData) {
 
 function getAndCountGroups(_data: PageData) {
     const groups: Record<string, number> = {};
+    const preferredOrder = new Map([
+        ["showcase", 0],
+        ["needle", 1],
+    ]);
 
     for (const model of _data.models) {
         for (const group of model.groups ?? []) {
@@ -85,7 +89,11 @@ function getAndCountGroups(_data: PageData) {
         }
     }
 
-    return Object.fromEntries(Object.entries(groups).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])));
+    return Object.fromEntries(Object.entries(groups).sort((a, b) => {
+        const priorityA = preferredOrder.get(a[0]) ?? Number.POSITIVE_INFINITY;
+        const priorityB = preferredOrder.get(b[0]) ?? Number.POSITIVE_INFINITY;
+        return priorityA - priorityB || b[1] - a[1] || a[0].localeCompare(b[0]);
+    }));
 }
 
 function hasGroup(asset: AssetCard, value: string) {
@@ -187,12 +195,15 @@ function countLabel(search: string, kind: "group" | "tag", value: string, total:
         notTags: params.getAll("notTag"),
         category: params.get("category") ?? "",
     };
-    const includeList = kind === "group" ? filters.groups : filters.tags;
-    const excludeList = kind === "group" ? filters.notGroups : filters.notTags;
+    filters.groups = filters.groups.filter((group) => kind !== "group" || group !== value);
+    filters.notGroups = filters.notGroups.filter((group) => kind !== "group" || group !== value);
+    filters.tags = filters.tags.filter((tag) => kind !== "tag" || tag !== value);
+    filters.notTags = filters.notTags.filter((tag) => kind !== "tag" || tag !== value);
 
-    if (!includeList.includes(value) && !excludeList.includes(value)) includeList.push(value);
-
-    const matching = (data.assets ?? data.models).filter((asset: AssetCard) => matchesListFilters(asset, filters)).length;
+    const matching = (data.assets ?? data.models).filter((asset: AssetCard) => {
+        if (!matchesListFilters(asset, filters)) return false;
+        return kind === "group" ? hasGroup(asset, value) : hasCapability(asset, value);
+    }).length;
     return matching === total ? total : `${matching} of ${total}`;
 }
 
