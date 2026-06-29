@@ -16,6 +16,7 @@ export let pageOrigin = "";
 
 $: assetProps = { asset: model.displayName, slug: model.slug };
 $: availableConversions = (model.conversions ?? []).filter((conversion: any) => conversion.available);
+$: analyzedConversions = availableConversions.filter((conversion: any) => conversion.analysis?.features);
 
 const featureRows = [
     { key: "meshes", label: "Meshes" },
@@ -74,6 +75,10 @@ function shortNumber(value: number | null | undefined) {
     return typeof value === "number" ? value.toLocaleString("en-US") : "Unknown";
 }
 
+function conversionTextureImages(conversion: any) {
+    return conversion.analysis?.features?.textureImages ?? conversion.analysis?.textureImages;
+}
+
 function currentPageAssetUrl(uri: string, baseUrl: string) {
     if (!baseUrl) return uri;
 
@@ -103,8 +108,8 @@ function sourceFeatureValue(row: any) {
 function conversionFeatureValue(conversion: any, row: any) {
     const analysis = conversion.analysis;
     if (!analysis?.features) return "Unknown";
-    if (row.key === "texturePixels") return readablePixels(analysis.features.textureImages?.totalPixels);
-    if (row.key === "textureBytes") return readableOptionalBytes(analysis.features.textureImages?.totalBytes);
+    if (row.key === "texturePixels") return readablePixels(conversionTextureImages(conversion)?.totalPixels);
+    if (row.key === "textureBytes") return readableOptionalBytes(conversionTextureImages(conversion)?.totalBytes);
     if (row.key === "materialFeatures") {
         const sourceCount = model.analysis?.source?.materialFeatures?.length ?? 0;
         const missingCount = analysis.comparison?.missingMaterialFeatures?.length ?? 0;
@@ -130,7 +135,7 @@ function conversionFeatureStatus(conversion: any, row: any) {
 
     if (row.key === "textureBytes") {
         const source = model.analysis?.source?.textureImages?.totalBytes ?? 0;
-        const converted = conversion.analysis?.features?.textureImages?.totalBytes ?? 0;
+        const converted = conversionTextureImages(conversion)?.totalBytes ?? 0;
         if (source === 0) return converted === 0 ? "absent" : "added";
         if (converted === 0) return "missing";
         if (converted < source) return "reduced";
@@ -292,7 +297,7 @@ onMount(() => {
                         <tr>
                             <th>Feature</th>
                             <th>Source</th>
-                            {#each availableConversions as conversion}
+                            {#each analyzedConversions as conversion}
                             <th>{conversion.shortLabel}</th>
                             {/each}
                         </tr>
@@ -302,7 +307,7 @@ onMount(() => {
                         <tr>
                             <th>{row.label}</th>
                             <td>{sourceFeatureValue(row)}</td>
-                            {#each availableConversions as conversion}
+                            {#each analyzedConversions as conversion}
                             <td class="feature-status {conversionFeatureStatus(conversion, row)}" title={featureTitle(conversion, row)}>
                                 {conversionFeatureValue(conversion, row)}
                             </td>
