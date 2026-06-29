@@ -380,6 +380,7 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
         const animations = doc.animations?.length ?? 0;
         const skins = doc.skins?.length ?? 0;
         const cameras = doc.cameras?.length ?? 0;
+        const lights = doc.extensions?.KHR_lights_punctual?.lights?.length ?? 0;
         const anyUsesMask = doc.materials?.some((material) => material.alphaMode === 'MASK');
         const anyUsesBlend = doc.materials?.some((material) => material.alphaMode === 'BLEND');
         const generator = doc.asset?.generator;
@@ -392,6 +393,7 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
             animations,
             skins,
             cameras,
+            lights,
             alphaMask: anyUsesMask,
             alphaBlend: anyUsesBlend,
             generator,

@@ -63,6 +63,18 @@ $: homeJsonLd = {
 
 function getAndCountTags(_data: PageData) {
     const tags: Record<string, number> = {};
+    const preferredOrder = new Map([
+        ["textures", 0],
+        ["lights", 1],
+        ["animations", 2],
+        ["alphaMask", 3],
+        ["alphaBlend", 4],
+        ["blendShapes", 5],
+        ["cameras", 6],
+        ["skins", 7],
+        ["vertexColors", 8],
+        ["scenes", 9],
+    ]);
 
     for (const model of _data.models) {
         for (const tag of Object.keys(model.extras.info)) {
@@ -73,7 +85,12 @@ function getAndCountTags(_data: PageData) {
             tags[tag]++;
         }
     }
-    return tags;
+
+    return Object.fromEntries(Object.entries(tags).sort((a, b) => {
+        const priorityA = preferredOrder.get(a[0]) ?? Number.POSITIVE_INFINITY;
+        const priorityB = preferredOrder.get(b[0]) ?? Number.POSITIVE_INFINITY;
+        return priorityA - priorityB || b[1] - a[1] || a[0].localeCompare(b[0]);
+    }));
 }
 
 function getAndCountGroups(_data: PageData) {
@@ -106,6 +123,10 @@ function hasGroup(asset: AssetCard, value: string) {
 
 function hasCapability(asset: AssetCard, value: string) {
     return asset.kind === "gltf" && showInfo(asset.extras.info, value);
+}
+
+function isExtensionTag(tag: string) {
+    return /^[A-Z][A-Z0-9]+_/.test(tag);
 }
 
 function matchesListFilters(asset: AssetCard, filters: {
@@ -230,6 +251,14 @@ $: visibleGroupEntries = Object.entries(getAndCountGroups(data))
 
 $: visibleCapabilityTags = Object.fromEntries(
     Object.entries(getAndCountTags(data))
+        .filter(([tag]) => !isExtensionTag(tag) && !["generator", "source", "copyright"].includes(tag))
+        .map(([tag, count]) => [tag, countLabel(currentSearch, "tag", tag, count)] as const)
+        .filter(([tag, label]) => hasMatches(label) || isActiveFacet("tag", tag))
+);
+
+$: visibleExtensionTags = Object.fromEntries(
+    Object.entries(getAndCountTags(data))
+        .filter(([tag]) => isExtensionTag(tag))
         .map(([tag, count]) => [tag, countLabel(currentSearch, "tag", tag, count)] as const)
         .filter(([tag, label]) => hasMatches(label) || isActiveFacet("tag", tag))
 );
@@ -262,8 +291,16 @@ $: visibleCapabilityTags = Object.fromEntries(
     tags={visibleCapabilityTags}
     includeFilters={tagFilters}
     excludeFilters={tagExcludes}
-    ignoreTags={["generator", "source"]}
 />
+
+{#if Object.keys(visibleExtensionTags).length}
+<h3 class="title">Extensions</h3>
+<ModelTags
+    tags={visibleExtensionTags}
+    includeFilters={tagFilters}
+    excludeFilters={tagExcludes}
+/>
+{/if}
 
 <div class:asset-browser={showCollections}>
     {#if showCollections}
