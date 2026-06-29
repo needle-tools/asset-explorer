@@ -19,6 +19,9 @@
 					/>
 				</a>
 			</li>
+			<li class="app-wordmark">
+				<span>Asset Explorer</span>
+			</li>
 			<li
 				aria-current={$page.url.pathname === base + "/"
 					? "page"
@@ -142,6 +145,29 @@
 
 	.logo {
 		width: 120px;
-		margin-right: 1rem;
+		margin-right: 0.35rem;
+	}
+
+	.needle-logo {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	.app-wordmark {
+		display: flex;
+		align-items: center;
+		padding: 0 0.85rem 0 0.25rem;
+		white-space: nowrap;    
+		font-weight: 200;
+		font-size: 1.45rem;
+		margin-left: -10px;
+		color: #4f4f4f;
+	}
+
+	@media (max-width: 560px) {
+		.app-wordmark {
+			display: none;
+		}
 	}
 </style>

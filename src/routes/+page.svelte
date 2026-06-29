@@ -916,6 +916,10 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
     p {
         margin: 0;
         padding: 0;
+        margin-top: 0.4rem;
+        font-weight: bold;
+        text-align: center;
+        text-wrap-style: balance;
     }
 
     ul {
