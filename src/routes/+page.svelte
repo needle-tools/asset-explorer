@@ -553,10 +553,17 @@ function entryCount(value: Record<string, any> | readonly unknown[] | undefined)
                         {/if}
                     </a>
                     {#if model.kind === "gltf"}
+                        {@const groupCount = entryCount(model.groups)}
+                        {@const capabilityEntries = capabilityTagEntries(model)}
+                        {@const capabilityCount = entryCount(capabilityEntries)}
+                        {@const extensionEntries = extensionTagEntries(model)}
+                        {@const extensionCount = entryCount(extensionEntries)}
+                        {@const assetMetadataEntries = metadataEntries(model)}
+                        {@const metadataCount = entryCount(assetMetadataEntries)}
                     <div class="asset-footer">
+                        {#if groupCount}
                         <details>
-                            <summary>Groups <span>{entryCount(model.groups)}</span></summary>
-                            {#if model.groups?.length}
+                            <summary><span class="footer-label">Groups</span><span class="footer-count">{groupCount}</span></summary>
                             <ul class="groups footer-tags">
                                 {#each model.groups as assetGroup}
                                     <Tag
@@ -570,44 +577,60 @@ function entryCount(value: Record<string, any> | readonly unknown[] | undefined)
                                     />
                                 {/each}
                             </ul>
-                            {/if}
                         </details>
+                        {:else}
+                        <div class="footer-row is-empty">
+                            <span class="footer-label">Groups</span><span class="footer-count">{groupCount}</span>
+                        </div>
+                        {/if}
 
+                        {#if capabilityCount}
                         <details>
-                            <summary>Capabilities <span>{entryCount(capabilityTagEntries(model))}</span></summary>
-                            {#if hasObjectEntries(capabilityTagEntries(model))}
+                            <summary><span class="footer-label">Capabilities</span><span class="footer-count">{capabilityCount}</span></summary>
                             <ModelTags
-                                tags={capabilityTagEntries(model)}
+                                tags={capabilityEntries}
                                 includeFilters={tagFilters}
                                 excludeFilters={tagExcludes}
                             />
-                            {/if}
                         </details>
+                        {:else}
+                        <div class="footer-row is-empty">
+                            <span class="footer-label">Capabilities</span><span class="footer-count">{capabilityCount}</span>
+                        </div>
+                        {/if}
 
+                        {#if extensionCount}
                         <details>
-                            <summary>Extensions <span>{entryCount(extensionTagEntries(model))}</span></summary>
-                            {#if hasObjectEntries(extensionTagEntries(model))}
+                            <summary><span class="footer-label">Extensions</span><span class="footer-count">{extensionCount}</span></summary>
                             <ModelTags
-                                tags={extensionTagEntries(model)}
+                                tags={extensionEntries}
                                 includeFilters={tagFilters}
                                 excludeFilters={tagExcludes}
                             />
-                            {/if}
                         </details>
+                        {:else}
+                        <div class="footer-row is-empty">
+                            <span class="footer-label">Extensions</span><span class="footer-count">{extensionCount}</span>
+                        </div>
+                        {/if}
 
+                        {#if metadataCount}
                         <details>
-                            <summary>Metadata <span>{entryCount(metadataEntries(model))}</span></summary>
-                            {#if metadataEntries(model).length}
+                            <summary><span class="footer-label">Metadata</span><span class="footer-count">{metadataCount}</span></summary>
                             <dl class="metadata-tags">
-                                {#each metadataEntries(model) as [key, value]}
+                                {#each assetMetadataEntries as [key, value]}
                                 <div>
                                     <dt>{key}</dt>
                                     <dd title={String(value)}>{value}</dd>
                                 </div>
                                 {/each}
                             </dl>
-                            {/if}
                         </details>
+                        {:else}
+                        <div class="footer-row is-empty">
+                            <span class="footer-label">Metadata</span><span class="footer-count">{metadataCount}</span>
+                        </div>
+                        {/if}
                     </div>
                     {/if}
                 </li>
@@ -683,36 +706,78 @@ function entryCount(value: Record<string, any> | readonly unknown[] | undefined)
         color: var(--color-text-secondary);
     }
 
-    .asset-footer details {
-        border-top: 1px solid var(--color-border-subtle);
-        padding: 4px 0;
+    .asset-footer details,
+    .asset-footer .footer-row {
+        padding: 3px 0;
     }
 
-    .asset-footer summary {
-        cursor: pointer;
+    .asset-footer summary,
+    .asset-footer .footer-row {
+        display: grid;
+        grid-template-columns: 11px minmax(0, 1fr) min-content;
+        column-gap: 5px;
+        align-items: center;
         color: var(--color-text-muted);
         font-weight: 700;
         letter-spacing: 0.06em;
         text-transform: uppercase;
-        list-style-position: inside;
     }
 
-    .asset-footer summary span {
-        color: var(--color-text-primary);
+    .asset-footer summary {
+        cursor: pointer;
+        list-style: none;
+    }
+
+    .asset-footer summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .asset-footer summary::before {
+        content: "";
+        width: 0;
+        height: 0;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+        border-left: 7px solid currentColor;
+        transform-origin: 35% 50%;
+        transition: transform 0.12s ease;
+    }
+
+    .asset-footer details[open] summary::before {
+        transform: rotate(90deg);
+    }
+
+    .asset-footer .footer-row::before {
+        content: "";
+    }
+
+    .asset-footer .is-empty {
+        color: color-mix(in srgb, var(--color-text-muted) 52%, transparent);
+        cursor: default;
+    }
+
+    .footer-label {
+        min-width: 0;
+    }
+
+    .footer-count {
+        color: var(--color-text-muted);
         font-weight: 700;
-        margin-left: 4px;
+        justify-self: end;
+        min-width: 2ch;
+        text-align: right;
     }
 
     .asset-footer :global(.extensions) {
-        margin: 4px 0 0;
+        margin: 4px 0 0 16px;
     }
 
     .footer-tags {
-        margin-top: 4px;
+        margin: 4px 0 0 16px;
     }
 
     .metadata-tags {
-        margin: 4px 0 0;
+        margin: 4px 0 0 16px;
         display: grid;
         gap: 4px;
     }
@@ -730,9 +795,8 @@ function entryCount(value: Record<string, any> | readonly unknown[] | undefined)
 
     .metadata-tags dd {
         margin: 1px 0 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        overflow-wrap: anywhere;
+        white-space: normal;
         color: var(--color-text-primary);
     }
 
