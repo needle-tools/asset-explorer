@@ -555,7 +555,7 @@ a.nav:hover {
 .preview {
     width: auto;
     max-width: 100%;
-    height: 82px;
+    height: 200px;
     object-fit: contain;
     border-radius: 8px;
     box-sizing: border-box;

@@ -2,9 +2,11 @@
 
 ## What's this?
 
-This page contains glTF models and their USDZ counterparts. As conversion and USDZ rendering are still very much application dependant, multiple conversions of the same glTF file are provided.
+Asset Explorer is a public test gallery for glTF assets and their USDZ conversions. It lets you compare source files, converted files, preview renders, metadata, and converter provenance across a broad set of real-world 3D assets.
 
-Currently, conversions are done with the needle-tools/three.js fork r154.1 and Blender 3.6. Please note that while conversions are checked for file integrity (they pass usdchecker), they are not checked for correctness – more likely then not, conversions won't be perfect. That's part of why this project exists! 
+It is built by [Needle](https://needle.tools), the team behind [Needle Engine](https://needle.tools). We care deeply about high-quality 3D file interoperability, and we are very active in the 3D open source ecosystem around glTF, OpenUSD, FBX, MaterialX, three.js, and related tooling.
+
+Conversions and renderings are intentionally shown side by side because 3D interchange is still application-dependent. A file can pass validation and still lose materials, animation, hierarchy, metadata, or rendering intent. That's part of why this project exists: it gives implementers a practical place to see what survives a conversion and where the ecosystem still needs work.
 
 ## Why
 
@@ -24,44 +26,14 @@ A clear goal is to allow you to download files for a specific usecase and check 
 - check that your software properly supports glTF and USDZ
 - check that your conversion tools produce proper files
 
-## Current Status
-
-Currently, only files from the glTF-Sample-Models repository are displayed. 
-Soon, this will switch over to the newer glTF-Sample-Assets repository.  
-Additionally, the plan is to include other sources like USD-WG/assets.  
-
-Linking out to tools like [gltf.report](https://gltf.report) would be nice to have.  
-An embedded viewer with drag-drop capabilities would also be nice to have.  
-
-### Known Issues – Conversions
-
-Conversions to USDZ are currently done with
-- three.js r154, needle-tools' fork (supports hierarchy and animations)
-- Blender 3.6
-
-The idea is to re-run conversions when these tools improve in a meaningful way to reflect the current state of the art.  
-Blender 4.x will likely drastically improve the USD support of Blender, and conversions will be redone at that point.  
-
-### Known Issues – Needle USD Viewer
-
-The Needle USD Viewer is still evolving, and USD display support remains uneven across the ecosystem. The following features may not be supported consistently across viewers:
-- skinned meshes
-- some texture formats and ways of referencing them
-- some material formats and ways how textures are referenced and used
-- blend shapes
-- vertex colors
-
-Generally, USD support is very spotty across the USD ecosystem; always test what USD version / schemas / feature sets your particular target viewer(s) support. 
-
 ## Source Files
 
 - This page: <a href="https://github.com/needle-tools/asset-explorer" target="_blank">needle-tools/asset-explorer</a>  
-- The glTF sample models: <a href="https://github.com/KhronosGroup/glTF-Sample-Models" target="_blank">KhronosGroup/glTF-Sample-Models</a>  
-- Generated model files: conversions branch on <a href="https://github.com/needle-tools/glTF-Sample-Models/tree/conversions/2.0" target="_blank">needle-tools/glTF-Sample-Models</a>  
-- The USD Working Group assets repository: <a href="https://github.com/usd-wg/assets/" target="_blank">usd-wg/assets</a>  
+- The glTF sample assets: <a href="https://github.com/KhronosGroup/glTF-Sample-Assets" target="_blank">KhronosGroup/glTF-Sample-Assets</a>
+- Generated USDZ conversions and preview renders live next to the assets they were produced from, with provenance metadata for the converter family and version.
 
-## Reach out
+## Contributing
 
-There's more to do! Roundtrips between conversion tools, improvements to existing converters, better visibility into USDZ features, integrating "model" and "model-viewer" as alternative display options, ...
+Have a new converter, renderer, test asset, or interoperability case we should cover? Are you working on glTF, OpenUSD, FBX, MaterialX, three.js, or another part of the 3D toolchain and want to compare output here?
 
-Feel free to <a href="mailto:hi@needle.tools">contact us</a>!
+Please <a href="mailto:hi@needle.tools">reach out to us</a>. We are happy to collaborate on useful test cases, better conversion coverage, and clearer ways to show what data survives across tools.

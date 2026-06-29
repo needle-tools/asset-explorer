@@ -6,7 +6,7 @@ const SITE = "https://asset-explorer.needle.tools";
 
 <Seo
 	title="About – Asset Explorer"
-	description="About the Asset Explorer — a gallery of glTF and USD sample models and their USDZ conversions for three.js, Blender, and Omniverse, by Needle."
+	description="About Asset Explorer, a Needle test gallery for glTF assets, USDZ conversions, provenance, and 3D file interoperability."
 	image={SITE + "/asset-explorer.jpg"}
 />
 
@@ -18,9 +18,6 @@ const SITE = "https://asset-explorer.needle.tools";
 </div>
 
 <style>
-:global(.html p) {
-}
-
 :global(.html a) {
 	color: var(--color-primary);
 	text-decoration: underline;

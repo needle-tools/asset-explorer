@@ -44,7 +44,7 @@ let windowLocation = "https://asset-explorer.needle.tools/";
 
 const seoTitle = "Asset Explorer — glTF & USD Sample Models";
 const seoDescription =
-    "Explore glTF and USD sample 3D models with downloadable GLB and USDZ conversions for three.js, Blender, and Omniverse — view them in 3D and AR.";
+    "Explore glTF and USD sample 3D assets with downloadable GLB files, USDZ conversions, provenance, metadata, and preview renders.";
 const NONE_VALUE = "__none";
 const NO_CAPABILITIES = "__none_capabilities";
 const NO_EXTENSIONS = "__none_extensions";
