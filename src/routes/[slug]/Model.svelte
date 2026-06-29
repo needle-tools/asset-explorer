@@ -9,11 +9,32 @@ import { goto } from "$app/navigation";
 import ButtonOverlay from "../ButtonOverlay.svelte";
 import { track } from "$lib/analytics";
 
-export let model;
-export let next;
-export let previous;
+export let model: any;
+export let next: any;
+export let previous: any;
+export let pageOrigin = "";
 
 $: assetProps = { asset: model.displayName, slug: model.slug };
+$: availableConversions = (model.conversions ?? []).filter((conversion: any) => conversion.available);
+
+const featureRows = [
+    { key: "meshes", label: "Meshes" },
+    { key: "primitives", label: "Primitives" },
+    { key: "materials", label: "Materials" },
+    { key: "textures", label: "Textures" },
+    { key: "texturePixels", label: "Texture pixels" },
+    { key: "textureBytes", label: "Texture bytes" },
+    { key: "cameras", label: "Cameras" },
+    { key: "lights", label: "Lights" },
+    { key: "skins", label: "Skins" },
+    { key: "animations", label: "Animations" },
+    { key: "animationChannels", label: "Animation channels" },
+    { key: "morphTargetPrimitives", label: "Morph targets" },
+    { key: "variants", label: "Variants" },
+    { key: "materialFeatures", label: "Material features" },
+];
+
+let pageUrlBase = pageOrigin;
 
 function startAR() {
     track("view_in_ar", assetProps);
@@ -37,6 +58,104 @@ function readableBytes(bytes: number) {
     );
 }
 
+function readablePixels(pixels: number | null | undefined) {
+    if (typeof pixels !== "number") return "n/a";
+    if (pixels >= 1000000) return (pixels / 1000000).toFixed(1) + " MP";
+    if (pixels >= 1000) return (pixels / 1000).toFixed(1) + " KP";
+    return pixels.toString();
+}
+
+function readableOptionalBytes(bytes: number | null | undefined) {
+    return typeof bytes === "number" ? readableBytes(bytes) : "n/a";
+}
+
+function shortNumber(value: number | null | undefined) {
+    return typeof value === "number" ? value.toLocaleString("en-US") : "n/a";
+}
+
+function currentPageAssetUrl(uri: string, baseUrl: string) {
+    if (!baseUrl) return uri;
+
+    try {
+        const assetUri = baseUrl.startsWith("file:") ? uri.replace(/^\/+/, "") : uri;
+        return new URL(assetUri, baseUrl).href;
+    }
+    catch {
+        return uri;
+    }
+}
+
+function usdViewerUrl(conversion: any, baseUrl: string) {
+    const params = new URLSearchParams({
+        file: currentPageAssetUrl(conversion.usdzUri, baseUrl),
+    });
+    return "https://usd-viewer.needle.tools/?" + params.toString();
+}
+
+function sourceFeatureValue(row: any) {
+    if (row.key === "texturePixels") return readablePixels(model.analysis?.source?.textureImages?.totalPixels);
+    if (row.key === "textureBytes") return readableOptionalBytes(model.analysis?.source?.textureImages?.totalBytes);
+    if (row.key === "materialFeatures") return shortNumber(model.analysis?.source?.materialFeatures?.length);
+    return shortNumber(model.analysis?.source?.counts?.[row.key]);
+}
+
+function conversionFeatureValue(conversion: any, row: any) {
+    const analysis = conversion.analysis;
+    if (!analysis?.features) return "n/a";
+    if (row.key === "texturePixels") return readablePixels(analysis.features.textureImages?.totalPixels);
+    if (row.key === "textureBytes") return readableOptionalBytes(analysis.features.textureImages?.totalBytes);
+    if (row.key === "materialFeatures") {
+        const sourceCount = model.analysis?.source?.materialFeatures?.length ?? 0;
+        const missingCount = analysis.comparison?.missingMaterialFeatures?.length ?? 0;
+        const convertedCount = Math.max(0, sourceCount - missingCount);
+        return sourceCount > 0 ? convertedCount + "/" + sourceCount : shortNumber(analysis.features.materialFeatures?.length);
+    }
+    return shortNumber(analysis.features.counts?.[row.key]);
+}
+
+function conversionFeatureStatus(conversion: any, row: any) {
+    const comparison = conversion.analysis?.comparison;
+    if (!comparison) return "";
+
+    if (row.key === "texturePixels") {
+        if (comparison.texturePixels?.status) return comparison.texturePixels.status;
+        const source = comparison.texturePixels?.source ?? 0;
+        const converted = comparison.texturePixels?.converted ?? 0;
+        if (source === 0) return converted === 0 ? "absent" : "added";
+        if (converted === 0) return "missing";
+        if (converted < source) return "reduced";
+        return "present";
+    }
+
+    if (row.key === "textureBytes") {
+        const source = model.analysis?.source?.textureImages?.totalBytes ?? 0;
+        const converted = conversion.analysis?.features?.textureImages?.totalBytes ?? 0;
+        if (source === 0) return converted === 0 ? "absent" : "added";
+        if (converted === 0) return "missing";
+        if (converted < source) return "reduced";
+        return "present";
+    }
+
+    if (row.key === "materialFeatures") {
+        const sourceCount = model.analysis?.source?.materialFeatures?.length ?? 0;
+        const missingCount = comparison.missingMaterialFeatures?.length ?? 0;
+        if (sourceCount === 0) return "absent";
+        if (missingCount === 0) return "present";
+        if (missingCount < sourceCount) return "reduced";
+        return "missing";
+    }
+
+    return comparison.counts?.[row.key]?.status ?? "";
+}
+
+function featureTitle(conversion: any, row: any) {
+    if (row.key === "materialFeatures") {
+        const missing = conversion.analysis?.comparison?.missingMaterialFeatures ?? [];
+        return missing.length ? "Missing: " + missing.join(", ") : "All mapped source material features found";
+    }
+    return conversion.analysis?.features?.error ?? "";
+}
+
 $: {
     // add more info
     model.info.fileSize = readableBytes(model.size);
@@ -45,7 +164,7 @@ $: {
 let arSupported = false;
 let vrSupported = false;
 
-function onKeyDown(evt) {
+function onKeyDown(evt: KeyboardEvent) {
     if (evt.key === "ArrowLeft" && previous) {
         goto(`${base}/${previous.slug}`);
     } else if (evt.key === "ArrowRight" && next) {
@@ -53,10 +172,6 @@ function onKeyDown(evt) {
     }
 }
 
-let windowLocation = "https://asset-explorer.needle.tools/";
-$: usdzThreeUrl = "https://usd-viewer.needle.tools/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.three.usdz");
-$: usdzBlenderUrl = "https://usd-viewer.needle.tools/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.blender.usdz");
-$: usdzOvUrl = "https://usd-viewer.needle.tools/?file=" + windowLocation + model.downloadUri.replace(".glb", ".glb.ov.usdz");
 let hasQuickLook = false;
 
 let isFullscreen = false;
@@ -64,6 +179,7 @@ let arSessionActive = false;
 
 onMount(() => {
     track("asset_view", assetProps);
+    pageUrlBase = window.location.protocol === "file:" ? window.location.href : window.location.origin;
 
     // bind left/right arrow key to goto
     const a = document.createElement("a");
@@ -141,51 +257,62 @@ onMount(() => {
                     <a href={model.downloadUri} download
                         on:click={() => track("download", { ...assetProps, format: "glb", converter: "source" })}><Icon name="download" />Download GLB</a>
                 </div>
-                <span class="file-description">Source Asset from<br/>glTF-Sample-Models</span>
+                <span class="file-description">Source asset from<br/>{model.info.source}</span>
             </li>
+            {#each availableConversions as conversion}
             <li>
-                <img class="preview" src={model.downloadUri.replace(".glb", ".glb.three.png")} alt="three.js conversion preview"/>
-                <span class="card-title"><img class="brand-logo" src="{base}/logos/threejs.svg" alt="" />three.js</span>
+                <img class="preview" src={conversion.screenshotAvailable ? conversion.screenshotUri : model.previewUri} alt="{conversion.shortLabel} conversion preview"/>
+                <span class="card-title">
+                    {#if conversion.logo}
+                    <img class="brand-logo" src="{base}/logos/{conversion.logo}" alt="" />
+                    {/if}
+                    {conversion.shortLabel}
+                </span>
                 <div class="card-links">
-                    <a href={model.downloadUri.replace(".glb", ".glb.three.usdz")} download
-                        on:click={() => track("download", { ...assetProps, format: "usdz", converter: "three" })}><Icon name="download" />Download USDZ</a>
-                    <a href="{usdzThreeUrl}" target="_blank"
-                        on:click={() => track("open_usd_viewer", { ...assetProps, converter: "three" })}><Icon name="external" />Open in USD Web Viewer</a>
+                    <a href={conversion.usdzUri} download
+                        on:click={() => track("download", { ...assetProps, format: "usdz", converter: conversion.id })}><Icon name="download" />Download USDZ</a>
+                    <a href={usdViewerUrl(conversion, pageUrlBase)} target="_blank"
+                        on:click={() => track("open_usd_viewer", { ...assetProps, converter: conversion.id })}><Icon name="external" />Open in USD Web Viewer</a>
                     {#if hasQuickLook}
-                    <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.three.usdz")}><Icon name="ar" />View in AR</a>
+                    <a rel="ar" href={conversion.usdzUri}><Icon name="ar" />View in AR</a>
                     {/if}
                 </div>
-                <span class="file-description">Converted with three.js<br/>r154, Needle Fork</span>
+                <span class="file-description">{conversion.description}</span>
             </li>
-            <li>
-                <img class="preview" src={model.downloadUri.replace(".glb", ".glb.blender.png")} alt="Blender conversion preview"/>
-                <span class="card-title"><img class="brand-logo" src="{base}/logos/blender.svg" alt="" />Blender</span>
-                <div class="card-links">
-                    <a href={model.downloadUri.replace(".glb", ".glb.blender.usdz")} download
-                        on:click={() => track("download", { ...assetProps, format: "usdz", converter: "blender" })}><Icon name="download" />Download USDZ</a>
-                    <a href="{usdzBlenderUrl}" target="_blank"
-                        on:click={() => track("open_usd_viewer", { ...assetProps, converter: "blender" })}><Icon name="external" />Open in USD Web Viewer</a>
-                    {#if hasQuickLook}
-                    <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.blender.usdz")}><Icon name="ar" />View in AR</a>
-                    {/if}
-                </div>
-                <span class="file-description">Converted with Blender 3.6</span>
-            </li>
-            <li>
-                <img class="preview" src={model.downloadUri.replace(".glb", ".glb.ov.png")} alt="Omniverse conversion preview"/>
-                <span class="card-title"><img class="brand-logo" src="{base}/logos/omniverse.svg" alt="" />Omniverse</span>
-                <div class="card-links">
-                    <a href={model.downloadUri.replace(".glb", ".glb.ov.usdz")} download
-                        on:click={() => track("download", { ...assetProps, format: "usdz", converter: "omniverse" })}><Icon name="download" />Download USDZ</a>
-                    <a href="{usdzOvUrl}" target="_blank"
-                        on:click={() => track("open_usd_viewer", { ...assetProps, converter: "omniverse" })}><Icon name="external" />Open in USD Web Viewer</a>
-                    {#if hasQuickLook}
-                    <a rel="ar" href={model.downloadUri.replace(".glb", ".glb.ov.usdz")}><Icon name="ar" />View in AR</a>
-                    {/if}
-                </div>
-                <span class="file-description">Converted with Omniverse Kit 105.0</span>
-            </li>
+            {/each}
         </ul>
+
+        {#if model.analysis}
+        <div class="feature-table">
+            <h3>Feature Survival</h3>
+            <div class="feature-table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Source</th>
+                            {#each availableConversions as conversion}
+                            <th>{conversion.shortLabel}</th>
+                            {/each}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {#each featureRows as row}
+                        <tr>
+                            <th>{row.label}</th>
+                            <td>{sourceFeatureValue(row)}</td>
+                            {#each availableConversions as conversion}
+                            <td class="feature-status {conversionFeatureStatus(conversion, row)}" title={featureTitle(conversion, row)}>
+                                {conversionFeatureValue(conversion, row)}
+                            </td>
+                            {/each}
+                        </tr>
+                        {/each}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {/if}
     </div>
 
     <WhatsNew />
@@ -193,7 +320,7 @@ onMount(() => {
     <div class="info html">
         <h2 class="info-header">Description</h2>
         <div class="meta">
-            <p>This asset is part of the <a href="https://github.com/KhronosGroup/glTF-Sample-Models" target="_blank">KhronosGroup/glTF-Sample-Models</a> asset repository.</p>
+            <p>This asset is part of the <a href={model.sourceRepoUrl} target="_blank">{model.info.source}</a> asset repository.</p>
             <p><a href="{model.readmeSrc}" target="_blank">Description source</a> • <a href="{model.originalFileSrc}" target="_blank">Asset source</a></p>
         </div>
         {@html model.readme} 
@@ -379,7 +506,7 @@ a.nav:hover {
     padding: 18px 14px;
 }
 
-.download-links li a, .download-links li button {
+.download-links li a {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -425,10 +552,81 @@ a.nav:hover {
     box-sizing: border-box;
 }
 
-.download-links li button:hover {
-    cursor: pointer;
+.feature-table {
+    margin-top: 24px;
 }
 
+.feature-table h3 {
+    margin: 0 0 10px;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.feature-table-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-card);
+}
+
+.feature-table table {
+    width: 100%;
+    min-width: 680px;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+}
+
+.feature-table th,
+.feature-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--color-border-subtle);
+    text-align: right;
+    white-space: nowrap;
+}
+
+.feature-table tr:last-child th,
+.feature-table tr:last-child td {
+    border-bottom: 0;
+}
+
+.feature-table th:first-child,
+.feature-table td:first-child {
+    text-align: left;
+}
+
+.feature-table thead th {
+    color: var(--color-text-muted);
+    font-weight: 700;
+}
+
+.feature-table tbody th {
+    color: var(--color-text-secondary);
+    font-weight: 600;
+}
+
+.feature-status.present,
+.feature-status.added {
+    color: #207245;
+}
+
+.feature-status.reduced {
+    color: #8a6500;
+}
+
+.feature-status.missing {
+    color: #b3261e;
+    font-weight: 700;
+}
+
+.feature-status.absent {
+    color: var(--color-text-muted);
+    opacity: 0.7;
+}
+
+.feature-status.unknown {
+    color: var(--color-text-muted);
+}
 
 :global(.info img) {
     max-width: 100%;

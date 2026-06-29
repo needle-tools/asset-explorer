@@ -16,23 +16,152 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { USDZExporter } from './USDZExporter';
 import { FileLoader, Cache, LoadingManager } from 'three';
 import subProcess from 'child_process';
+import { conversionFamilies } from './conversionFamilies';
 
-class ProgressEvent {}
-globalThis["ProgressEvent"] = ProgressEvent;
-globalThis["self"] = globalThis;
-globalThis["HTMLElement"] = class HTMLElement {}
+class NodeProgressEvent {}
+(globalThis as any)["ProgressEvent"] = NodeProgressEvent;
+(globalThis as any)["self"] = globalThis;
+(globalThis as any)["HTMLElement"] = class HTMLElement {}
 
 // find all glb files in folder
 // const files = import.meta.glob("D:/git/pfc-packages-master/development/pfc-modelexporter/development/ModelConversion/Exports/**.glb", { eager: true });
 
-export const originalRepoDir = "https://github.com/KhronosGroup/glTF-Sample-Models";
-export const sourceDir = "submodules/glTF-Sample-Models"; //"E:/git/glTF-Sample-Models/2.0/";
-export const sourceSubfolder = "/2.0/";
+export const legacySourceDir = "submodules/glTF-Sample-Models";
+export const sampleAssetsDir = "submodules/glTF-Sample-Assets";
+export const sourceDir = fs.existsSync(path.join(sampleAssetsDir, "Models")) ? sampleAssetsDir : legacySourceDir;
+export const sourceSubfolder = sourceDir === sampleAssetsDir ? "/Models/" : "/2.0/";
+export const originalRepoDir = sourceDir === sampleAssetsDir
+    ? "https://github.com/KhronosGroup/glTF-Sample-Assets"
+    : "https://github.com/KhronosGroup/glTF-Sample-Models";
 
 const basePath = process.env.BASE_PATH || "";
+const provenancePath = path.join(sourceDir, "conversion-provenance.json");
+const legacyProvenancePath = "conversion-provenance.json";
+const analysisDir = path.join(sourceDir, "conversion-analysis");
+const legacyAnalysisDir = "conversion-analysis";
 
 // experimental - allows us to use three.js from node
 Cache.enabled = true;
+
+function normalizePath(filePath: string) {
+    return path.resolve(filePath).replaceAll("\\", "/");
+}
+
+let provenanceStatuses: Map<string, string> | null = null;
+const assetAnalysisCache = new Map<string, any | null>();
+
+function getProvenanceStatuses() {
+    if (provenanceStatuses !== null) return provenanceStatuses;
+
+    provenanceStatuses = new Map();
+    const activeProvenancePath = fs.existsSync(provenancePath) ? provenancePath : legacyProvenancePath;
+    if (!fs.existsSync(activeProvenancePath)) return provenanceStatuses;
+
+    try {
+        const provenance = JSON.parse(fs.readFileSync(activeProvenancePath, "utf8"));
+        for (const conversion of provenance.conversions ?? []) {
+            if (!conversion.usdz || !conversion.status) continue;
+            provenanceStatuses.set(normalizePath(conversion.usdz), conversion.status);
+        }
+    }
+    catch (error) {
+        console.warn("Could not read conversion provenance", error);
+    }
+
+    return provenanceStatuses;
+}
+
+function getAssetAnalysis(sourceFile: string) {
+    const slug = path.parse(sourceFile).name;
+    if (assetAnalysisCache.has(slug)) return assetAnalysisCache.get(slug) ?? null;
+
+    const fileName = encodeURIComponent(slug) + ".json";
+    const analysisPath = fs.existsSync(path.join(analysisDir, fileName))
+        ? path.join(analysisDir, fileName)
+        : path.join(legacyAnalysisDir, fileName);
+    if (!fs.existsSync(analysisPath)) {
+        assetAnalysisCache.set(slug, null);
+        return null;
+    }
+
+    try {
+        const analysis = JSON.parse(fs.readFileSync(analysisPath, "utf8"));
+        assetAnalysisCache.set(slug, analysis);
+        return analysis;
+    }
+    catch (error) {
+        console.warn("Could not read conversion analysis for " + slug, error);
+        assetAnalysisCache.set(slug, null);
+        return null;
+    }
+}
+
+function findConversionAnalysis(assetAnalysis: any | null, usdzPath: string) {
+    if (!assetAnalysis) return null;
+    return (assetAnalysis.conversions ?? []).find((conversion: any) => normalizePath(conversion.usdz) === usdzPath) ?? null;
+}
+
+function attachAssetAnalysis<T extends { paths?: any; conversions?: Array<any> }>(model: T) {
+    const sourceFile = model.paths?.gltf;
+    if (!sourceFile) return model;
+
+    const analysis = getAssetAnalysis(sourceFile);
+    return {
+        ...model,
+        analysis,
+        conversions: (model.conversions ?? []).map((conversion: any) => ({
+            ...conversion,
+            analysis: findConversionAnalysis(analysis, conversion.usdzPath),
+        })),
+    };
+}
+
+function conversionBaseFile(sourceFile: string, suffix: string) {
+    const slug = path.parse(sourceFile).name.replace(".glb", "");
+    const legacyFile = path.join(legacySourceDir, "2.0", slug, "glTF-Binary", slug + ".glb");
+    const legacySuffixes = new Set(["three", "blender", "ov"]);
+
+    if (legacySuffixes.has(suffix) && fs.existsSync(legacyFile)) {
+        return legacyFile;
+    }
+
+    return sourceFile;
+}
+
+function createConversionInfo(sourceFile: string) {
+    return conversionFamilies.map((family) => {
+        const baseFile = conversionBaseFile(sourceFile, family.suffix);
+        const usdzPath = normalizePath(baseFile + "." + family.suffix + ".usdz");
+        const screenshotPath = normalizePath(baseFile + "." + family.suffix + ".webp");
+        const usdzUri = basePath + "/downloads/" + path.basename(usdzPath);
+        const screenshotUri = basePath + "/downloads/" + path.basename(screenshotPath);
+        const provenanceStatus = getProvenanceStatuses().get(usdzPath) ?? null;
+        const available = provenanceStatus
+            ? provenanceStatus === "success" && fs.existsSync(usdzPath)
+            : fs.existsSync(usdzPath);
+
+        return {
+            ...family,
+            usdzPath,
+            screenshotPath,
+            usdzUri,
+            screenshotUri,
+            sourcePath: normalizePath(baseFile),
+            provenanceStatus,
+            available,
+            screenshotAvailable: available && fs.existsSync(screenshotPath),
+        };
+    });
+}
+
+function createGltfReferenceInfo(sourceFile: string) {
+    const screenshotPath = normalizePath(sourceFile + ".gltf-reference.webp");
+    return {
+        screenshotPath,
+        screenshotUri: basePath + "/downloads/" + path.basename(screenshotPath),
+        available: fs.existsSync(screenshotPath),
+    };
+}
 
 let lastCollectionResult : {files:Array<any>, images:Array<any>} | null = null;
 async function collectFileInformation(filter: string | undefined = undefined, runConversions = false) {
@@ -44,11 +173,11 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
     const runThreeConversion = false;
     const runBlenderConversion = false;
     const runOmniverseConversion = false;
-    const runUsdChecksAndRender = true;
+    const runUsdChecksAndRender = false;
 
     // patch FileLoader to use fs instead of fetch
     const originalLoad = FileLoader.prototype.load;
-    FileLoader.prototype.load = function (url: string, onLoad: Function, onProgress: Function, onError: Function) {
+    (FileLoader.prototype as any).load = function (url: string, onLoad?: (data: string | ArrayBuffer) => void, onProgress?: (event: ProgressEvent) => void, onError?: (err: unknown) => void) {
         try {
             const data = fs.readFileSync(url);
             Cache.add(url, data.buffer);
@@ -61,7 +190,10 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
 
     const fullPath = sourceDir + sourceSubfolder;
     // console.log("Loading files from " + fullPath);
-    let files = globSync(fullPath + "**/**.glb").sort();//.map(f => f = process.cwd() + "/" + f);
+    let files = globSync(fullPath + "**/glTF-Binary/*.glb").sort();//.map(f => f = process.cwd() + "/" + f);
+    if (files.length === 0) {
+        files = globSync(fullPath + "**/**.glb").sort();
+    }
     
     // these files are excluded because of unclear licensing
     const fileExclusions = [
@@ -188,7 +320,7 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
             'draco3d.decoder': await draco3d.createDecoderModule(),
         });
 
-    const array: Array<{paths:any, name:string, displayName: string, uri:string, previewUri: string | null, downloadUri:string, size: number, key: number, readme: string}> = [];
+    const array: Array<any> = [];
 
     marked.use({renderer});
 
@@ -205,11 +337,23 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
 
         const baseUrlPath = path.resolve(readmePath, "..");
         const dirName = path.parse(baseUrlPath).name;
+        const metadataPath = path.resolve(baseUrlPath, "metadata.json");
+        let assetGroups: string[] = [];
+        if (fs.existsSync(metadataPath)) {
+            try {
+                const metadata = JSON.parse(fs.readFileSync(metadataPath, "utf8"));
+                if (Array.isArray(metadata.tags))
+                    assetGroups = metadata.tags.filter((tag: unknown) => typeof tag === "string");
+            }
+            catch (error) {
+                console.warn("Could not read metadata tags for " + file, error);
+            }
+        }
         mdPath = baseUrlPath;
         mdDirName = dirName;
 
-        const readmeInRepo = originalRepoDir + "/tree/master/" + path.relative(sourceDir, readmePath);
-        const srcFileInRepo = originalRepoDir + "/tree/master/" + path.relative(sourceDir, file);
+        const readmeInRepo = originalRepoDir + "/tree/main/" + path.relative(sourceDir, readmePath);
+        const srcFileInRepo = originalRepoDir + "/tree/main/" + path.relative(sourceDir, file);
 
         firstFoundH1 = null;
         firstFoundImage = null;
@@ -252,7 +396,7 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
             alphaBlend: anyUsesBlend,
             generator,
             copyright,
-            source: "glTF-Sample-Models",
+            source: sourceDir === sampleAssetsDir ? "KhronosGroup/glTF-Sample-Assets" : "KhronosGroup/glTF-Sample-Models",
         };
 
         for (const ext of usedExtensions) {
@@ -284,7 +428,7 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
             // run screenshot generation with usdrecord
             /*
             await new Promise((resolve, reject) => {
-                const screenshotPath = path.resolve(file, "..", fileName + ".png");
+                const screenshotPath = path.resolve(file, "..", fileName + ".webp");
                 subProcess.exec('  "' + usdzFile + '" ' + screenshotPath, (err, stdout, stderr) => {
                     if (err) {
                         console.log("❌ " + fileName + " failed usdrecord");
@@ -302,9 +446,12 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
 
             // run screenshot generation with generate_thumbnail
             await new Promise((resolve, reject) => {
-                const screenshotPath = path.resolve(file, "..", fileName + ".png");
+                const intermediatePath = path.resolve(file, "..", fileName + ".png");
+                const screenshotPath = path.resolve(file, "..", fileName + ".webp");
                 const domeLightAbsPath = path.resolve("src/lib/images/neutral.hdr").replaceAll("\\", "/");
-                const cmd = 'python3 usd/generate_thumbnail.py "' + usdzFile + '" ' + '--dome-light ' + '"' + domeLightAbsPath + '"' + ' --width 900 --height 760';
+                const cmd = 'python3 usd/generate_thumbnail.py "' + usdzFile + '" ' + '--dome-light ' + '"' + domeLightAbsPath + '"' + ' --width 900 --height 760 --output-extension png'
+                    + ' && cwebp -q 90 -alpha_q 100 -m 6 "' + intermediatePath + '" -o "' + screenshotPath + '"'
+                    + ' && rm -f "' + intermediatePath + '"';
                 
                 // console.log("        " + cmd)
                 subProcess.exec(cmd, (err, stdout, stderr) => {
@@ -324,24 +471,13 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
         
         // USDZ conversion
         const fileName = path.parse(file).name;
-        
-        // three.js conversion
-        const usdzFilePath = file + ".three.usdz";
-        const usdzFilePathAbs = path.resolve(usdzFilePath).replaceAll("\\", "/");
-        const usdzScreenshot = file + ".three.png";
-        const usdzScreenshotAbs = path.resolve(usdzScreenshot).replaceAll("\\", "/");
-
-        // Blender conversion
-        const blenderUsdzFilePath = file + ".blender.usdz";
-        const blenderUsdzFilePathAbs = path.resolve(blenderUsdzFilePath).replaceAll("\\", "/");
-        const blenderUsdzScreenshot = file + ".blender.png";
-        const blenderUsdzScreenshotAbs = path.resolve(blenderUsdzScreenshot).replaceAll("\\", "/");
-        
-        // Omniverse conversion
-        const ovUsdzFilePath = file + ".ov.usdz";
-        const ovUsdzFilePathAbs = path.resolve(ovUsdzFilePath).replaceAll("\\", "/");
-        const ovUsdzScreenshot = file + ".ov.png";
-        const ovUsdzScreenshotAbs = path.resolve(ovUsdzScreenshot).replaceAll("\\", "/");
+        const conversions = createConversionInfo(file);
+        const gltfReference = createGltfReferenceInfo(file);
+        const legacyThree = conversions.find((conversion) => conversion.suffix === "three");
+        const legacyBlender = conversions.find((conversion) => conversion.suffix === "blender");
+        const legacyOmniverse = conversions.find((conversion) => conversion.suffix === "ov");
+        const usdzFilePath = legacyThree?.usdzPath ?? file + ".three.usdz";
+        const ovUsdzFilePathAbs = legacyOmniverse?.usdzPath ?? normalizePath(file + ".ov.usdz");
         
         if (runConversions && (runThreeConversion || runBlenderConversion || runOmniverseConversion))
             console.log("Converting " + fileName + " to USDZ");
@@ -366,7 +502,7 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
                             resolve(arrayBuffer);
                             return
 
-                        }, undefined, function (error: Error) {
+                        }, undefined, function (error: unknown) {
                             console.log("❌ " + fileName + " failed to load: ", error);
                             // reject(error);
                             resolve(null);
@@ -388,8 +524,8 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
                 }
             }
             
-            if (runUsdChecksAndRender && fs.existsSync(usdzFilePathAbs))
-                await checkAndRender(usdzFilePathAbs, "three");
+            if (runUsdChecksAndRender && legacyThree && fs.existsSync(legacyThree.usdzPath))
+                await checkAndRender(legacyThree.usdzPath, "three");
 
             if (runConversions && runBlenderConversion) {
                 // blender conversion
@@ -413,8 +549,8 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
                 });
             }
 
-            if (runUsdChecksAndRender && fs.existsSync(blenderUsdzFilePathAbs))
-                await checkAndRender(blenderUsdzFilePathAbs, "blender");
+            if (runUsdChecksAndRender && legacyBlender && fs.existsSync(legacyBlender.usdzPath))
+                await checkAndRender(legacyBlender.usdzPath, "blender");
 
             if (runConversions && runOmniverseConversion) {
                 await new Promise((resolve, reject) => {
@@ -436,8 +572,8 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
                 });
             }
 
-            if (runUsdChecksAndRender && fs.existsSync(ovUsdzFilePathAbs))
-                await checkAndRender(ovUsdzFilePathAbs, "ov");
+            if (runUsdChecksAndRender && legacyOmniverse && fs.existsSync(legacyOmniverse.usdzPath))
+                await checkAndRender(legacyOmniverse.usdzPath, "ov");
         }
         catch (e) {
             console.log("❌ " + fileName + " failed to convert to usdz: ", e);
@@ -448,24 +584,23 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
         array.push({
             // make canonical path
             paths: {
-                gltf: path.resolve(file).replaceAll("\\", "/"),
-                gltfPreviewScreenshot: firstFoundImage,
-                threeUsdz: usdzFilePathAbs,
-                threeScreenshot: usdzScreenshotAbs,
-                blenderUsdz: blenderUsdzFilePathAbs,
-                blenderScreenshot: blenderUsdzScreenshotAbs,
-                ovUsdz: ovUsdzFilePathAbs,
-                ovScreenshot: ovUsdzScreenshotAbs,
+                gltf: normalizePath(file),
+                gltfPreviewScreenshot: gltfReference.available ? gltfReference.screenshotPath : firstFoundImage,
+                conversions,
             },
             name: path.parse(file).name,
             displayName: firstFoundH1 || path.parse(file).name,
             slug: path.parse(file).name.replace(".glb", ""),
 
-            previewUri: firstFoundImage,
+            previewUri: gltfReference.available ? gltfReference.screenshotUri : firstFoundImage,
+            sourcePreview: gltfReference,
             uri: basePath + "/" + path.parse(file).name,
             downloadUri: basePath + "/downloads/" + path.parse(file).name + ".glb",
             readmeSrc: readmeInRepo,
             originalFileSrc: srcFileInRepo,
+            sourceRepoUrl: originalRepoDir,
+            conversions,
+            groups: assetGroups,
             
             size: fs.existsSync(file) ? fs.statSync(file).size : 0,
             key: index,
@@ -489,4 +624,4 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
 
 // console.log(images);
 
-export { collectFileInformation };
+export { attachAssetAnalysis, collectFileInformation };

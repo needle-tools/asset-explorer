@@ -2,6 +2,7 @@ import { vitePreprocess } from '@sveltejs/kit/vite';
 import adapter from '@sveltejs/adapter-static';
 
 const dev = process.argv.includes('dev');
+const siteOrigin = process.env.SITE_ORIGIN || 'https://asset-explorer.needle.tools';
 
 // import { files } from "./dynamicFiles.js";
 // const files = global.listOfModelFiles;
@@ -34,6 +35,7 @@ const config = {
             base: dev ? '' : process.env.BASE_PATH, // process.env.BASE_PATH,
         },
 		prerender: {
+			origin: siteOrigin,
 			// '*' crawls all reachable pages (the overview links to every model);
 			// the JSON API isn't linked from any page, so list it explicitly.
 			entries: ['*', '/api/models.json', '/sitemap.xml'],

@@ -2,26 +2,74 @@
 import { track } from "$lib/analytics";
 
 export let href: string;
+export let excludeHref: string | null = null;
 export let selected: boolean;
+export let excluded: boolean = false;
 export let name: string;
 export let value: number | boolean | string;
 export let showValue: boolean = true;
 
-function onTagClick() {
+let longPressTimer: ReturnType<typeof setTimeout> | null = null;
+let longPressTriggered = false;
+
+function onTagClick(event: MouseEvent) {
+    if (longPressTriggered) {
+        longPressTriggered = false;
+        event.preventDefault();
+        return;
+    }
     if (!shouldBeLink) return;
     // `selected` reflects the state before navigation: a selected tag toggles the filter off
-    track(selected ? "tag_filter_clear" : "tag_filter", { tag: name });
+    track(selected || excluded ? "tag_filter_clear" : "tag_filter", { tag: name });
+}
+
+function clearLongPress() {
+    if (!longPressTimer) return;
+    clearTimeout(longPressTimer);
+    longPressTimer = null;
+}
+
+function onPointerDown() {
+    if (!shouldBeLink || !excludeHref) return;
+    clearLongPress();
+    longPressTriggered = false;
+    longPressTimer = setTimeout(() => {
+        longPressTriggered = true;
+        track(excluded ? "tag_filter_clear" : "tag_filter_exclude", { tag: name });
+        window.location.href = excludeHref!;
+    }, 550);
+}
+
+function onPointerUp() {
+    clearLongPress();
+}
+
+function onContextMenu(event: MouseEvent) {
+    if (!shouldBeLink || !excludeHref) return;
+    event.preventDefault();
+    track(excluded ? "tag_filter_clear" : "tag_filter_exclude", { tag: name });
+    window.location.href = excludeHref;
 }
 
 $: shouldBeLink = name !== "generator";
 $: _showValue = showValue && typeof value !== "boolean";
 // long string values (e.g. generator, source) stack below the label instead of beside it
-$: _stack = _showValue && typeof value === "string";
+$: _stack = _showValue && typeof value === "string" && value.length > 14;
 $: fullValue = typeof value === "string" ? value : "";
 </script>
 
-<li class={selected ? 'selected' : ''}>
-    <a class:stacked={_stack} href={shouldBeLink ? href : '#'} on:click={onTagClick}>
+<li class:selected class:excluded>
+    <a
+        class:stacked={_stack}
+        href={shouldBeLink ? href : '#'}
+        title={excludeHref ? "Click to include or remove. Long-press/right-click to exclude." : undefined}
+        on:click={onTagClick}
+        on:pointerdown={onPointerDown}
+        on:pointerup={onPointerUp}
+        on:pointerleave={onPointerUp}
+        on:pointercancel={onPointerUp}
+        on:contextmenu={onContextMenu}
+    >
         <span class="tag-name" title={name}>{name}</span>
         {#if _showValue}
             <span class="tag-count" title={fullValue}>{value}</span>
@@ -96,8 +144,18 @@ li.selected {
     border-color: var(--color-green);
 }
 
+li.excluded {
+    background-color: rgba(198, 74, 74, 0.13);
+    border-color: rgba(198, 74, 74, 0.65);
+}
+
 li.selected a,
 li.selected .tag-name {
     color: var(--color-text-primary);
+}
+
+li.excluded .tag-name {
+    color: var(--color-text-primary);
+    text-decoration: line-through;
 }
 </style>

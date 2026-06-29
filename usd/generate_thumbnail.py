@@ -6,7 +6,11 @@ import math
 import os
 import sys
 import argparse
+import shutil
+import tempfile
 from pathlib import Path
+
+temp_dir = None
 
 def parse_args():
     parser = argparse.ArgumentParser(description="This script takes a thumbnail image of the given USD file supplied and associates it with the file.")
@@ -30,6 +34,22 @@ def parse_args():
                         type=str, 
                         help='The file extension of the output image you want (exr, png..). If using exr, make sure your usd install includes OpenEXR',
                         default='png')
+    parser.add_argument('--field-of-view',
+                        type=float,
+                        help='Vertical camera field of view in degrees. Default is 35.',
+                        default=35.0)
+    parser.add_argument('--camera-padding',
+                        type=float,
+                        help='Framing multiplier applied to the computed camera distance. Default is 1.12.',
+                        default=1.12)
+    parser.add_argument('--dome-intensity',
+                        type=float,
+                        help='Intensity authored on the dome light. Default is 1.0.',
+                        default=1.0)
+    parser.add_argument('--dome-exposure',
+                        type=float,
+                        help='Exposure authored on the dome light in stops. Default is 0.0.',
+                        default=0.0)
     parser.add_argument('--verbose', 
                         action='store_true',
                         help='Prints out the steps as they happen')
@@ -44,7 +64,7 @@ def generate_thumbnail(usd_file, verbose, extension):
 
     if (UsdGeom.GetStageUpAxis(subject_stage) == 'Z'):
         subject_stage = generate_y_up_stage(subject_stage, usd_file)
-        subject_file = 'y_up.usda'
+        subject_file = temp_path('y_up.usda')
 
     setup_camera(subject_stage, subject_file)
     
@@ -59,7 +79,7 @@ def generate_thumbnail(usd_file, verbose, extension):
     return image_name
 
 def generate_y_up_stage(stage, usd_file):
-    y_up_stage = Usd.Stage.CreateNew('y_up.usda')
+    y_up_stage = Usd.Stage.CreateNew(temp_path('y_up.usda'))
     new_top_level = UsdGeom.Xform.Define(y_up_stage, '/Root')
 
     for prim in stage.GetPseudoRoot().GetChildren():
@@ -105,7 +125,7 @@ def setup_camera(subject_stage, usd_file):
     sublayer_subject(camera_stage, usd_file)
 
 def create_camera():
-    stage = Usd.Stage.CreateNew('camera.usda')
+    stage = Usd.Stage.CreateNew(temp_path('camera.usda'))
 
     # Set metadata on the stage.
     stage.SetDefaultPrim(stage.DefinePrim('/ThumbnailGenerator', 'Xform'))
@@ -114,18 +134,20 @@ def create_camera():
     # Define the "MainCamera" under the "ThumbnailGenerator".
     camera = UsdGeom.Camera.Define(stage, '/ThumbnailGenerator/MainCamera')
 
-    # Set the camera attributes.
-    camera.CreateFocalLengthAttr(50)
-    camera.CreateFocusDistanceAttr(168.60936)
+    aspect = args.width / args.height if args.height else 1.0
+    vertical_aperture = 24
+    horizontal_aperture = vertical_aperture * aspect
+    focal_length = vertical_aperture / (2 * math.tan(math.radians(args.field_of_view) / 2))
+
+    # Set camera attributes explicitly so USD and browser reference renders can share a stable FOV.
+    camera.CreateFocalLengthAttr(focal_length)
+    camera.CreateFocusDistanceAttr(1)
     camera.CreateFStopAttr(0)
-    camera.CreateHorizontalApertureAttr(24)
+    camera.CreateHorizontalApertureAttr(horizontal_aperture)
     camera.CreateHorizontalApertureOffsetAttr(0)
     camera.CreateProjectionAttr("perspective")
-    camera.CreateVerticalApertureAttr(24)
+    camera.CreateVerticalApertureAttr(vertical_aperture)
     camera.CreateVerticalApertureOffsetAttr(0)
-    
-    if args.height:
-        camera.CreateHorizontalApertureAttr(24 * args.width / args.height)
 
     return stage
 
@@ -139,6 +161,8 @@ def add_domelight(camera_stage):
     domeLight = UsdLux.DomeLight(camera_stage.GetPrimAtPath('/ThumbnailGenerator/DomeLight'))
     domeLight.CreateTextureFileAttr().Set(args.dome_light)
     domeLight.CreateTextureFormatAttr().Set("latlong")
+    domeLight.CreateIntensityAttr().Set(args.dome_intensity)
+    domeLight.CreateExposureAttr().Set(args.dome_exposure)
 
 def create_camera_translation_and_clipping(subject_stage, camera_prim):
     bounding_box = get_bounding_box(subject_stage)
@@ -150,15 +174,21 @@ def create_camera_translation_and_clipping(subject_stage, camera_prim):
 
     center_of_thumbnail_face = Gf.Vec3d(subject_center[0], subject_center[1], max_bound[2])
 
-    # Conversion from mm to cm
-    distanceInCm = distance / 10.0
+    distanceInCm = distance * args.camera_padding
     
     cameraZ = center_of_thumbnail_face + get_camera_z_translation(distanceInCm)
+    camera_prim.GetFocusDistanceAttr().Set(distanceInCm)
 
-    # We're extending the clipping planes in both directions to accommodate for different fields of view
-    nearClip = (distanceInCm + min_bound[2]) * 0.5
-    farClip = (distanceInCm + max_bound[2]) * 2
-    nearClip = max(nearClip, 0.0000001)
+    # Keep the camera fit stable while making clipping independent from the asset's depth axis.
+    # Very flat or unusually positioned assets can otherwise end up clipped even though they fit in frame.
+    extent = max(
+        max_bound[0] - min_bound[0],
+        max_bound[1] - min_bound[1],
+        max_bound[2] - min_bound[2],
+        0.0001,
+    )
+    nearClip = max(distanceInCm * 0.001, 0.000001)
+    farClip = max(distanceInCm + extent * 10, nearClip * 1000)
     clippingPlanes = Gf.Vec2f(nearClip, farClip)
     camera_prim.GetClippingRangeAttr().Set(clippingPlanes)
 
@@ -174,25 +204,17 @@ def get_bounding_box(subject_stage):
     return bboxCache.ComputeWorldBound(root).GetBox()
 
 def get_distance_to_camera(min_bound, max_bound, camera_prim):
-    focal_length = camera_prim.GetFocalLengthAttr().Get()
-    horizontal_aperture = camera_prim.GetHorizontalApertureAttr().Get()
-    vertical_aperture = camera_prim.GetVerticalApertureAttr().Get()
+    aspect = args.width / args.height if args.height else 1.0
+    vertical_fov = math.radians(args.field_of_view)
+    horizontal_fov = 2 * math.atan(math.tan(vertical_fov / 2) * aspect)
 
-    distance_to_capture_horizontal = calculate_field_of_view_distance(horizontal_aperture, (max_bound[0] - min_bound[0]) * 10, focal_length)
-    distance_to_capture_vertical = calculate_field_of_view_distance(vertical_aperture, (max_bound[1] - min_bound[1]) * 10, focal_length)
+    distance_to_capture_horizontal = calculate_camera_distance(max_bound[0] - min_bound[0], horizontal_fov)
+    distance_to_capture_vertical = calculate_camera_distance(max_bound[1] - min_bound[1], vertical_fov)
 
     return max(distance_to_capture_horizontal, distance_to_capture_vertical)
 
-def calculate_field_of_view_distance(sensor_size, object_size, focal_length):
-    return calculate_camera_distance(object_size, calculate_field_of_view(focal_length, sensor_size))
-    
-def calculate_field_of_view(focal_length, sensor_size):
-    # Focal length and sensor size should be in the same units (e.g., mm)
-    field_of_view = 2 * math.atan(sensor_size / (2 * focal_length))
-    return field_of_view
-
 def calculate_camera_distance(subject_size, field_of_view):
-    # Subject size and field of view should be in the same units (e.g., mm and degrees)
+    # Subject size and field of view should be in the same units.
     distance = (subject_size / 2) / math.tan(field_of_view / 2)
     return distance
 
@@ -222,11 +244,18 @@ def sublayer_subject(camera_stage, input_file):
 
 def take_snapshot(image_name):
     renderer = get_renderer()
-    cmd = ['usdrecord', '--camera', 'MainCamera', '--imageWidth', str(args.width), '--renderer', renderer, 'camera.usda', image_name]
+    cmd = [
+        'usdrecord',
+        '--camera', 'MainCamera',
+        '--imageWidth', str(args.width),
+        '--renderer', renderer,
+        '--colorCorrectionMode', 'sRGB',
+        '--complexity', 'high',
+    ]
+    if args.dome_light:
+        cmd.append('--disableCameraLight')
+    cmd += [temp_path('camera.usda'), image_name]
     run_os_specific_usdrecord(cmd)
-    os.remove("camera.usda")
-    if os.path.isfile("y_up.usda"):
-        os.remove("y_up.usda")
     return image_name
 
 def get_renderer():
@@ -235,8 +264,8 @@ def get_renderer():
         return "GL"
     else:
         if sys.platform == 'darwin':
-            print("macOS default renderer Metal being used...")
-            return 'Metal'
+            print("macOS default renderer Storm being used...")
+            return 'Storm'
         else:
             print("linux default renderer GL being used...")
             return 'GL'
@@ -253,6 +282,9 @@ def run_os_specific_usdrecord(cmd):
 def create_image_filename(input_path, extension):
     return Path(input_path).with_suffix("." + extension)
 
+def temp_path(filename):
+    return str(Path(temp_dir) / filename)
+
 def link_image_to_subject(subject_stage, image_name):
     subject_root_prim = subject_stage.GetDefaultPrim()
     mediaAPI = UsdMedia.AssetPreviewsAPI.Apply(subject_root_prim)
@@ -261,9 +293,11 @@ def link_image_to_subject(subject_stage, image_name):
     subject_stage.GetRootLayer().Save()
     
 def create_usdz_wrapper_stage(usdz_file):
-    file_name = usdz_file.split('.')[0]
-    existing_stage = Usd.Stage.Open(usd_file)
-    new_stage = Usd.Stage.CreateNew(file_name + '_Thumbnail.usda')
+    input_path = Path(usdz_file)
+    file_name = input_path.stem.split('.')[0]
+    wrapper_path = input_path.with_name(file_name + '_Thumbnail.usda')
+    existing_stage = Usd.Stage.Open(usdz_file)
+    new_stage = Usd.Stage.CreateNew(str(wrapper_path))
     
     UsdUtils.CopyLayerMetadata(existing_stage.GetRootLayer(), new_stage.GetRootLayer())
 
@@ -276,7 +310,7 @@ def zip_results(usd_file, image_name, is_usdz):
     usdPath = Path(usd_file)
 
     if is_usdz:
-        file_list.append(usdPath.with_suffix('_Thumbnail.usda'))
+        file_list.append(usdPath.with_name(usdPath.stem.split('.')[0] + '_Thumbnail.usda'))
         
     usdz_file = usdPath.with_suffix('_Thumbnail.usdz')
     cmd = ["usdzip", "-r", usdz_file] + file_list
@@ -285,20 +319,32 @@ def zip_results(usd_file, image_name, is_usdz):
 if __name__ == "__main__":
 
     args = parse_args()
+    if args.dome_light:
+        args.dome_light = str(Path(args.dome_light).resolve())
+    temp_dir = tempfile.mkdtemp(prefix='asset-explorer-usd-thumbnail-')
 
-    usd_file = args.usd_file
-    is_usdz = ".usdz" in usd_file
-        
-    image_name = generate_thumbnail(usd_file, args.verbose, args.output_extension)
-    subject_stage = create_usdz_wrapper_stage(usd_file) if is_usdz else Usd.Stage.Open(usd_file)
+    try:
+        usd_file = args.usd_file
+        is_usdz = ".usdz" in usd_file
+        wrapper_stage_path = None
+            
+        image_name = generate_thumbnail(usd_file, args.verbose, args.output_extension)
+        subject_stage = create_usdz_wrapper_stage(usd_file) if is_usdz else Usd.Stage.Open(usd_file)
+        if is_usdz:
+            wrapper_stage_path = subject_stage.GetRootLayer().realPath
 
-    if args.verbose:
-        print("Step 3: Linking thumbnail to subject...")
-
-    link_image_to_subject(subject_stage, image_name)
-
-    if args.create_usdz_result:
         if args.verbose:
-            print("Step 4: Linking thumbnail to subject...")
-        
-        zip_results(usd_file, image_name, is_usdz)
+            print("Step 3: Linking thumbnail to subject...")
+
+        link_image_to_subject(subject_stage, image_name)
+
+        if args.create_usdz_result:
+            if args.verbose:
+                print("Step 4: Linking thumbnail to subject...")
+            
+            zip_results(usd_file, image_name, is_usdz)
+
+        if wrapper_stage_path and os.path.isfile(wrapper_stage_path):
+            os.remove(wrapper_stage_path)
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)

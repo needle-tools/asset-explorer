@@ -20,9 +20,10 @@ import bpy
 
 def runner():
     import argparse
-    parser = argparse.ArgumentParser(description='Convert supported file type to gltf format.')
+    parser = argparse.ArgumentParser(description='Convert supported glTF files to USDZ.')
     # Arguments go here, e.g. asset path, output path, other custom properties and flags
-    parser.add_argument('-mp', '--model_path', help='Path to a model you want to convert.')
+    parser.add_argument('-mp', '--model_path', '--model-path', dest='model_path', required=True, help='Path to a model you want to convert.')
+    parser.add_argument('-o', '--output_path', '--output-path', dest='output_path', help='Path of the USDZ file to write.')
 
     # The -- is a separator between arguments passed to Blender directly and to your script
     argv = sys.argv
@@ -48,14 +49,29 @@ def runner():
     bpy.ops.import_scene.gltf(filepath=model_path, loglevel=50)
 
     # bpy.ops.import_scene.obj(filepath=model_path)
-    output_path = model_path.replace(".glb", ".glb.blender.usdz")
-    output_path = output_path.replace(".gltf", ".glb.blender.usdz")
+    output_path = args.output_path
+    if not output_path:
+        output_path = model_path.replace(".glb", ".glb.blender.usdz")
+        output_path = output_path.replace(".gltf", ".glb.blender.usdz")
 
     # The list of all parameters for gltf export can be found here:
     # https://docs.blender.org/api/current/bpy.ops.export_scene.html#bpy.ops.export_scene.gltf
     # Parameters that you won't set will use your Blender settings
     # bpy.ops.export_scene.gltf(filepath=output_path)
-    bpy.ops.wm.usd_export(filepath=output_path, generate_preview_surface=True, relative_paths=True)
+    export_args = dict(
+        filepath=output_path,
+        generate_preview_surface=True,
+        relative_paths=True,
+        export_animation=True,
+        export_textures=True,
+    )
+
+    supported_properties = bpy.ops.wm.usd_export.get_rna_type().properties.keys()
+    export_args = {
+        key: value for key, value in export_args.items()
+        if key in supported_properties
+    }
+    bpy.ops.wm.usd_export(**export_args)
 
 
 if __name__ == "__main__":
