@@ -81,6 +81,10 @@ function getAndCountGroups(_data: PageData) {
     const preferredOrder = new Map([
         ["showcase", 0],
         ["needle", 1],
+        ["pbrtest", 2],
+        ["core", 3],
+        ["extension", 4],
+        ["testing", 5],
     ]);
 
     for (const model of _data.models) {
@@ -207,6 +211,29 @@ function countLabel(search: string, kind: "group" | "tag", value: string, total:
     return matching === total ? total : `${matching} of ${total}`;
 }
 
+function hasMatches(label: number | string) {
+    return !(typeof label === "string" && label.startsWith("0 of "));
+}
+
+function isActiveFacet(kind: "group" | "tag", value: string) {
+    if (kind === "group") return groupFilters.includes(value) || groupExcludes.includes(value);
+    return tagFilters.includes(value) || tagExcludes.includes(value);
+}
+
+$: visibleGroupEntries = Object.entries(getAndCountGroups(data))
+    .map(([assetGroup, count]) => ({
+        assetGroup,
+        count,
+        label: countLabel(currentSearch, "group", assetGroup, count),
+    }))
+    .filter(({ assetGroup, label }) => hasMatches(label) || isActiveFacet("group", assetGroup));
+
+$: visibleCapabilityTags = Object.fromEntries(
+    Object.entries(getAndCountTags(data))
+        .map(([tag, count]) => [tag, countLabel(currentSearch, "tag", tag, count)] as const)
+        .filter(([tag, label]) => hasMatches(label) || isActiveFacet("tag", tag))
+);
+
 </script>
 
 <Seo
@@ -218,23 +245,21 @@ function countLabel(search: string, kind: "group" | "tag", value: string, total:
 
 <h3 class="title">Asset groups</h3>
 <ul class="groups">
-    {#each Object.entries(getAndCountGroups(data)) as [assetGroup, count]}
+    {#each visibleGroupEntries as { assetGroup, label }}
         <Tag
             href={filterHref(currentSearch, "group", assetGroup)}
             excludeHref={filterHref(currentSearch, "group", assetGroup, true)}
             selected={groupFilters.includes(assetGroup)}
             excluded={groupExcludes.includes(assetGroup)}
             name={assetGroup}
-            value={countLabel(currentSearch, "group", assetGroup, count)}
+            value={label}
         />
     {/each}
 </ul>
 
 <h3 class="title">Asset capabilities</h3>
 <ModelTags
-    tags={Object.fromEntries(
-        Object.entries(getAndCountTags(data)).map(([tag, count]) => [tag, countLabel(currentSearch, "tag", tag, count)])
-    )}
+    tags={visibleCapabilityTags}
     includeFilters={tagFilters}
     excludeFilters={tagExcludes}
     ignoreTags={["generator", "source"]}
