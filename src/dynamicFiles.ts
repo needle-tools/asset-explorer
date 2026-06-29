@@ -387,9 +387,32 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
         const multipleUvSets = primitives.some((primitive) =>
             Object.keys(primitive.attributes ?? {}).some((attribute) => /^TEXCOORD_[1-9]/.test(attribute))
         );
+        const nonTrianglePrimitives = primitives.some((primitive) => primitive.mode !== undefined && primitive.mode !== 4);
         const doubleSidedMaterials = doc.materials?.some((material) => material.doubleSided);
+        const emissiveMaterials = doc.materials?.some((material) => material.emissiveFactor || material.emissiveTexture);
+        const normalMaps = doc.materials?.some((material) => material.normalTexture);
+        const occlusionMaps = doc.materials?.some((material) => material.occlusionTexture);
+        const nonPbrMaterials = doc.materials?.some((material) => !material.pbrMetallicRoughness);
+        const matrixTransforms = doc.nodes?.some((node) => Array.isArray(node.matrix));
+        const negativeScale = doc.nodes?.some((node) => Array.isArray(node.scale) && node.scale.some((value) => value < 0));
+        const nonUniformScale = doc.nodes?.some((node) =>
+            Array.isArray(node.scale) && new Set(node.scale.map((value) => Number(value).toFixed(8))).size > 1
+        );
+        const normalizedAccessors = doc.accessors?.some((accessor) => accessor.normalized);
+        const customTextureWrap = doc.samplers?.some((sampler) =>
+            (sampler.wrapS ?? 10497) !== 10497 || (sampler.wrapT ?? 10497) !== 10497
+        );
+        const customTextureFiltering = doc.samplers?.some((sampler) =>
+            sampler.minFilter !== undefined || sampler.magFilter !== undefined
+        );
         const morphAnimations = doc.animations?.some((animation) =>
             animation.channels?.some((channel) => channel.target?.path === "weights")
+        );
+        const stepAnimation = doc.animations?.some((animation) =>
+            animation.samplers?.some((sampler) => sampler.interpolation === "STEP")
+        );
+        const cubicSplineAnimation = doc.animations?.some((animation) =>
+            animation.samplers?.some((sampler) => sampler.interpolation === "CUBICSPLINE")
         );
         const anyUsesMask = doc.materials?.some((material) => material.alphaMode === 'MASK');
         const anyUsesBlend = doc.materials?.some((material) => material.alphaMode === 'BLEND');
@@ -408,8 +431,21 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
             alphaBlend: anyUsesBlend,
             tangents,
             multipleUvSets,
+            nonTrianglePrimitives,
             doubleSidedMaterials,
+            emissiveMaterials,
+            normalMaps,
+            occlusionMaps,
+            nonPbrMaterials,
+            matrixTransforms,
+            negativeScale,
+            nonUniformScale,
+            normalizedAccessors,
+            customTextureWrap,
+            customTextureFiltering,
             morphAnimations,
+            stepAnimation,
+            cubicSplineAnimation,
             sparseAccessors,
             generator,
             copyright,
