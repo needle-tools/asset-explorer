@@ -50,6 +50,7 @@ let needleEngine: NeedleEngine;
 let showXROverlay = false;
 
 function readableBytes(bytes: number) {
+    if (bytes === 0) return "0 B";
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
     return (
         (bytes / Math.pow(1024, i)).toFixed(2) +
@@ -59,18 +60,18 @@ function readableBytes(bytes: number) {
 }
 
 function readablePixels(pixels: number | null | undefined) {
-    if (typeof pixels !== "number") return "n/a";
+    if (typeof pixels !== "number") return "Unknown";
     if (pixels >= 1000000) return (pixels / 1000000).toFixed(1) + " MP";
     if (pixels >= 1000) return (pixels / 1000).toFixed(1) + " KP";
     return pixels.toString();
 }
 
 function readableOptionalBytes(bytes: number | null | undefined) {
-    return typeof bytes === "number" ? readableBytes(bytes) : "n/a";
+    return typeof bytes === "number" ? readableBytes(bytes) : "Unknown";
 }
 
 function shortNumber(value: number | null | undefined) {
-    return typeof value === "number" ? value.toLocaleString("en-US") : "n/a";
+    return typeof value === "number" ? value.toLocaleString("en-US") : "Unknown";
 }
 
 function currentPageAssetUrl(uri: string, baseUrl: string) {
@@ -101,7 +102,7 @@ function sourceFeatureValue(row: any) {
 
 function conversionFeatureValue(conversion: any, row: any) {
     const analysis = conversion.analysis;
-    if (!analysis?.features) return "n/a";
+    if (!analysis?.features) return "Unknown";
     if (row.key === "texturePixels") return readablePixels(analysis.features.textureImages?.totalPixels);
     if (row.key === "textureBytes") return readableOptionalBytes(analysis.features.textureImages?.totalBytes);
     if (row.key === "materialFeatures") {

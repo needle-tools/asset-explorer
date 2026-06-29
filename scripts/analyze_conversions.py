@@ -167,13 +167,27 @@ def summarize_texture_images(images):
 
 
 def summarize_usd_texture_assets(assets):
+    total_pixels = 0
+    known_dimensions = 0
+    max_width = 0
+    max_height = 0
+    for asset in assets:
+        width = asset.get("width")
+        height = asset.get("height")
+        if isinstance(width, int) and isinstance(height, int):
+            known_dimensions += 1
+            total_pixels += width * height
+            max_width = max(max_width, width)
+            max_height = max(max_height, height)
+
     return {
         "count": len(assets),
-        "knownDimensions": 0,
-        "totalPixels": None,
+        "knownDimensions": known_dimensions,
+        "unknownDimensions": len(assets) - known_dimensions,
+        "totalPixels": total_pixels,
         "totalBytes": sum(asset.get("size", 0) for asset in assets),
-        "maxWidth": None,
-        "maxHeight": None,
+        "maxWidth": max_width,
+        "maxHeight": max_height,
     }
 
 
@@ -287,12 +301,13 @@ def resolve_texture_assets(stage, authored_texture_assets):
         seen.add(resolved_key)
 
         asset = resolver.OpenAsset(resolved_path)
+        size = asset.GetSize() if asset else 0
+        dimensions = image_info(asset.GetBuffer()) if asset else {"width": None, "height": None, "type": "unknown"}
         assets.append({
             "path": authored_path,
             "resolvedPath": resolved_key,
-            "size": asset.GetSize() if asset else 0,
-            "width": None,
-            "height": None,
+            "size": size,
+            **dimensions,
         })
 
     return assets
@@ -487,7 +502,7 @@ def write_index():
 
     output = {
         "generatedAt": __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat(),
-        "schemaVersion": 3,
+        "schemaVersion": 4,
         "analysis": "OpenUSD Python stage traversal",
         "source": {"directory": normalize(SOURCE_DIR)},
         "assets": sorted(assets, key=lambda asset: asset["slug"]),
