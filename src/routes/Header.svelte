@@ -158,7 +158,7 @@
 		display: flex;
 		align-items: center;
 		padding: 0 0.85rem 0 0.25rem;
-		white-space: nowrap;    
+		white-space: nowrap;
 		font-weight: 200;
 		font-size: 1.45rem;
 		margin-left: -10px;
