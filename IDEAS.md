@@ -50,9 +50,9 @@ To run the app,
     - usdview for usdz
 - switch between files and renderers
     - files are GLB or USDZ; there may be multiple versions (e.g. GLB and roundtrip GLB, or GLB and 3 different USDZ conversions)
-    - renderers can show GLB (needle-engine, model-viewer), USDZ (Autodesk), or both (model)
+    - renderers can show GLB (needle-engine, model-viewer), USDZ (Needle USD Viewer), or both (model)
     - e.g. show glTF with needle-engine or model-viewer or model
-    - show USDZ with model or Autodesk's render delegate
+    - show USDZ with model or Needle USD Viewer
 
 ## TODO Structure
 

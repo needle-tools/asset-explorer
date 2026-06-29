@@ -21,10 +21,15 @@ const labels: Record<string, string> = {
     blendShapes: "Blend shapes",
     alphaMask: "Alpha mask",
     alphaBlend: "Alpha blend",
+    tangents: "Tangents",
+    doubleSidedMaterials: "Double-sided materials",
+    normalMaps: "Normal maps",
+    occlusionMaps: "Occlusion maps",
 };
 
 // preferred row order; unknown keys fall to the end
 const order = Object.keys(labels);
+const metadataKeys = new Set(["generator", "copyright", "source", "fileSize"]);
 
 function showInfo(key: string, value: any) {
     if (key === "scenes") return value > 1; // 1 scene is the normal case
@@ -41,7 +46,14 @@ function displayValue(value: any) {
 
 $: entries = Object.entries(info);
 $: rows = entries
-    .filter(([k, v]) => !isExtension(k) && showInfo(k, v))
+    .filter(([k, v]) => metadataKeys.has(k) && showInfo(k, v))
+    .sort((a, b) => {
+        const ia = order.indexOf(a[0]);
+        const ib = order.indexOf(b[0]);
+        return (ia < 0 ? Infinity : ia) - (ib < 0 ? Infinity : ib);
+    });
+$: capabilities = entries
+    .filter(([k, v]) => !metadataKeys.has(k) && !isExtension(k) && showInfo(k, v))
     .sort((a, b) => {
         const ia = order.indexOf(a[0]);
         const ib = order.indexOf(b[0]);
@@ -51,21 +63,45 @@ $: extensions = entries.filter(([k, v]) => isExtension(k) && v).map(([k]) => k);
 </script>
 
 <div class="model-info">
-    <table>
-        <tbody>
-            {#each rows as [key, value] (key)}
-                <tr>
-                    <th>{label(key)}</th>
-                    <td>{displayValue(value)}</td>
-                </tr>
-            {/each}
-        </tbody>
-    </table>
+    {#if rows.length}
+        <table>
+            <tbody>
+                {#each rows as [key, value] (key)}
+                    <tr>
+                        <th>{label(key)}</th>
+                        <td>{displayValue(value)}</td>
+                    </tr>
+                {/each}
+            </tbody>
+        </table>
+    {/if}
+
+    {#if capabilities.length}
+        <div class="badge-section">
+            <span class="section-label">Has special data</span>
+            <ul class="badges">
+                {#each capabilities as [key, value] (key)}
+                    <li>
+                        <a
+                            href="{base}/?tag={key}"
+                            title={label(key)}
+                            on:click={() => track("tag_filter", { tag: key })}
+                        >
+                            <span>{label(key)}</span>
+                            {#if value !== true}
+                                <strong>{displayValue(value)}</strong>
+                            {/if}
+                        </a>
+                    </li>
+                {/each}
+            </ul>
+        </div>
+    {/if}
 
     {#if extensions.length}
-        <div class="extensions">
-            <span class="ext-label">Extensions</span>
-            <ul>
+        <div class="badge-section">
+            <span class="section-label">Extensions</span>
+            <ul class="badges">
                 {#each extensions as ext (ext)}
                     <li>
                         <a
@@ -119,7 +155,7 @@ td {
     overflow-wrap: anywhere;
 }
 
-.extensions {
+.badge-section {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
@@ -129,7 +165,7 @@ td {
     border-top: 1px solid var(--color-border-subtle);
 }
 
-.ext-label {
+.section-label {
     color: var(--color-text-muted);
     font-weight: 700;
     font-size: 0.68rem;
@@ -137,7 +173,7 @@ td {
     text-transform: uppercase;
 }
 
-.extensions ul {
+.badges {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
@@ -146,9 +182,11 @@ td {
     list-style: none;
 }
 
-.extensions li a {
-    display: inline-block;
-    padding: 2px 8px;
+.badges li a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px;
     font-size: 0.72rem;
     color: var(--color-text-secondary);
     background-color: rgba(26, 26, 26, 0.04);
@@ -156,7 +194,12 @@ td {
     border-radius: 6px;
 }
 
-.extensions li a:hover {
+.badges li a strong {
+    color: var(--color-text-primary);
+    font-weight: 700;
+}
+
+.badges li a:hover {
     text-decoration: none;
     color: var(--color-text-primary);
     background-color: rgba(153, 204, 51, 0.18);

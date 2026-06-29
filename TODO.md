@@ -23,7 +23,7 @@
 - [x] Normalize thumbnail rendering settings across conversion families in the new conversion runner.
 - [x] Rerender all successful USDZ thumbnails with the approved 35-degree FOV / HDR dome settings.
 - [x] Update UI to show converter families, versions, provenance, previews, downloads, and viewer links dynamically.
-- [x] Fix USD Web Viewer links to use the current page origin instead of hardcoded production file URLs.
+- [x] Fix Needle USD Viewer links to use the current page origin instead of hardcoded production file URLs.
 - [x] Generate per-asset USD conversion analysis JSON with an overview index.
 - [x] Store generated provenance and analysis JSON beside generated conversions in the sample-assets submodule.
 - [x] Add per-asset feature survival table for source glTF versus available USDZ conversions.

@@ -253,7 +253,7 @@ onMount(() => {
         <div class="meta credits">
             <p>glTF information extracted with <a href="https://gltf-transform.dev/" target="_blank">gltf-transform</a>.</p>
             <p>USDZ verification and preview image created with <a href="https://openusd.org/release/toolset.html#usdchecker" target="_blank">usdchecker</a> and <a href="https://openusd.org/release/toolset.html#usdrecord" target="_blank">usdrecord</a>.</p>
-            <p><a href="https://usd-viewer.needle.tools/" target="_blank">USD Viewer</a> based on <a href="https://autodesk-forks.github.io/USD/#usd-for-web" target="_blank">Autodesk's experimental USD-for-Web</a></p>
+            <p><a href="https://usd-viewer.needle.tools/" target="_blank">USD Viewer by Needle</a></p>
         </div>
         <ModelInfo info={model.info} />
 
@@ -280,7 +280,7 @@ onMount(() => {
                     <a href={conversion.usdzUri} download
                         on:click={() => track("download", { ...assetProps, format: "usdz", converter: conversion.id })}><Icon name="download" />Download USDZ</a>
                     <a href={usdViewerUrl(conversion, pageUrlBase)} target="_blank"
-                        on:click={() => track("open_usd_viewer", { ...assetProps, converter: conversion.id })}><Icon name="external" />Open in USD Web Viewer</a>
+                        on:click={() => track("open_usd_viewer", { ...assetProps, converter: conversion.id })}><Icon name="external" />Open in Needle USD Viewer</a>
                     {#if hasQuickLook}
                     <a rel="ar" href={conversion.usdzUri}><Icon name="ar" />View in AR</a>
                     {/if}

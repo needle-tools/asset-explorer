@@ -42,9 +42,9 @@ Conversions to USDZ are currently done with
 The idea is to re-run conversions when these tools improve in a meaningful way to reflect the current state of the art.  
 Blender 4.x will likely drastically improve the USD support of Blender, and conversions will be redone at that point.  
 
-### Known Issues – USD Web Viewer
+### Known Issues – Needle USD Viewer
 
-The USD Web Viewer has a very limited set of capabilities when it comes to displaying files. Mainly, the three.js Hydra delegate is _very_ incomplete. The following features are **not** supported:  
+The Needle USD Viewer is still evolving, and USD display support remains uneven across the ecosystem. The following features may not be supported consistently across viewers:
 - skinned meshes
 - some texture formats and ways of referencing them
 - some material formats and ways how textures are referenced and used
@@ -62,6 +62,6 @@ Generally, USD support is very spotty across the USD ecosystem; always test what
 
 ## Reach out
 
-There's more to do! Roundtrips between conversion tools, improvements to existing converters, better visibility into USDZ features, integrating Autodesk' USD viewer directly, integrating "model" and "model-viewer" as alternative display options, ...  
+There's more to do! Roundtrips between conversion tools, improvements to existing converters, better visibility into USDZ features, integrating "model" and "model-viewer" as alternative display options, ...
 
 Feel free to <a href="mailto:hi@needle.tools">contact us</a>!
