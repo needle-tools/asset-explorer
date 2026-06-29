@@ -728,8 +728,7 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
     }
 
     .facet-section summary {
-        display: grid;
-        grid-template-columns: 11px minmax(0, 1fr) min-content;
+        display: flex;
         column-gap: 7px;
         align-items: center;
         color: var(--color-text-muted);
@@ -762,9 +761,9 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
     }
 
     .facet-section summary span:last-child {
-        justify-self: end;
         min-width: 2ch;
-        text-align: right;
+        color: var(--color-text-primary);
+        text-align: left;
     }
 
     .facet-section .groups {
