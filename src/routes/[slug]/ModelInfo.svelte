@@ -25,6 +25,7 @@ const labels: Record<string, string> = {
     doubleSidedMaterials: "Double-sided materials",
     normalMaps: "Normal maps",
     occlusionMaps: "Occlusion maps",
+    hasShear: "Has shear",
 };
 
 // preferred row order; unknown keys fall to the end

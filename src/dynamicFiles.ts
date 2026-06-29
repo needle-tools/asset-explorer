@@ -47,6 +47,105 @@ function normalizePath(filePath: string) {
     return path.resolve(filePath).replaceAll("\\", "/");
 }
 
+type GltfNode = {
+    matrix?: number[];
+    translation?: number[];
+    rotation?: number[];
+    scale?: number[];
+    children?: number[];
+};
+
+type GltfScene = {
+    nodes?: number[];
+};
+
+const identityMatrix = () => [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+
+function multiplyMatrices(a: number[], b: number[]) {
+    const result = new Array(16).fill(0);
+    for (let column = 0; column < 4; column++) {
+        for (let row = 0; row < 4; row++) {
+            let sum = 0;
+            for (let k = 0; k < 4; k++)
+                sum += a[k * 4 + row] * b[column * 4 + k];
+            result[column * 4 + row] = sum;
+        }
+    }
+    return result;
+}
+
+function nodeLocalMatrix(node: GltfNode) {
+    if (Array.isArray(node.matrix) && node.matrix.length === 16)
+        return node.matrix.map((value) => Number(value));
+
+    const [tx, ty, tz] = node.translation ?? [0, 0, 0];
+    const [x, y, z, w] = node.rotation ?? [0, 0, 0, 1];
+    const [sx, sy, sz] = node.scale ?? [1, 1, 1];
+
+    const x2 = x + x, y2 = y + y, z2 = z + z;
+    const xx = x * x2, xy = x * y2, xz = x * z2;
+    const yy = y * y2, yz = y * z2, zz = z * z2;
+    const wx = w * x2, wy = w * y2, wz = w * z2;
+
+    return [
+        (1 - (yy + zz)) * sx, (xy + wz) * sx, (xz - wy) * sx, 0,
+        (xy - wz) * sy, (1 - (xx + zz)) * sy, (yz + wx) * sy, 0,
+        (xz + wy) * sz, (yz - wx) * sz, (1 - (xx + yy)) * sz, 0,
+        tx, ty, tz, 1,
+    ];
+}
+
+function matrixHasShear(matrix: number[], epsilon = 1e-6) {
+    const columns = [
+        [matrix[0], matrix[1], matrix[2]],
+        [matrix[4], matrix[5], matrix[6]],
+        [matrix[8], matrix[9], matrix[10]],
+    ];
+    const lengths = columns.map(([x, y, z]) => Math.hypot(x, y, z));
+    for (let i = 0; i < 3; i++) {
+        if (lengths[i] <= epsilon) continue;
+        for (let j = i + 1; j < 3; j++) {
+            if (lengths[j] <= epsilon) continue;
+            const dot = columns[i][0] * columns[j][0] + columns[i][1] * columns[j][1] + columns[i][2] * columns[j][2];
+            if (Math.abs(dot / (lengths[i] * lengths[j])) > epsilon)
+                return true;
+        }
+    }
+    return false;
+}
+
+function documentHasShear(doc: { nodes?: GltfNode[]; scenes?: GltfScene[] }) {
+    const nodes = doc.nodes ?? [];
+    if (!nodes.length) return false;
+
+    const visited = new Set<number>();
+    let hasShear = false;
+
+    const visit = (nodeIndex: number, parentMatrix: number[]) => {
+        if (hasShear || nodeIndex < 0 || nodeIndex >= nodes.length) return;
+        const node = nodes[nodeIndex];
+        const worldMatrix = multiplyMatrices(parentMatrix, nodeLocalMatrix(node));
+        visited.add(nodeIndex);
+        if (matrixHasShear(worldMatrix)) {
+            hasShear = true;
+            return;
+        }
+        for (const childIndex of node.children ?? [])
+            visit(childIndex, worldMatrix);
+    };
+
+    const sceneRoots = (doc.scenes ?? []).flatMap((scene) => scene.nodes ?? []);
+    for (const rootIndex of sceneRoots)
+        visit(rootIndex, identityMatrix());
+
+    for (let nodeIndex = 0; nodeIndex < nodes.length && !hasShear; nodeIndex++) {
+        if (!visited.has(nodeIndex))
+            visit(nodeIndex, identityMatrix());
+    }
+
+    return hasShear;
+}
+
 let provenanceStatuses: Map<string, string> | null = null;
 const assetAnalysisCache = new Map<string, any | null>();
 
@@ -394,6 +493,7 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
         const occlusionMaps = doc.materials?.some((material) => material.occlusionTexture);
         const nonPbrMaterials = doc.materials?.some((material) => !material.pbrMetallicRoughness);
         const matrixTransforms = doc.nodes?.some((node) => Array.isArray(node.matrix));
+        const hasShear = documentHasShear(doc);
         const negativeScale = doc.nodes?.some((node) => Array.isArray(node.scale) && node.scale.some((value) => value < 0));
         const nonUniformScale = doc.nodes?.some((node) =>
             Array.isArray(node.scale) && new Set(node.scale.map((value) => Number(value).toFixed(8))).size > 1
@@ -438,6 +538,7 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
             occlusionMaps,
             nonPbrMaterials,
             matrixTransforms,
+            hasShear,
             negativeScale,
             nonUniformScale,
             normalizedAccessors,
