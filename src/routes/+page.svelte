@@ -42,6 +42,10 @@ let windowLocation = "https://asset-explorer.needle.tools/";
 const seoTitle = "Asset Explorer — glTF & USD Sample Models";
 const seoDescription =
     "Explore glTF and USD sample 3D models with downloadable GLB and USDZ conversions for three.js, Blender, and Omniverse — view them in 3D and AR.";
+const NONE_VALUE = "__none";
+const NO_CAPABILITIES = "__none_capabilities";
+const NO_EXTENSIONS = "__none_extensions";
+const NO_METADATA = "__none_metadata";
 
 $: homeJsonLd = {
     "@context": "https://schema.org",
@@ -162,14 +166,19 @@ function getAndCountGenerators(_data: PageData) {
 }
 
 function hasGroup(asset: AssetCard, value: string) {
+    if (value === NONE_VALUE) return !asset.groups?.length;
     return asset.groups?.includes(value) ?? false;
 }
 
 function hasGenerator(asset: AssetCard, value: string) {
+    if (value === NONE_VALUE) return !generatorFamily(asset.extras.info?.generator);
     return generatorFamily(asset.extras.info?.generator) === value;
 }
 
 function hasCapability(asset: AssetCard, value: string) {
+    if (value === NO_CAPABILITIES) return !hasObjectEntries(capabilityTagEntries(asset));
+    if (value === NO_EXTENSIONS) return !hasObjectEntries(extensionTagEntries(asset));
+    if (value === NO_METADATA) return metadataEntries(asset).length === 0;
     return asset.kind === "gltf" && showInfo(asset.extras.info, value);
 }
 
@@ -310,37 +319,70 @@ function isActiveFacet(kind: "group" | "generator" | "tag", value: string) {
     return tagFilters.includes(value) || tagExcludes.includes(value);
 }
 
-$: visibleGeneratorEntries = Object.entries(getAndCountGenerators(data))
-    .map(([generator, count]) => ({
-        generator,
-        label: countLabel(currentSearch, "generator", generator, count),
-    }))
-    .filter(({ generator, label }) => hasMatches(label) || isActiveFacet("generator", generator));
+$: baseGeneratorEntries = Object.entries(getAndCountGenerators(data))
+    .map(([generator, count]) => ({ value: generator, name: generator, label: countLabel(currentSearch, "generator", generator, count) }));
 
-$: visibleGroupEntries = Object.entries(getAndCountGroups(data))
+$: visibleGeneratorEntries = (() => {
+    const noneCount = (data.assets ?? data.models).filter((asset: AssetCard) => hasGenerator(asset, NONE_VALUE)).length;
+    return [
+        ...baseGeneratorEntries,
+        { value: NONE_VALUE, name: "none", label: countLabel(currentSearch, "generator", NONE_VALUE, noneCount) },
+    ].filter(({ value, label }) => hasMatches(label) || isActiveFacet("generator", value));
+})();
+
+$: baseGroupEntries = Object.entries(getAndCountGroups(data))
     .map(([assetGroup, count]) => ({
-        assetGroup,
+        value: assetGroup,
+        name: assetGroup,
         label: countLabel(currentSearch, "group", assetGroup, count),
-    }))
-    .filter(({ assetGroup, label }) => hasMatches(label) || isActiveFacet("group", assetGroup));
+    }));
 
-$: visibleCapabilityTags = Object.fromEntries(
-    Object.entries(getAndCountTags(data))
-        .filter(([tag]) => !isExtensionTag(tag) && !["generator", "source", "copyright"].includes(tag))
-        .map(([tag, count]) => [tag, countLabel(currentSearch, "tag", tag, count)] as const)
-        .filter(([tag, label]) => hasMatches(label) || isActiveFacet("tag", tag))
-);
+$: visibleGroupEntries = (() => {
+    const noneCount = (data.assets ?? data.models).filter((asset: AssetCard) => hasGroup(asset, NONE_VALUE)).length;
+    return [
+        ...baseGroupEntries,
+        { value: NONE_VALUE, name: "none", label: countLabel(currentSearch, "group", NONE_VALUE, noneCount) },
+    ].filter(({ value, label }) => hasMatches(label) || isActiveFacet("group", value));
+})();
 
-$: visibleExtensionTags = Object.fromEntries(
-    Object.entries(getAndCountTags(data))
-        .filter(([tag]) => isExtensionTag(tag))
-        .map(([tag, count]) => [tag, countLabel(currentSearch, "tag", tag, count)] as const)
-        .filter(([tag, label]) => hasMatches(label) || isActiveFacet("tag", tag))
-);
+$: baseCapabilityEntries = Object.entries(getAndCountTags(data))
+    .filter(([tag]) => !isExtensionTag(tag) && !["generator", "source", "copyright"].includes(tag))
+    .map(([tag, count]) => ({ value: tag, name: tag, label: countLabel(currentSearch, "tag", tag, count) }));
 
-$: orderedTagKeys = Object.keys(getAndCountTags(data));
+$: visibleCapabilityEntries = (() => {
+    const noneCount = (data.assets ?? data.models).filter((asset: AssetCard) => hasCapability(asset, NO_CAPABILITIES)).length;
+    return [
+        ...baseCapabilityEntries,
+        { value: NO_CAPABILITIES, name: "none", label: countLabel(currentSearch, "tag", NO_CAPABILITIES, noneCount) },
+    ].filter(({ value, label }) => hasMatches(label) || isActiveFacet("tag", value));
+})();
+
+$: baseExtensionEntries = Object.entries(getAndCountTags(data))
+    .filter(([tag]) => isExtensionTag(tag))
+    .map(([tag, count]) => ({ value: tag, name: tag, label: countLabel(currentSearch, "tag", tag, count) }));
+
+$: visibleExtensionEntries = (() => {
+    const noneCount = (data.assets ?? data.models).filter((asset: AssetCard) => hasCapability(asset, NO_EXTENSIONS)).length;
+    return [
+        ...baseExtensionEntries,
+        { value: NO_EXTENSIONS, name: "none", label: countLabel(currentSearch, "tag", NO_EXTENSIONS, noneCount) },
+    ].filter(({ value, label }) => hasMatches(label) || isActiveFacet("tag", value));
+})();
+
+$: baseMetadataEntries = Object.entries(getAndCountTags(data))
+    .filter(([tag]) => ["source", "copyright"].includes(tag))
+    .map(([tag, count]) => ({ value: tag, name: tag, label: countLabel(currentSearch, "tag", tag, count) }));
+
+$: visibleMetadataEntries = (() => {
+    const noneCount = (data.assets ?? data.models).filter((asset: AssetCard) => hasCapability(asset, NO_METADATA)).length;
+    return [
+        ...baseMetadataEntries,
+        { value: NO_METADATA, name: "none", label: countLabel(currentSearch, "tag", NO_METADATA, noneCount) },
+    ].filter(({ value, label }) => hasMatches(label) || isActiveFacet("tag", value));
+})();
 
 function tagSortIndex(tag: string) {
+    const orderedTagKeys = Object.keys(getAndCountTags(data));
     const index = orderedTagKeys.indexOf(tag);
     return index < 0 ? Number.POSITIVE_INFINITY : index;
 }
@@ -371,6 +413,11 @@ function hasObjectEntries(value: Record<string, any>) {
     return Object.keys(value).length > 0;
 }
 
+function entryCount(value: Record<string, any> | readonly unknown[] | undefined) {
+    if (Array.isArray(value)) return value.length;
+    return Object.keys(value ?? {}).length;
+}
+
 </script>
 
 <Seo
@@ -383,13 +430,13 @@ function hasObjectEntries(value: Record<string, any>) {
 {#if visibleGeneratorEntries.length}
 <h3 class="title">Generators</h3>
 <ul class="groups">
-    {#each visibleGeneratorEntries as { generator, label }}
+    {#each visibleGeneratorEntries as { value, name, label }}
         <Tag
-            href={filterHref(currentSearch, "generator", generator)}
-            excludeHref={filterHref(currentSearch, "generator", generator, true)}
-            selected={generatorFilters.includes(generator)}
-            excluded={generatorExcludes.includes(generator)}
-            name={generator}
+            href={filterHref(currentSearch, "generator", value)}
+            excludeHref={filterHref(currentSearch, "generator", value, true)}
+            selected={generatorFilters.includes(value)}
+            excluded={generatorExcludes.includes(value)}
+            name={name}
             value={label}
         />
     {/each}
@@ -398,32 +445,62 @@ function hasObjectEntries(value: Record<string, any>) {
 
 <h3 class="title">Asset groups</h3>
 <ul class="groups">
-    {#each visibleGroupEntries as { assetGroup, label }}
+    {#each visibleGroupEntries as { value, name, label }}
         <Tag
-            href={filterHref(currentSearch, "group", assetGroup)}
-            excludeHref={filterHref(currentSearch, "group", assetGroup, true)}
-            selected={groupFilters.includes(assetGroup)}
-            excluded={groupExcludes.includes(assetGroup)}
-            name={assetGroup}
+            href={filterHref(currentSearch, "group", value)}
+            excludeHref={filterHref(currentSearch, "group", value, true)}
+            selected={groupFilters.includes(value)}
+            excluded={groupExcludes.includes(value)}
+            name={name}
             value={label}
         />
     {/each}
 </ul>
 
 <h3 class="title">Asset capabilities</h3>
-<ModelTags
-    tags={visibleCapabilityTags}
-    includeFilters={tagFilters}
-    excludeFilters={tagExcludes}
-/>
+<ul class="groups">
+    {#each visibleCapabilityEntries as { value, name, label }}
+        <Tag
+            href={filterHref(currentSearch, "tag", value)}
+            excludeHref={filterHref(currentSearch, "tag", value, true)}
+            selected={tagFilters.includes(value)}
+            excluded={tagExcludes.includes(value)}
+            name={name}
+            value={label}
+        />
+    {/each}
+</ul>
 
-{#if Object.keys(visibleExtensionTags).length}
+{#if visibleExtensionEntries.length}
 <h3 class="title">Extensions</h3>
-<ModelTags
-    tags={visibleExtensionTags}
-    includeFilters={tagFilters}
-    excludeFilters={tagExcludes}
-/>
+<ul class="groups">
+    {#each visibleExtensionEntries as { value, name, label }}
+        <Tag
+            href={filterHref(currentSearch, "tag", value)}
+            excludeHref={filterHref(currentSearch, "tag", value, true)}
+            selected={tagFilters.includes(value)}
+            excluded={tagExcludes.includes(value)}
+            name={name}
+            value={label}
+        />
+    {/each}
+</ul>
+{/if}
+
+{#if visibleMetadataEntries.length}
+<h3 class="title">Asset metadata</h3>
+<ul class="groups">
+    {#each visibleMetadataEntries as { value, name, label }}
+        <Tag
+            href={filterHref(currentSearch, "tag", value)}
+            excludeHref={filterHref(currentSearch, "tag", value, true)}
+            selected={tagFilters.includes(value)}
+            excluded={tagExcludes.includes(value)}
+            name={name}
+            value={label}
+        />
+    {/each}
+</ul>
 {/if}
 
 <div class:asset-browser={showCollections}>
@@ -452,9 +529,9 @@ function hasObjectEntries(value: Record<string, any>) {
                     </a>
                     {#if model.kind === "gltf"}
                     <div class="asset-footer">
-                        {#if model.groups?.length}
                         <details>
-                            <summary>Groups</summary>
+                            <summary>Groups <span>{entryCount(model.groups)}</span></summary>
+                            {#if model.groups?.length}
                             <ul class="groups footer-tags">
                                 {#each model.groups as assetGroup}
                                     <Tag
@@ -468,34 +545,34 @@ function hasObjectEntries(value: Record<string, any>) {
                                     />
                                 {/each}
                             </ul>
+                            {/if}
                         </details>
-                        {/if}
 
-                        {#if hasObjectEntries(capabilityTagEntries(model))}
                         <details>
-                            <summary>Capabilities</summary>
+                            <summary>Capabilities <span>{entryCount(capabilityTagEntries(model))}</span></summary>
+                            {#if hasObjectEntries(capabilityTagEntries(model))}
                             <ModelTags
                                 tags={capabilityTagEntries(model)}
                                 includeFilters={tagFilters}
                                 excludeFilters={tagExcludes}
                             />
+                            {/if}
                         </details>
-                        {/if}
 
-                        {#if hasObjectEntries(extensionTagEntries(model))}
                         <details>
-                            <summary>Extensions</summary>
+                            <summary>Extensions <span>{entryCount(extensionTagEntries(model))}</span></summary>
+                            {#if hasObjectEntries(extensionTagEntries(model))}
                             <ModelTags
                                 tags={extensionTagEntries(model)}
                                 includeFilters={tagFilters}
                                 excludeFilters={tagExcludes}
                             />
+                            {/if}
                         </details>
-                        {/if}
 
-                        {#if metadataEntries(model).length}
                         <details>
-                            <summary>Metadata</summary>
+                            <summary>Metadata <span>{entryCount(metadataEntries(model))}</span></summary>
+                            {#if metadataEntries(model).length}
                             <dl class="metadata-tags">
                                 {#each metadataEntries(model) as [key, value]}
                                 <div>
@@ -504,8 +581,8 @@ function hasObjectEntries(value: Record<string, any>) {
                                 </div>
                                 {/each}
                             </dl>
+                            {/if}
                         </details>
-                        {/if}
                     </div>
                     {/if}
                 </li>
@@ -593,6 +670,12 @@ function hasObjectEntries(value: Record<string, any>) {
         letter-spacing: 0.06em;
         text-transform: uppercase;
         list-style-position: inside;
+    }
+
+    .asset-footer summary span {
+        color: var(--color-text-primary);
+        font-weight: 700;
+        margin-left: 4px;
     }
 
     .asset-footer :global(.extensions) {
