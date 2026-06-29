@@ -97,14 +97,20 @@ function normalize(filePath) {
     return path.resolve(filePath).replaceAll("\\", "/");
 }
 
+function parseFilterSet(filter) {
+    if (!filter) return null;
+    return new Set(filter.split(",").map((value) => value.trim()).filter(Boolean));
+}
+
 function discoverAssets(filter, limit) {
     const searchRoot = path.join(sourceDir, sourceSubfolder);
     let files = globSync(path.join(searchRoot, "**/glTF-Binary/*.glb")).sort();
     if (files.length === 0) files = globSync(path.join(searchRoot, "**/*.glb")).sort();
 
     const exclusions = new Set(["2CylinderEngine", "GearboxAssy", "ReciprocatingSaw", "Buggy"]);
+    const filters = parseFilterSet(filter);
     files = files.filter((file) => !exclusions.has(path.parse(file).name));
-    if (filter) files = files.filter((file) => path.parse(file).name === filter);
+    if (filters) files = files.filter((file) => filters.has(path.parse(file).name));
     if (limit) files = files.slice(0, limit);
     return files;
 }

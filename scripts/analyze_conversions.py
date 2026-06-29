@@ -73,6 +73,12 @@ def parse_args():
     return parser.parse_args()
 
 
+def parse_filter_set(filter_name):
+    if not filter_name:
+        return None
+    return {value.strip() for value in filter_name.split(",") if value.strip()}
+
+
 def discover_assets(filter_name=None, limit=None):
     search_root = SOURCE_DIR / SOURCE_SUBFOLDER
     files = sorted(search_root.glob("**/glTF-Binary/*.glb"))
@@ -80,9 +86,10 @@ def discover_assets(filter_name=None, limit=None):
         files = sorted(search_root.glob("**/*.glb"))
 
     exclusions = {"2CylinderEngine", "GearboxAssy", "ReciprocatingSaw", "Buggy"}
+    filters = parse_filter_set(filter_name)
     files = [file for file in files if file.stem not in exclusions]
-    if filter_name:
-        files = [file for file in files if file.stem == filter_name]
+    if filters:
+        files = [file for file in files if file.stem in filters]
     if limit:
         files = files[:limit]
     return files
