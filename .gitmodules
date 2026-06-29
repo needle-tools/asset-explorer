@@ -1,9 +1,4 @@
-[submodule "submodules/glTF-Sample-Models"]
-	path = submodules/glTF-Sample-Models
-	url = https://github.com/needle-tools/glTF-Sample-Models.git
-[submodule "submodules/three.js"]
-	path = submodules/three.js
-	url = https://github.com/needle-tools/three.js.git
 [submodule "submodules/glTF-Sample-Assets"]
 	path = submodules/glTF-Sample-Assets
 	url = https://github.com/KhronosGroup/glTF-Sample-Assets.git
+	branch = asset-explorer
