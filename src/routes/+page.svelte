@@ -208,11 +208,11 @@ function countLabel(search: string, kind: "group" | "tag", value: string, total:
         if (!matchesListFilters(asset, filters)) return false;
         return kind === "group" ? hasGroup(asset, value) : hasCapability(asset, value);
     }).length;
-    return matching === total ? total : `${matching} of ${total}`;
+    return matching === total ? total : `${matching}/${total}`;
 }
 
 function hasMatches(label: number | string) {
-    return !(typeof label === "string" && label.startsWith("0 of "));
+    return !(typeof label === "string" && label.startsWith("0/"));
 }
 
 function isActiveFacet(kind: "group" | "tag", value: string) {
