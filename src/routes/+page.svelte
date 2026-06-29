@@ -1,6 +1,7 @@
 <script lang="ts">
 import { page } from '$app/stores'
 import { cubicInOut } from 'svelte/easing';
+import { onMount } from 'svelte';
 import ModelTags, { showInfo } from './ModelTags.svelte';
 import FolderTree from './FolderTree.svelte';
 import Tag from './Tag.svelte';
@@ -35,6 +36,8 @@ type WhooshParams = {
     easing?: (t: number) => number;
 };
 
+type FacetSectionId = "groups" | "capabilities" | "extensions" | "generators" | "metadata";
+
 export let data: PageData;
 const SITE = "https://asset-explorer.needle.tools";
 let windowLocation = "https://asset-explorer.needle.tools/";
@@ -46,6 +49,31 @@ const NONE_VALUE = "__none";
 const NO_CAPABILITIES = "__none_capabilities";
 const NO_EXTENSIONS = "__none_extensions";
 const NO_METADATA = "__none_metadata";
+const FACET_SECTION_STORAGE_KEY = "asset-explorer:facet-section-open";
+const defaultFacetSectionOpen: Record<FacetSectionId, boolean> = {
+    groups: true,
+    capabilities: true,
+    extensions: false,
+    generators: false,
+    metadata: false,
+};
+let facetSectionOpen = { ...defaultFacetSectionOpen };
+
+onMount(() => {
+    const stored = localStorage.getItem(FACET_SECTION_STORAGE_KEY);
+    if (!stored) return;
+    try {
+        const parsed = JSON.parse(stored);
+        facetSectionOpen = { ...defaultFacetSectionOpen };
+        for (const section of Object.keys(defaultFacetSectionOpen) as FacetSectionId[]) {
+            if (typeof parsed?.[section] === "boolean")
+                facetSectionOpen[section] = parsed[section];
+        }
+    }
+    catch {
+        localStorage.removeItem(FACET_SECTION_STORAGE_KEY);
+    }
+});
 
 $: homeJsonLd = {
     "@context": "https://schema.org",
@@ -443,6 +471,16 @@ function entryCount(value: Record<string, any> | readonly unknown[] | undefined)
     return Object.keys(value ?? {}).length;
 }
 
+function setFacetSectionOpen(section: FacetSectionId, open: boolean) {
+    facetSectionOpen = { ...facetSectionOpen, [section]: open };
+    if (browser)
+        localStorage.setItem(FACET_SECTION_STORAGE_KEY, JSON.stringify(facetSectionOpen));
+}
+
+function onFacetSectionToggle(event: Event, section: FacetSectionId) {
+    setFacetSectionOpen(section, (event.currentTarget as HTMLDetailsElement).open);
+}
+
 </script>
 
 <Seo
@@ -452,80 +490,90 @@ function entryCount(value: Record<string, any> | readonly unknown[] | undefined)
     jsonLd={homeJsonLd}
 />
 
-{#if visibleGeneratorEntries.length}
-<h3 class="title">Generators</h3>
-<ul class="groups">
-    {#each visibleGeneratorEntries as { value, name, label }}
-        <Tag
-            href={filterHref(currentSearch, "generator", value)}
-            excludeHref={filterHref(currentSearch, "generator", value, true)}
-            selected={generatorFilters.includes(value)}
-            excluded={generatorExcludes.includes(value)}
-            name={name}
-            value={label}
-        />
-    {/each}
-</ul>
-{/if}
+<details class="facet-section" open={facetSectionOpen.groups} on:toggle={(event) => onFacetSectionToggle(event, "groups")}>
+    <summary><span>Groups</span><span>{visibleGroupEntries.length}</span></summary>
+    <ul class="groups">
+        {#each visibleGroupEntries as { value, name, label }}
+            <Tag
+                href={filterHref(currentSearch, "group", value)}
+                excludeHref={filterHref(currentSearch, "group", value, true)}
+                selected={groupFilters.includes(value)}
+                excluded={groupExcludes.includes(value)}
+                name={name}
+                value={label}
+            />
+        {/each}
+    </ul>
+</details>
 
-<h3 class="title">Asset groups</h3>
-<ul class="groups">
-    {#each visibleGroupEntries as { value, name, label }}
-        <Tag
-            href={filterHref(currentSearch, "group", value)}
-            excludeHref={filterHref(currentSearch, "group", value, true)}
-            selected={groupFilters.includes(value)}
-            excluded={groupExcludes.includes(value)}
-            name={name}
-            value={label}
-        />
-    {/each}
-</ul>
-
-<h3 class="title">Asset capabilities</h3>
-<ul class="groups">
-    {#each visibleCapabilityEntries as { value, name, label }}
-        <Tag
-            href={filterHref(currentSearch, "tag", value)}
-            excludeHref={filterHref(currentSearch, "tag", value, true)}
-            selected={tagFilters.includes(value)}
-            excluded={tagExcludes.includes(value)}
-            name={name}
-            value={label}
-        />
-    {/each}
-</ul>
+<details class="facet-section" open={facetSectionOpen.capabilities} on:toggle={(event) => onFacetSectionToggle(event, "capabilities")}>
+    <summary><span>Capabilities</span><span>{visibleCapabilityEntries.length}</span></summary>
+    <ul class="groups">
+        {#each visibleCapabilityEntries as { value, name, label }}
+            <Tag
+                href={filterHref(currentSearch, "tag", value)}
+                excludeHref={filterHref(currentSearch, "tag", value, true)}
+                selected={tagFilters.includes(value)}
+                excluded={tagExcludes.includes(value)}
+                name={name}
+                value={label}
+            />
+        {/each}
+    </ul>
+</details>
 
 {#if visibleExtensionEntries.length}
-<h3 class="title">Extensions</h3>
-<ul class="groups">
-    {#each visibleExtensionEntries as { value, name, label }}
-        <Tag
-            href={filterHref(currentSearch, "tag", value)}
-            excludeHref={filterHref(currentSearch, "tag", value, true)}
-            selected={tagFilters.includes(value)}
-            excluded={tagExcludes.includes(value)}
-            name={name}
-            value={label}
-        />
-    {/each}
-</ul>
+<details class="facet-section" open={facetSectionOpen.extensions} on:toggle={(event) => onFacetSectionToggle(event, "extensions")}>
+    <summary><span>Extensions</span><span>{visibleExtensionEntries.length}</span></summary>
+    <ul class="groups">
+        {#each visibleExtensionEntries as { value, name, label }}
+            <Tag
+                href={filterHref(currentSearch, "tag", value)}
+                excludeHref={filterHref(currentSearch, "tag", value, true)}
+                selected={tagFilters.includes(value)}
+                excluded={tagExcludes.includes(value)}
+                name={name}
+                value={label}
+            />
+        {/each}
+    </ul>
+</details>
 {/if}
 
 {#if visibleMetadataEntries.length}
-<h3 class="title">Asset metadata</h3>
-<ul class="groups">
-    {#each visibleMetadataEntries as { value, name, label }}
-        <Tag
-            href={filterHref(currentSearch, "tag", value)}
-            excludeHref={filterHref(currentSearch, "tag", value, true)}
-            selected={tagFilters.includes(value)}
-            excluded={tagExcludes.includes(value)}
-            name={name}
-            value={label}
-        />
-    {/each}
-</ul>
+<details class="facet-section" open={facetSectionOpen.metadata} on:toggle={(event) => onFacetSectionToggle(event, "metadata")}>
+    <summary><span>Metadata</span><span>{visibleMetadataEntries.length}</span></summary>
+    <ul class="groups">
+        {#each visibleMetadataEntries as { value, name, label }}
+            <Tag
+                href={filterHref(currentSearch, "tag", value)}
+                excludeHref={filterHref(currentSearch, "tag", value, true)}
+                selected={tagFilters.includes(value)}
+                excluded={tagExcludes.includes(value)}
+                name={name}
+                value={label}
+            />
+        {/each}
+    </ul>
+</details>
+{/if}
+
+{#if visibleGeneratorEntries.length}
+<details class="facet-section" open={facetSectionOpen.generators} on:toggle={(event) => onFacetSectionToggle(event, "generators")}>
+    <summary><span>Generators</span><span>{visibleGeneratorEntries.length}</span></summary>
+    <ul class="groups">
+        {#each visibleGeneratorEntries as { value, name, label }}
+            <Tag
+                href={filterHref(currentSearch, "generator", value)}
+                excludeHref={filterHref(currentSearch, "generator", value, true)}
+                selected={generatorFilters.includes(value)}
+                excluded={generatorExcludes.includes(value)}
+                name={name}
+                value={label}
+            />
+        {/each}
+    </ul>
+</details>
 {/if}
 
 <div class:asset-browser={showCollections}>
@@ -673,6 +721,54 @@ function entryCount(value: Record<string, any> | readonly unknown[] | undefined)
 
     main {
         min-width: 0;
+    }
+
+    .facet-section {
+        margin-top: 1rem;
+    }
+
+    .facet-section summary {
+        display: grid;
+        grid-template-columns: 11px minmax(0, 1fr) min-content;
+        column-gap: 7px;
+        align-items: center;
+        color: var(--color-text-muted);
+        cursor: pointer;
+        font-size: 0.74rem;
+        font-weight: 700;
+        line-height: 1.15;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        list-style: none;
+    }
+
+    .facet-section summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .facet-section summary::before {
+        content: "";
+        width: 0;
+        height: 0;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+        border-left: 7px solid currentColor;
+        transform-origin: 35% 50%;
+        transition: transform 0.12s ease;
+    }
+
+    .facet-section[open] summary::before {
+        transform: rotate(90deg);
+    }
+
+    .facet-section summary span:last-child {
+        justify-self: end;
+        min-width: 2ch;
+        text-align: right;
+    }
+
+    .facet-section .groups {
+        margin-top: 0.5rem;
     }
 
     .models li {
