@@ -19,7 +19,9 @@ export async function GET() {
 		const info = file.info ?? {};
 		const extensions = Object.keys(info).filter((k) => /^[A-Z][A-Z0-9]+_/.test(k) && info[k]);
 		const glb = absolute(file.downloadUri);
-		const usdz = (suffix: string) => (glb ? glb.replace('.glb', `.glb.${suffix}.usdz`) : null);
+		const availableConversions = (file.conversions ?? []).filter((conversion: any) => conversion.available && conversion.usdzUri);
+		const conversionForSuffix = (suffix: string) => availableConversions.find((conversion: any) => conversion.suffix === suffix);
+		const usdz = (suffix: string) => absolute(conversionForSuffix(suffix)?.usdzUri);
 
 		return {
 			slug: file.slug,
@@ -34,6 +36,14 @@ export async function GET() {
 					omniverse: usdz('ov')
 				}
 			},
+			conversions: availableConversions.map((conversion: any) => ({
+				id: conversion.id,
+				converter: conversion.converter,
+				version: conversion.versionLabel,
+				label: conversion.shortLabel,
+				usdz: absolute(conversion.usdzUri),
+				thumbnail: absolute(conversion.screenshotAvailable ? conversion.screenshotUri : file.previewUri)
+			})),
 			size: file.size,
 			extensions,
 			info
