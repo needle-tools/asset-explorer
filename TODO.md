@@ -34,6 +34,7 @@
 - [x] Centralize USD thumbnail rendering so conversion-time renders and standalone rerenders share one helper/settings path.
 - [x] Regenerate Needle Engine conversions and WebP thumbnails with `quickLookCompatible=false`.
 - [x] Make the one-command conversion runner provenance-aware by default, with `--force` for intentional reruns.
+- [x] Disable Blender 5.1 world-material conversion and regenerate Blender 5.1 USDZs, thumbnails, and analysis.
 - [x] Wire USD-WG assets from the hosted Needle asset index into the homepage collection, then disable the app inclusion pending a better product decision.
 - [x] Add expandable collection/subcategory navigation for glTF and USD-WG assets.
 - [x] Add Kitchen Set as a Needle-hosted USD-WG entry with the requested subheadline.

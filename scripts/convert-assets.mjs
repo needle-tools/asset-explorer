@@ -160,6 +160,7 @@ function conversionSettingsForFamily(family) {
             ...base,
             blender: defaults.blender,
             exportTextures: true,
+            convertWorldMaterial: false,
         };
     }
     if (family.id === "openusd-adobe-gltf") {
@@ -212,6 +213,7 @@ async function convertThreeR185(input, output, dryRun, threeR185Session) {
 }
 
 function convertBlender(input, output, dryRun) {
+    activeCommandLog?.push("Blender USD export generate_preview_surface=true relative_paths=true export_animation=true export_textures=true convert_world_material=false " + input + " " + output);
     run(defaults.blender, [
         "--factory-startup",
         "-b",

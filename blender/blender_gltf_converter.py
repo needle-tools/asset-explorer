@@ -64,6 +64,7 @@ def runner():
         relative_paths=True,
         export_animation=True,
         export_textures=True,
+        convert_world_material=False,
     )
 
     supported_properties = bpy.ops.wm.usd_export.get_rna_type().properties.keys()
