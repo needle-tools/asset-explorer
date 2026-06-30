@@ -43,6 +43,16 @@ export const conversionFamilies: ConversionFamily[] = [
         logo: "needle-symbol.svg",
     },
     {
+        id: "needle-engine-usdc",
+        label: "Needle Engine USDC",
+        shortLabel: "Needle USDC",
+        suffix: "needle-engine-usdc",
+        description: "Converted with Needle Engine 5.1.2 USDZExporter using the USDC geometry and animation backend",
+        converter: "needle-engine",
+        versionLabel: "5.1.2",
+        logo: "needle-symbol.svg",
+    },
+    {
         id: "blender-3-6",
         label: "Blender",
         shortLabel: "Blender 3.6",

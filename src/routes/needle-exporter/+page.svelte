@@ -59,10 +59,12 @@
             inputUrl,
             fileName,
             quickLookCompatible,
+            geometryBackend,
         }: {
             inputUrl: string;
             fileName: string;
             quickLookCompatible?: boolean;
+            geometryBackend?: "usda" | "usdc";
         }) => {
             status = "loading " + inputUrl;
             const context = await getNeedleContext();
@@ -90,6 +92,7 @@
                 exporter.interactive = false;
                 exporter.allowCreateQuicklookButton = false;
                 if (quickLookCompatible !== undefined) exporter.quickLookCompatible = quickLookCompatible;
+                if (geometryBackend) (exporter as any).geometryBackend = geometryBackend;
 
                 await waitForFrame();
                 await waitForFrame();

@@ -10,11 +10,14 @@ import { collectFileInformation } from "./src/dynamicFiles";
 
 const sampleAssetsAnalysisDir = "submodules/glTF-Sample-Assets/conversion-analysis";
 const legacyAnalysisDir = "conversion-analysis";
+const needleEnginePackageRoot = process.env.NEEDLE_ENGINE_PACKAGE_ROOT
+	? path.resolve(process.env.NEEDLE_ENGINE_PACKAGE_ROOT)
+	: path.resolve("node_modules/needle-engine-latest");
 
 function needleExportDecoderMiddleware(): Plugin {
 	const decoderRoots = new Map([
-		["/include/draco/", path.resolve("node_modules/needle-engine-latest/node_modules/three/examples/jsm/libs/draco/gltf")],
-		["/include/ktx2/", path.resolve("node_modules/needle-engine-latest/node_modules/three/examples/jsm/libs/basis")],
+		["/include/draco/", path.join(needleEnginePackageRoot, "node_modules/three/examples/jsm/libs/draco/gltf")],
+		["/include/ktx2/", path.join(needleEnginePackageRoot, "node_modules/three/examples/jsm/libs/basis")],
 	]);
 
 	const contentTypes: Record<string, string> = {
@@ -116,12 +119,13 @@ export default defineConfig(async ({ command, mode }) => {
 			target: "esnext",
 		},
 		optimizeDeps: {
-			exclude: ["three"],
+			exclude: isNeedleExportRunner ? ["three", "@needle-tools/materialx"] : ["three"],
 		},
 		resolve: {
 			alias: isNeedleExportRunner
 				? {
-					three: path.resolve("node_modules/needle-engine-latest/node_modules/three"),
+					"needle-engine-latest": needleEnginePackageRoot,
+					three: path.join(needleEnginePackageRoot, "node_modules/three"),
 				}
 					: exportRunner === "three-r185" || exportRunner === "gltf-reference"
 					? {

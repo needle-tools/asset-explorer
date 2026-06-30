@@ -50,7 +50,7 @@ function parseArgs(argv) {
         }
         else if (arg === "--continue-on-error") args.continueOnError = true;
         else if (arg === "--help") {
-            console.log("Usage: npm run conversions -- [--filter Box] [--limit 3] [--converters three-r185,blender-5-1,openusd-adobe-gltf,needle-engine,guc] [--skip-render] [--force] [--continue-on-error] [--dry-run]");
+            console.log("Usage: npm run conversions -- [--filter Box] [--limit 3] [--converters three-r185,blender-5-1,openusd-adobe-gltf,needle-engine,needle-engine-usdc,guc] [--skip-render] [--force] [--continue-on-error] [--dry-run]");
             process.exit(0);
         }
         else throw new Error("Unknown argument: " + arg);
@@ -107,7 +107,7 @@ function discoverAssets(filter, limit) {
     let files = globSync(path.join(searchRoot, "**/glTF-Binary/*.glb")).sort();
     if (files.length === 0) files = globSync(path.join(searchRoot, "**/*.glb")).sort();
 
-    const exclusions = new Set(["2CylinderEngine", "GearboxAssy", "ReciprocatingSaw", "Buggy"]);
+    const exclusions = new Set(["2CylinderEngine", "GearboxAssy", "ReciprocatingSaw", "Buggy", "NodePerformanceTest"]);
     const filters = parseFilterSet(filter);
     files = files.filter((file) => !exclusions.has(path.parse(file).name));
     if (filters) files = files.filter((file) => filters.has(path.parse(file).name));
@@ -141,7 +141,7 @@ function conversionSettingsForFamily(family) {
         suffix: family.suffix,
         converterVersion: family.versionLabel,
     };
-    if (family.id === "needle-engine") {
+    if (family.id === "needle-engine" || family.id === "needle-engine-usdc") {
         return {
             ...base,
             runner: "headed Playwright Needle Engine USDZExporter",
@@ -150,6 +150,7 @@ function conversionSettingsForFamily(family) {
             interactive: false,
             allowCreateQuicklookButton: false,
             quickLookCompatible: false,
+            geometryBackend: family.id === "needle-engine-usdc" ? "usdc" : "usda",
         };
     }
     if (family.id === "three-r185") {
@@ -191,7 +192,7 @@ function legacyConversionSettingsAreCurrent(existing, family) {
     // Provenance before conversionSettings was added was generated with the current
     // settings for all active converters except Needle, whose QuickLook mode is
     // intentionally changing in this update.
-    return !existing?.conversionSettings && family.id !== "needle-engine";
+    return !existing?.conversionSettings && family.id !== "needle-engine" && family.id !== "needle-engine-usdc";
 }
 
 function conversionIsCurrent(existing, family, conversionSettings, output) {
@@ -389,7 +390,7 @@ async function createNeedleSession() {
     }
 
     return {
-        async exportUsdz(input, output) {
+        async exportUsdz(input, output, geometryBackend = "usda") {
             const inputUrl = vite.baseUrl + "/@fs/" + normalize(input);
             let lastError = null;
             for (let attempt = 1; attempt <= 3; attempt++) {
@@ -404,6 +405,7 @@ async function createNeedleSession() {
                             inputUrl,
                             fileName: path.basename(output),
                             quickLookCompatible: false,
+                            geometryBackend,
                         }),
                     ]);
                     await download.saveAs(output);
@@ -534,14 +536,14 @@ async function createThreeR185Session() {
     };
 }
 
-async function convertNeedle(input, output, dryRun, needleSession) {
-    activeCommandLog?.push("headed Playwright Needle Engine USDZExporter.export autoExportAnimations=true quickLookCompatible=false " + input + " " + output);
+async function convertNeedle(input, output, dryRun, needleSession, geometryBackend) {
+    activeCommandLog?.push(`headed Playwright Needle Engine USDZExporter.export autoExportAnimations=true quickLookCompatible=false geometryBackend=${geometryBackend} ${input} ${output}`);
     if (dryRun) {
-        console.log(`[dry-run] needle-engine ${input} -> ${output}`);
+        console.log(`[dry-run] needle-engine ${geometryBackend} ${input} -> ${output}`);
         return;
     }
     if (!needleSession) throw new Error("Needle session was not initialized");
-    await needleSession.exportUsdz(input, output);
+    await needleSession.exportUsdz(input, output, geometryBackend);
 }
 
 function renderThumbnail(input, screenshot, dryRun) {
@@ -688,7 +690,7 @@ async function main() {
                     else if (family.id === "three-r185") await convertThreeR185(input, output.usdz, args.dryRun, args.dryRun ? null : await getThreeR185Session());
                     else if (family.id === "blender-5-1") convertBlender(input, output.usdz, args.dryRun);
                     else if (family.id === "openusd-adobe-gltf") convertAdobe(input, output.usdz, args.dryRun);
-                    else if (family.id === "needle-engine") await convertNeedle(input, output.usdz, args.dryRun, args.dryRun ? null : await getNeedleSession());
+                    else if (family.id === "needle-engine" || family.id === "needle-engine-usdc") await convertNeedle(input, output.usdz, args.dryRun, args.dryRun ? null : await getNeedleSession(), family.id === "needle-engine-usdc" ? "usdc" : "usda");
                     else if (family.id === "guc") convertGuc(input, output.usdz, args.dryRun);
                     else throw new Error("Converter is display-only or not runnable here: " + family.id);
 
