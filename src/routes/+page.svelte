@@ -986,6 +986,20 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
         padding-left: 17px;
     }
 
+    .details-content :global(ul) {
+        margin: 0;
+        padding: 0;
+        gap: 4px 12px;
+    }
+
+    .details-content :global(li) {
+        margin: 0;
+    }
+
+    .details-content :global(li a) {
+        padding-inline: 0;
+    }
+
     .asset-details h4 {
         margin: 8px 0 2px;
         font-size: inherit;

@@ -78,13 +78,10 @@ $: extensions = entries.filter(([k, v]) => isExtension(k) && v).map(([k]) => k);
                 </td></tr>
             {/each}
             {#if provenance}
-            <tr><th scope="row">Origin</th><td>{provenance.label}
+            <tr><th scope="row">Origin</th><td>
                 {#if provenance.kind === "needle-added" || provenance.kind === "needle-modified"}
-                <a class="source-link comparison-link" href={provenance.comparisonUrl} target="_blank" rel="noopener noreferrer">Changes in Needle fork</a>
-                {/if}
-                {#if provenance.kind === "needle-modified" && provenance.upstreamUrl}
-                <a class="source-link comparison-link" href={provenance.upstreamUrl} target="_blank" rel="noopener noreferrer">Original Khronos file</a>
-                {/if}
+                <a class="source-link" href={provenance.comparisonUrl} target="_blank" rel="noopener noreferrer">{provenance.label}</a>
+                {:else}{provenance.label}{/if}
             </td></tr>
             {/if}
             {#if capabilities.length}
@@ -199,10 +196,5 @@ td {
 .source-link:hover {
     text-decoration-color: currentColor;
 }
-.comparison-link {
-    display: block;
-    margin-top: 3px;
-    color: var(--color-text-muted);
-    font-size: 11px;
-}
+
 </style>
