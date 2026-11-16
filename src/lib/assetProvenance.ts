@@ -24,8 +24,8 @@ export function resolveAssetProvenance(manifest: AssetSourceManifest, assetPath:
 	const kind = entry?.kind ?? "unclassified";
 	const source = entry?.source ?? { repository: manifest.fork.repository, revision: "asset-explorer" };
 	const labels: Record<string, { label: string; collection: string }> = {
-		khronos: { label: "Khronos sample", collection: "Khronos samples" },
-		"needle-added": { label: "Needle sample", collection: "Needle fork additions" },
+		khronos: { label: "Khronos sample asset", collection: "Khronos sample assets" },
+		"needle-added": { label: "Needle sample asset", collection: "Needle sample assets" },
 		"needle-modified": { label: "Modified in Needle fork", collection: "Needle fork variants" },
 		unclassified: { label: "Source not compared", collection: "Unclassified samples" },
 	};
