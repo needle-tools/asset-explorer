@@ -3,6 +3,8 @@ import { base } from "$app/paths";
 import { track } from "$lib/analytics";
 
 export let info: Record<string, any>;
+export let name = "";
+export let sourceUrl = "";
 
 // Extensions are UPPER_SNAKE_CASE keys (KHR_*, EXT_*, ADOBE_*, …); everything else is scalar info.
 const isExtension = (k: string) => /^[A-Z][A-Z0-9]+_/.test(k);
@@ -64,69 +66,55 @@ $: extensions = entries.filter(([k, v]) => isExtension(k) && v).map(([k]) => k);
 </script>
 
 <div class="model-info">
-    {#if rows.length}
-        <table>
-            <tbody>
-                {#each rows as [key, value] (key)}
-                    <tr>
-                        <th>{label(key)}</th>
-                        <td>{displayValue(value)}</td>
-                    </tr>
-                {/each}
-            </tbody>
-        </table>
-    {/if}
-
-    {#if capabilities.length}
-        <div class="badge-section">
-            <span class="section-label">Has special data</span>
-            <ul class="badges">
-                {#each capabilities as [key, value] (key)}
-                    <li>
-                        <a
-                            href="{base}/?tag={key}"
-                            title={label(key)}
-                            on:click={() => track("tag_filter", { tag: key })}
-                        >
-                            <span>{label(key)}</span>
-                            {#if value !== true}
-                                <strong>{displayValue(value)}</strong>
-                            {/if}
-                        </a>
-                    </li>
-                {/each}
-            </ul>
-        </div>
-    {/if}
-
-    {#if extensions.length}
-        <div class="badge-section">
-            <span class="section-label">Extensions</span>
-            <ul class="badges">
-                {#each extensions as ext (ext)}
-                    <li>
-                        <a
-                            href="{base}/?tag={ext}"
-                            title={ext}
-                            on:click={() => track("tag_filter", { tag: ext })}
-                        >{ext}</a>
-                    </li>
-                {/each}
-            </ul>
-        </div>
-    {/if}
+    <table>
+        <tbody>
+            {#if name}<tr><th scope="row">Name</th><td>{name}</td></tr>{/if}
+            {#each rows as [key, value] (key)}
+                <tr><th scope="row">{label(key)}</th><td>
+                    {#if key === "source" && sourceUrl}
+                    <a class="source-link" href={sourceUrl} target="_blank" rel="noopener noreferrer">{displayValue(value)}</a>
+                    {:else}{displayValue(value)}{/if}
+                </td></tr>
+            {/each}
+            {#if capabilities.length}
+            <tr>
+                <th scope="row">Has special data</th>
+                <td><ul class="badges">
+                    {#each capabilities as [key, value] (key)}
+                    <li><a href="{base}/?tag={key}" title={label(key)} on:click={() => track("tag_filter", { tag: key })}>
+                        {label(key)}<span class="value-count">{displayValue(value)}</span>
+                    </a></li>
+                    {/each}
+                </ul></td>
+            </tr>
+            {/if}
+            {#if extensions.length}
+            <tr>
+                <th scope="row">Extensions</th>
+                <td><ul class="badges">
+                    {#each extensions as ext (ext)}
+                    <li><a href="{base}/?tag={ext}" title={ext} on:click={() => track("tag_filter", { tag: ext })}>{ext}</a></li>
+                    {/each}
+                </ul></td>
+            </tr>
+            {/if}
+            {#if $$slots.default}
+            <tr><th scope="row">Info</th><td class="info-notes"><slot /></td></tr>
+            {/if}
+        </tbody>
+    </table>
 </div>
 
 <style>
 .model-info {
-    max-width: 38rem;
-    margin: 8px auto 0;
+    max-width: 100%;
+    margin: 0;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.85rem;
+    font-size: 12px;
 }
 
 tr {
@@ -144,40 +132,23 @@ th {
     width: 1%;
     padding: 8px 18px 8px 0;
     color: var(--color-text-muted);
-    font-weight: 700;
-    font-size: 0.68rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: normal;
+    text-transform: none;
 }
 
 td {
     padding: 8px 0;
     color: var(--color-text-primary);
     overflow-wrap: anywhere;
-}
-
-.badge-section {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 6px 10px;
-    margin-top: 16px;
-    padding-top: 14px;
-    border-top: 1px solid var(--color-border-subtle);
-}
-
-.section-label {
-    color: var(--color-text-muted);
-    font-weight: 700;
-    font-size: 0.68rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    text-wrap: balance;
 }
 
 .badges {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 5px 12px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -187,22 +158,34 @@ td {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 3px 8px;
-    font-size: 0.72rem;
+    padding: 0;
+    font-size: 12px;
     color: var(--color-text-secondary);
-    background-color: rgba(26, 26, 26, 0.04);
-    border: 1px solid rgba(26, 26, 26, 0.18);
+    background-color: transparent;
+    border: 0;
     border-radius: 6px;
-}
-
-.badges li a strong {
-    color: var(--color-text-primary);
-    font-weight: 700;
 }
 
 .badges li a:hover {
     text-decoration: none;
     color: var(--color-text-primary);
     background-color: rgba(153, 204, 51, 0.18);
+}
+.value-count {
+    padding: 0 4px;
+    border-radius: 4px;
+    background: #fff;
+    border: 1px solid var(--color-border-subtle);
+    font-size: 10px;
+}
+.source-link {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--color-border-strong);
+    text-underline-offset: 3px;
+}
+
+.source-link:hover {
+    text-decoration-color: currentColor;
 }
 </style>

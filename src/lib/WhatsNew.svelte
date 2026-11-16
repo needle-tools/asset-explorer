@@ -150,6 +150,11 @@ function readableOn(hex: string): string {
     flex: 1;
 }
 
+.wn-title,
+.wn-subtitle {
+    text-wrap: balance;
+}
+
 .wn-title {
     font-weight: 800;
     font-size: 0.95rem;

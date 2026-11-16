@@ -14,9 +14,6 @@
 	<WhatsNew />
 
 	<footer>
-		<p class="made-by">
-			Made by <a href="https://needle.tools" target="_blank" rel="noopener">Needle</a>
-		</p>
 		<nav class="footer-links" aria-label="Needle links">
 			<a href="https://needle.tools" target="_blank" rel="noopener">needle.tools</a>
 			<a href="https://cloud.needle.tools" target="_blank" rel="noopener">Needle Cloud</a>
@@ -45,45 +42,33 @@
 		flex: 1;
 		display: flex;
 		flex-direction: column;
-		padding: 1rem 1rem 0;
+		padding: 24px 24px 0;
+        max-width: 1520px;
 		width: 100%;
 		margin: 0 auto;
 		box-sizing: border-box;
 	}
 
 	footer {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		gap: 6px;
-		padding: 24px 12px;
-		margin-top: 16px;
-		border-top: 1px solid var(--color-border-subtle);
-	}
+        display: flex;
+        justify-content: center;
+        padding: 12px 16px;
+        margin-top: 24px;
+        color: var(--color-text-secondary);
+    }
 
-	.made-by {
-		margin: 0;
-		color: var(--color-text-muted);
-		font-size: 0.9rem;
-	}
+    .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 4px 16px;
+        font-size: 11px;
+        line-height: 1.4;
+    }
 
-	footer a {
-		font-weight: 700;
-	}
-
-	.footer-links {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
-		align-items: center;
-		gap: 8px 18px;
-		font-size: 0.85rem;
-	}
-
-	@media (min-width: 480px) {
-		footer {
-			padding: 24px 0;
-		}
-	}
+    footer a {
+        color: inherit;
+        font-weight: 400;
+    }
 </style>

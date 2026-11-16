@@ -321,33 +321,35 @@ function fit(scene) {
 
 <style>
 needle-engine {
-    display: block; 
-    height: min(600px, 70vh);
+    display: block;
+    width: 100%;
+    height: clamp(300px, 48vh, 520px);
     position: relative;
-    /* width: 100%; */
-    width: max(50vw, min(700px, 100vw));
-    /* left: calc((100% - max(50vw, min(700px, 100vw))) / 2);*/
-
-    margin-top: -20px;
-    margin-bottom: 5px;
-    border-radius: 2em;
+    margin: 0 0 5px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--color-text-secondary) 4%, var(--color-bg-page));
 }
 
 div:fullscreen {
-    bottom: 20px;
+    top: 20px;
+    bottom: auto;
 }
 
 div {
     position: absolute;
-    bottom: -70px;
-    width: 100%;
-    justify-content: center;
+    top: 12px;
+    right: 12px;
+    bottom: auto;
+    width: calc(100% - 24px);
+    pointer-events: none;
+    justify-content: flex-end;
     display: flex;
     overflow: hidden;
 }
 
 :global(.ar-session-active > div),
 :global(div.is-fullscreen) {
-    bottom: 20px;
+    top: 20px;
+    bottom: auto;
 }
 </style>

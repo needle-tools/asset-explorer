@@ -112,6 +112,10 @@ export default defineConfig(async ({ command, mode }) => {
 			sveltekit(),            
 			// needlePlugins(command, needleConfig),
 		],
+		server: {
+			port: 43871,
+			strictPort: true,
+		},
 		build: {
 			target: "esnext",
 		},
@@ -136,6 +140,7 @@ export default defineConfig(async ({ command, mode }) => {
 
 	if (isExportRunner) {
 		config.server = {
+			...config.server,
 			fs: {
 				allow: [path.resolve(".")],
 			},

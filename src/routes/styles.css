@@ -214,3 +214,99 @@ button:focus:not(:focus-visible) {
 		scroll-behavior: auto !important;
 	}
 }
+
+/* Needle Cloud workspace bases and derived surfaces. */
+:root {
+    --workspace-primary: #99d46b;
+    --workspace-elevated: color-mix(in srgb, #f0f4ef 95%, white);
+    --workspace-hover: color-mix(in srgb, var(--workspace-primary) 10%, transparent);
+    --workspace-selected: color-mix(in srgb, var(--workspace-primary) 18%, transparent);
+    --font-body: system-ui, -apple-system, sans-serif;
+    --radius-control: 6px;
+    --radius-card: 6px;
+    font-size: 13px;
+}
+
+/* Shared reading typography for Markdown descriptions and About. */
+.workspace-prose {
+    width: 100%;
+    max-width: 80ch;
+    min-width: 0;
+    font: 13px/1.6 var(--font-body);
+    color: var(--color-text-secondary);
+    overflow-wrap: anywhere;
+}
+
+.workspace-prose :is(h1, h2, h3, h4, h5, h6) {
+    font-family: var(--font-body);
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 24px 0 10px;
+    text-wrap: balance;
+    scroll-margin-top: 80px;
+}
+
+.workspace-prose h1 {
+    font-size: 21px;
+}
+
+.workspace-prose h2 {
+    font-size: 16px;
+}
+
+.workspace-prose :is(h3, h4, h5, h6) {
+    font-size: 14px;
+}
+
+.workspace-prose p {
+    margin: 10px 0;
+    text-wrap: balance;
+}
+
+.workspace-prose :is(ul, ol) {
+    padding-left: 20px;
+    margin: 10px 0;
+}
+
+.workspace-prose img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    max-height: 30vh;
+    height: auto;
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+.workspace-prose a {
+    color: inherit;
+    font-weight: 400;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.workspace-prose pre {
+    font-size: 12px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    background: var(--color-bg-page);
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border-subtle) transparent;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+.workspace-prose table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+}
+
+.workspace-prose :is(th, td) {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--color-border-subtle);
+    text-align: left;
+}

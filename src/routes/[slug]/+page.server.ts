@@ -1,3 +1,5 @@
+import { findSimilarAssets } from "$lib/similarAssets";
+import { loadAssetCatalog } from "$lib/server/assetCatalog";
 import { attachAssetAnalysis, collectFileInformation } from "../../dynamicFiles";
 import { error } from "@sveltejs/kit";
 
@@ -17,7 +19,11 @@ export async function load({ params, url }) {
   const current = attachAssetAnalysis(files[index]);
   const next = index < files.length - 1 ? files[index + 1] : null;
 
+  const { categoryTree } = await loadAssetCatalog();
+
   return {
+    categoryTree,
+    similarAssets: findSimilarAssets(current, files),
     // entries: [previous, current, next],
     model: current,
     previous: previous,

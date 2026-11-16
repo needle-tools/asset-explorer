@@ -2,7 +2,9 @@
 import NeedleEngine from "../NeedleEngine.svelte";
 import ModelInfo from "./ModelInfo.svelte";
 import Icon from "$lib/Icon.svelte";
-import WhatsNew from "$lib/WhatsNew.svelte";
+import { dev } from "$app/environment";
+import { needleCloudUploadUrl } from "$lib/cloudUpload";
+
 import { base } from "$app/paths";
 import { onMount } from "svelte";
 import { goto } from "$app/navigation";
@@ -91,6 +93,10 @@ function currentPageAssetUrl(uri: string, baseUrl: string) {
     catch {
         return uri;
     }
+}
+
+function cloudUploadUrl(uri: string, origin: string) {
+    return needleCloudUploadUrl(uri, origin || "https://asset-explorer.needle.tools", dev);
 }
 
 function usdViewerUrl(conversion: any, baseUrl: string) {
@@ -202,7 +208,7 @@ onMount(() => {
 
 </script>
 
-<div class="text-column">
+<div class="text-column" id="asset-preview">
     {#key "constant"}
     <NeedleEngine src={model.downloadUri} bind:this={needleEngine} 
         bind:arSupported 
@@ -211,14 +217,9 @@ onMount(() => {
         bind:isFullscreen>
         
         <div class="info options ar-menu">
-            {#if previous}
-            <a class="nav left" href="{base}/{previous.slug}"><span>{previous.displayName}</span></a>
-            {/if}
-
             <span>{model.displayName}</span>
 
             {#if !isFullscreen && !arSessionActive}
-            <button on:click={toggleFullscreen}>⛶</button>
             <button on:click={startAR} class={!arSupported ? 'not-supported' : ''}>AR</button>
             <!--
             <button on:click={needleEngine.startVR} class={!vrSupported ? 'not-supported' : ''}>VR</button>
@@ -235,9 +236,7 @@ onMount(() => {
             </button>
             -->
 
-            {#if next}
-            <a class="nav right" href="{base}/{next.slug}"><span>{next.displayName}</span></a>
-            {/if}
+
         </div>
     </NeedleEngine>
     {/key}
@@ -247,15 +246,17 @@ onMount(() => {
     </model>
     -->
 
-    <div class="spacer"></div>
     <div class="info">
-        <h2 class="info-header">Information and Downloads</h2>
+        <div class="information-layout">
+        <section class="metadata-panel" id="asset-information"><h3>Asset information</h3><ModelInfo info={model.info} name={model.displayName} sourceUrl={model.sourceRepoUrl}>
         <div class="meta credits">
             <p>glTF information extracted with <a href="https://gltf-transform.dev/" target="_blank">gltf-transform</a>.</p>
             <p>USDZ verification and preview image created with <a href="https://openusd.org/release/toolset.html#usdchecker" target="_blank">usdchecker</a> and <a href="https://openusd.org/release/toolset.html#usdrecord" target="_blank">usdrecord</a>.</p>
             <p><a href="https://usd-viewer.needle.tools/" target="_blank">USD Viewer by Needle</a></p>
         </div>
-        <ModelInfo info={model.info} />
+        </ModelInfo>
+        </section>
+        <section class="downloads-panel" id="asset-downloads"><h3>Downloads</h3>
 
         <ul class="download-links">
             <li>
@@ -264,6 +265,8 @@ onMount(() => {
                 <div class="card-links">
                     <a href={model.downloadUri} download
                         on:click={() => track("download", { ...assetProps, format: "glb", converter: "source" })}><Icon name="download" />Download GLB</a>
+                    <a href={cloudUploadUrl(model.downloadUri, pageUrlBase)} target="_blank" rel="noopener noreferrer"
+                        on:click={() => track("optimize_with_needle", { ...assetProps, format: "glb", converter: "source" })}><Icon name="external" />Optimize with Needle</a>
                 </div>
                 <span class="file-description">Source asset from<br/>{model.info.source}</span>
             </li>
@@ -281,6 +284,8 @@ onMount(() => {
                         on:click={() => track("download", { ...assetProps, format: "usdz", converter: conversion.id })}><Icon name="download" />Download USDZ</a>
                     <a href={usdViewerUrl(conversion, pageUrlBase)} target="_blank"
                         on:click={() => track("open_usd_viewer", { ...assetProps, converter: conversion.id })}><Icon name="external" />Open in Needle USD Viewer</a>
+                    <a href={cloudUploadUrl(conversion.usdzUri, pageUrlBase)} target="_blank" rel="noopener noreferrer"
+                        on:click={() => track("optimize_with_needle", { ...assetProps, format: "usdz", converter: conversion.id })}><Icon name="external" />Optimize with Needle</a>
                     {#if hasQuickLook}
                     <a rel="ar" href={conversion.usdzUri}><Icon name="ar" />View in AR</a>
                     {/if}
@@ -289,6 +294,10 @@ onMount(() => {
             </li>
             {/each}
         </ul>
+
+        </section>
+        </div>
+
 
         {#if ENABLE_FEATURE_SURVIVAL_TABLE && model.analysis}
         <div class="feature-table">
@@ -323,28 +332,22 @@ onMount(() => {
         {/if}
     </div>
 
-    <WhatsNew />
 
-    <div class="info html">
+    <div class="info html description-panel" id="asset-description">
         <h2 class="info-header">Description</h2>
         <div class="meta">
             <p>This asset is part of the <a href={model.sourceRepoUrl} target="_blank">{model.info.source}</a> asset repository.</p>
             <p><a href="{model.readmeSrc}" target="_blank">Description source</a> • <a href="{model.originalFileSrc}" target="_blank">Asset source</a></p>
         </div>
-        {@html model.readme} 
+        <div class="workspace-prose source-readme">{@html model.readme}</div>
     </div>
 </div>
 
 <style>
-/* reserves room for the viewer title bar, which floats at bottom:-70px (NeedleEngine.svelte) */
-.spacer {
-    height: 80px;
-}
-
 .text-column {
     width: 100%;
-    max-width: 48rem;
-    margin: 20px auto 0;
+    max-width: 100%;
+    margin: 0;
     flex: initial;
     box-sizing: border-box;
     align-items: center;
@@ -361,31 +364,33 @@ onMount(() => {
 }
 
 .info {
-    padding: 24px 28px;
-    background-color: var(--color-bg-panel);
-    border: 1px solid var(--color-border-subtle);
-    border-radius: var(--radius-card);
-    box-shadow: 0 4px 16px rgba(26, 26, 26, 0.06);
+    padding: 16px 0;
+    background-color: transparent;
+    border: 0;
+    border-top: 1px solid var(--color-border-subtle);
+    border-radius: 0;
+    box-shadow: none;
     margin: 16px auto 0;
     width: 100%;
-    max-width: 44rem;
+    max-width: 100%;
     box-sizing: border-box;
 }
 
 .info.options {
     display: flex;
-    position: relative;
-    padding: 10px 20px;
     align-items: center;
-    /* title bar hugs its content (not the full panel width) and stays centered */
-    width: auto;
-    align-self: center;
-    max-width: calc(100vw - 130px);
-    /* not a pill: plain title bar, no panel chrome */
-    background: transparent;
-    border: none;
-    border-radius: 0;
+    gap: 8px;
+    width: fit-content;
+    max-width: 100%;
+    padding: 6px 10px;
+    margin: 0;
+    border: 0;
+    border-radius: 6px;
+    background: rgb(255 255 255 / 10%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     box-shadow: none;
+    pointer-events: auto;
 }
 
 .meta {
@@ -399,19 +404,21 @@ onMount(() => {
     opacity: 0.6;
 }
 
-/* credits as an info panel, aligned to the info table width */
+/* Credits inherit the Info table row's size and spacing. */
 .credits {
-    max-width: 38rem;
-    margin: 0 auto 18px;
-    padding: 12px 16px;
-    background-color: var(--color-bg-callout);
-    border: 1px solid var(--color-border-subtle);
-    border-radius: var(--radius-card);
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+    font-style: normal;
+    color: var(--color-text-secondary);
 }
 
 .credits p {
-    opacity: 0.75;
+    margin: 0;
+    font-size: inherit;
     line-height: 1.5;
+    opacity: 1;
+    text-wrap: balance;
 }
 
 .info.options button {
@@ -423,14 +430,15 @@ onMount(() => {
 }
 
 .info.options span {
-    font-weight: bold;
+    font-size: 12px;
+    font-weight: 500;
 }
 
 /* asset name: single line with ellipsis instead of wrapping */
 .info.options > span {
     flex: 1;
     min-width: 0;
-    text-align: center;
+    text-align: right;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -441,47 +449,12 @@ onMount(() => {
     text-decoration: underline;
 }
 
-a.left, a.right {
-    position: absolute;
-    font-size: 1.5em;
-}
-
-a.left {
-    left: -30px;
-}
-
-a.right {
-    right: -30px;
-}
-
-a.left::before {
-    content: "←";
-    left: -10px;
-    display: inline-block;
-    position: relative;
-    text-align: right;
-}
-
-a.right::after {
-    content: "→";
-    left: 10px;
-    display: inline-block;
-    position: relative;
-}
-
-a.nav {
-    color: var(--color-text-secondary);
-    opacity: 0.5;
-}
-
-a.nav:hover {
-    color: var(--color-text-primary);
-    opacity: 0.8;
-}
-
 .info-header {
     text-align: left;
-    opacity: 0.7;
+    color: var(--color-text-primary);
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 16px;
 }
 
 .file-description {
@@ -493,8 +466,8 @@ a.nav:hover {
 
 .download-links {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 4px 16px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 170px), 1fr));
+    gap: 24px 16px;
     padding: 0;
     margin: 6px 0 0;
     list-style: none;
@@ -509,18 +482,21 @@ a.nav:hover {
 .download-links li {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     justify-content: flex-start;
+    min-width: 0;
     margin: 0;
-    padding: 10px 14px 12px;
+    padding: 0;
 }
 
 .download-links li a {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
-    gap: 7px;
+    justify-content: flex-start;
+    gap: 6px;
+    font-size: 12px;
+    line-height: 1.4;
     margin: 2px 0;
     background: none;
     border: 0;
@@ -528,14 +504,16 @@ a.nav:hover {
 }
 
 .card-title {
+    min-height: 20px;
+    line-height: 20px;
     display: flex;
     align-items: center;
     gap: 7px;
     margin-top: 6px;
     font-weight: 700;
     font-size: 0.72rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    letter-spacing: normal;
+    text-transform: none;
     color: var(--color-text-muted);
 }
 
@@ -548,16 +526,17 @@ a.nav:hover {
 .card-links {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     margin: 5px 0 3px;
 }
 
 .preview {
-    width: auto;
-    max-width: 100%;
-    height: 200px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
     object-fit: contain;
-    border-radius: 8px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--color-bg-page) 94%, var(--color-text-secondary));
     box-sizing: border-box;
 }
 
@@ -569,8 +548,8 @@ a.nav:hover {
     margin: 0 0 10px;
     color: var(--color-text-muted);
     font-size: 0.85rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    letter-spacing: normal;
+    text-transform: none;
 }
 
 .feature-table-scroll {
@@ -654,13 +633,87 @@ a.nav:hover {
 }
 */
 
-a.nav span {
-    display: none;
+.information-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: 24px;
+    align-items: start;
 }
 
-@media only screen and (max-width: 1000px) {
-    a.nav span {
-        display: none;
+.information-layout section {
+    min-width: 0;
+}
+
+.information-layout h3 {
+    margin: 0 0 12px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+@media (max-width: 900px) {
+    .information-layout {
+        grid-template-columns: minmax(0, 1fr);
     }
+}
+.description-panel {
+    align-self: flex-start;
+    max-width: 88ch;
+    margin-inline: 0;
+}
+
+.description-panel .meta {
+    margin: 0 0 20px;
+    font-style: normal;
+}
+
+.description-panel .meta p {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    opacity: 1;
+}
+
+.source-readme {
+    padding: 20px 24px;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--color-bg-page) 35%, white);
+    box-sizing: border-box;
+}
+
+.source-readme :global(> :first-child) {
+    margin-top: 0;
+}
+
+.source-readme :global(> :last-child) {
+    margin-bottom: 0;
+}
+
+@media (max-width: 600px) {
+    .source-readme {
+        padding: 16px;
+    }
+}
+.download-links :global(.icon) {
+    width: 13px;
+    height: 13px;
+}
+
+[id] {
+    scroll-margin-top: 80px;
+}
+.credits a {
+    font-weight: 400;
+}
+.description-panel .info-header {
+    margin-bottom: 20px;
+}
+
+.description-panel .meta a {
+    color: var(--color-text-muted);
+    font-weight: 400;
+}
+
+.description-panel .meta a:hover {
+    color: var(--color-text-secondary);
 }
 </style>

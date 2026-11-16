@@ -89,29 +89,36 @@
 		border: 1px solid var(--color-border-subtle);
 		border-radius: var(--radius-pill);
 		padding: 0 10px;
+		gap: 4px;
 		box-shadow: 0 1px 2px rgba(26, 26, 26, 0.04);
 	}
 
 	li {
 		position: relative;
 		height: 100%;
+		display: flex;
+		align-items: center;
 	}
 
 	nav a {
 		color: var(--color-text-primary);
 	}
 
-	nav a:hover {
-		color: var(--color-green-dark);
+	nav a:not(.logo):hover {
+		background: var(--workspace-hover);
+		outline: 1px solid var(--color-border-strong);
+		outline-offset: -1px;
+		color: var(--color-text-primary);
 		text-decoration: none;
 	}
 
 	li[aria-current="page"] {
-		font-weight: 800;
+		font-weight: 500;
 	}
 
 	li[aria-current="page"] a {
-		color: var(--color-green-dark);
+		background: var(--workspace-selected);
+		color: var(--color-text-primary);
 	}
 
 	/*
@@ -133,7 +140,12 @@
 		height: 100%;
 		align-items: center;
 		gap: 6px;
-		padding: 0 0.7rem;
+		padding: 4px 8px;
+		box-sizing: border-box;
+		height: 32px;
+		font-size: 13px;
+		font-weight: 500;
+		border-radius: 6px;
 		text-decoration: none;
 	}
 
@@ -144,8 +156,9 @@
 	}
 
 	.logo {
-		width: 120px;
-		margin-right: 0.35rem;
+		width: 88px;
+		margin-right: 0;
+		padding-right: 4px;
 	}
 
 	.needle-logo {
@@ -157,12 +170,14 @@
 	.app-wordmark {
 		display: flex;
 		align-items: center;
-		padding: 0 0.85rem 0 0.25rem;
+		padding: 0 24px 0 0;
 		white-space: nowrap;
+		font-family: NunitoSans, sans-serif;
 		font-weight: 200;
 		font-size: 1.45rem;
-		margin-left: -10px;
-		color: #4f4f4f;
+		line-height: 1;
+		margin-left: 0;
+		color: var(--color-text-primary);
 	}
 
 	@media (max-width: 560px) {

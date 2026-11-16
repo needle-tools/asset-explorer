@@ -1,7 +1,9 @@
 <script lang="ts">
 import { page } from '$app/stores'
+import { goto } from '$app/navigation';
+import { scoreAssetSearch } from '$lib/assetSearch';
 import { cubicInOut } from 'svelte/easing';
-import { onMount } from 'svelte';
+import { onMount, onDestroy } from 'svelte';
 import ModelTags, { showInfo } from './ModelTags.svelte';
 import FolderTree from './FolderTree.svelte';
 import Tag from './Tag.svelte';
@@ -302,8 +304,32 @@ $: groupExcludes = currentParams.getAll("notGroup");
 $: generatorFilters = currentParams.getAll("generator");
 $: generatorExcludes = currentParams.getAll("notGenerator");
 $: category = currentParams.get('category') ?? "";
+$: searchQuery = currentParams.get("q") ?? "";
+$: hasActiveFilters = Boolean(searchQuery || category || tagFilters.length || tagExcludes.length || groupFilters.length || groupExcludes.length || generatorFilters.length || generatorExcludes.length);
+
+function matchesSearch(asset: AssetCard, query: string) {
+    return scoreAssetSearch(asset, query) > 0;
+}
+
+let searchTimer: ReturnType<typeof setTimeout>;
+onDestroy(() => clearTimeout(searchTimer));
+function updateSearch(event: Event) {
+    const value = (event.currentTarget as HTMLInputElement).value;
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+        const params = new URLSearchParams(currentSearch);
+        if (value.trim()) params.set("q", value);
+        else params.delete("q");
+        goto(`${base}/?${params}`, { replaceState: true, keepFocus: true, noScroll: true });
+    }, 150);
+}
+
+function resetFilters() {
+    clearTimeout(searchTimer);
+    goto(`${base}/`, { keepFocus: true, noScroll: true });
+}
 $: visibleAssets = (data.assets ?? data.models).filter((asset: AssetCard) => {
-    return matchesListFilters(asset, {
+    return matchesSearch(asset, searchQuery) && matchesListFilters(asset, {
         groups: groupFilters,
         notGroups: groupExcludes,
         generators: generatorFilters,
@@ -312,7 +338,7 @@ $: visibleAssets = (data.assets ?? data.models).filter((asset: AssetCard) => {
         notTags: tagExcludes,
         category,
     });
-});
+}).sort((a, b) => searchQuery.trim() ? scoreAssetSearch(b, searchQuery) - scoreAssetSearch(a, searchQuery) : 0);
 $: showCollections = data.categoryTree?.children?.length > 1;
 
 function setList(params: URLSearchParams, name: string, values: string[]) {
@@ -373,7 +399,7 @@ function countLabel(search: string, kind: "group" | "generator" | "tag", value: 
     filters.notTags = filters.notTags.filter((tag) => kind !== "tag" || tag !== value);
 
     const matching = (data.assets ?? data.models).filter((asset: AssetCard) => {
-        if (!matchesListFilters(asset, filters)) return false;
+        if (!matchesSearch(asset, params.get("q") ?? "") || !matchesListFilters(asset, filters)) return false;
         if (kind === "group") return hasGroup(asset, value);
         if (kind === "generator") return hasGenerator(asset, value);
         return hasCapability(asset, value);
@@ -399,7 +425,7 @@ $: visibleGeneratorEntries = (() => {
     return [
         ...baseGeneratorEntries,
         { value: NONE_VALUE, name: "none", label: countLabel(currentSearch, "generator", NONE_VALUE, noneCount) },
-    ].filter(({ value, label }) => hasMatches(label) || isActiveFacet("generator", value));
+    ];
 })();
 
 $: baseGroupEntries = Object.entries(getAndCountGroups(data))
@@ -414,7 +440,7 @@ $: visibleGroupEntries = (() => {
     return [
         ...baseGroupEntries,
         { value: NONE_VALUE, name: "none", label: countLabel(currentSearch, "group", NONE_VALUE, noneCount) },
-    ].filter(({ value, label }) => hasMatches(label) || isActiveFacet("group", value));
+    ];
 })();
 
 $: baseCapabilityEntries = Object.entries(getAndCountTags(data))
@@ -426,7 +452,7 @@ $: visibleCapabilityEntries = (() => {
     return [
         ...baseCapabilityEntries,
         { value: NO_CAPABILITIES, name: "none", label: countLabel(currentSearch, "tag", NO_CAPABILITIES, noneCount) },
-    ].filter(({ value, label }) => hasMatches(label) || isActiveFacet("tag", value));
+    ];
 })();
 
 $: baseExtensionEntries = Object.entries(getAndCountTags(data))
@@ -438,7 +464,7 @@ $: visibleExtensionEntries = (() => {
     return [
         ...baseExtensionEntries,
         { value: NO_EXTENSIONS, name: "none", label: countLabel(currentSearch, "tag", NO_EXTENSIONS, noneCount) },
-    ].filter(({ value, label }) => hasMatches(label) || isActiveFacet("tag", value));
+    ];
 })();
 
 $: baseMetadataEntries = Object.entries(getAndCountTags(data))
@@ -450,7 +476,7 @@ $: visibleMetadataEntries = (() => {
     return [
         ...baseMetadataEntries,
         { value: NO_METADATA, name: "none", label: countLabel(currentSearch, "tag", NO_METADATA, noneCount) },
-    ].filter(({ value, label }) => hasMatches(label) || isActiveFacet("tag", value));
+    ];
 })();
 
 function tagSortIndex(tag: string) {
@@ -509,8 +535,19 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
     jsonLd={homeJsonLd}
 />
 
+<div class="asset-browser">
+    <aside aria-label="Asset collections and filters">
+        <label class="asset-search">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.5" /><path d="m10.5 10.5 3 3" /></svg>
+            <input type="search" aria-label="Search assets" placeholder="Search assets" value={searchQuery} on:input={updateSearch} />
+        </label>
+        <button class="back-link" type="button" disabled={!hasActiveFilters} on:click={resetFilters}>Reset filters</button>
+        {#if showCollections}
+        <h3 class="title">Collections</h3>
+        <FolderTree node={data.categoryTree} selected={category} />
+        {/if}
 <details class="facet-section" open={facetSectionOpen.groups} on:toggle={(event) => onFacetSectionToggle(event, "groups")}>
-    <summary><span>Groups</span><span>{visibleGroupEntries.length}</span></summary>
+    <summary><svg class="disclosure-chevron" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4" /></svg><span>Groups</span><span>{visibleGroupEntries.length}</span></summary>
     <ul class="groups">
         {#each visibleGroupEntries as { value, name, label }}
             <Tag
@@ -520,13 +557,14 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
                 excluded={groupExcludes.includes(value)}
                 name={name}
                 value={label}
+                disabled={label === 0 && !isActiveFacet("group", value)}
             />
         {/each}
     </ul>
 </details>
 
 <details class="facet-section" open={facetSectionOpen.capabilities} on:toggle={(event) => onFacetSectionToggle(event, "capabilities")}>
-    <summary><span>Has special data</span><span>{visibleCapabilityEntries.length}</span></summary>
+    <summary><svg class="disclosure-chevron" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4" /></svg><span>Has special data</span><span>{visibleCapabilityEntries.length}</span></summary>
     <ul class="groups">
         {#each visibleCapabilityEntries as { value, name, label }}
             <Tag
@@ -536,6 +574,7 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
                 excluded={tagExcludes.includes(value)}
                 name={name}
                 value={label}
+                disabled={label === 0 && !isActiveFacet("tag", value)}
             />
         {/each}
     </ul>
@@ -543,7 +582,7 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
 
 {#if visibleExtensionEntries.length}
 <details class="facet-section" open={facetSectionOpen.extensions} on:toggle={(event) => onFacetSectionToggle(event, "extensions")}>
-    <summary><span>Extensions</span><span>{visibleExtensionEntries.length}</span></summary>
+    <summary><svg class="disclosure-chevron" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4" /></svg><span>Extensions</span><span>{visibleExtensionEntries.length}</span></summary>
     <ul class="groups">
         {#each visibleExtensionEntries as { value, name, label }}
             <Tag
@@ -553,6 +592,7 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
                 excluded={tagExcludes.includes(value)}
                 name={name}
                 value={label}
+                disabled={label === 0 && !isActiveFacet("tag", value)}
             />
         {/each}
     </ul>
@@ -561,7 +601,7 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
 
 {#if visibleMetadataEntries.length}
 <details class="facet-section" open={facetSectionOpen.metadata} on:toggle={(event) => onFacetSectionToggle(event, "metadata")}>
-    <summary><span>Metadata</span><span>{visibleMetadataEntries.length}</span></summary>
+    <summary><svg class="disclosure-chevron" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4" /></svg><span>Metadata</span><span>{visibleMetadataEntries.length}</span></summary>
     <ul class="groups">
         {#each visibleMetadataEntries as { value, name, label }}
             <Tag
@@ -571,6 +611,7 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
                 excluded={tagExcludes.includes(value)}
                 name={name}
                 value={label}
+                disabled={label === 0 && !isActiveFacet("tag", value)}
             />
         {/each}
     </ul>
@@ -579,7 +620,7 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
 
 {#if visibleGeneratorEntries.length}
 <details class="facet-section" open={facetSectionOpen.generators} on:toggle={(event) => onFacetSectionToggle(event, "generators")}>
-    <summary><span>Generators</span><span>{visibleGeneratorEntries.length}</span></summary>
+    <summary><svg class="disclosure-chevron" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4" /></svg><span>Generators</span><span>{visibleGeneratorEntries.length}</span></summary>
     <ul class="groups">
         {#each visibleGeneratorEntries as { value, name, label }}
             <Tag
@@ -589,22 +630,21 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
                 excluded={generatorExcludes.includes(value)}
                 name={name}
                 value={label}
+                disabled={label === 0 && !isActiveFacet("generator", value)}
             />
         {/each}
     </ul>
 </details>
 {/if}
 
-<div class:asset-browser={showCollections}>
-    {#if showCollections}
-    <aside>
-        <h3 class="title">Collections</h3>
-        <FolderTree node={data.categoryTree} selected={category} />
     </aside>
-    {/if}
 
     <main>
-        <h3 class="title">Assets and conversions</h3>
+        <div class="browser-heading"><h1>{category ? category.split("/").at(-1) : "Assets and conversions"}</h1><span class="asset-count" aria-label={visibleAssets.length + " assets"}>{visibleAssets.length}</span></div>
+        <div class="browser-intro">
+            <p>Explore glTF sample assets and USDZ conversions. Filter by features, preview in 3D, and compare or download files to test your workflow.</p>
+        </div>
+        {#if !visibleAssets.length}<p class="empty-state">No assets match these filters. <a href="{base}/">Clear filters</a></p>{/if}
         <ul class="models">
             {#each visibleAssets as model (model.slug)}
                 <li transition:whoosh>
@@ -614,10 +654,10 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
                             <img src={model.thumbnail} alt={model.name} loading="lazy" on:error={hideBrokenImage} />
                             {/if}
                         </span>
-                        <p class="name">{model.name}</p>
-                        {#if model.subheadline}
-                        <p class="subheadline">{model.subheadline}</p>
-                        {/if}
+                        <div class="item-details">
+                            <p class="name" title={model.name}>{model.name}</p>
+                            <p class="subheadline">{model.subheadline || (model.kind === "gltf" ? "glTF asset" : "USD asset")}</p>
+                        </div>
                     </a>
                     {#if model.kind === "gltf"}
                         {@const groupCount = entryCount(model.groups)}
@@ -628,75 +668,47 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
                         {@const assetMetadataEntries = metadataEntries(model)}
                         {@const metadataCount = entryCount(assetMetadataEntries)}
                     <div class="asset-footer">
-                        {#if groupCount}
-                        <details>
-                            <summary><span class="footer-label">Groups</span><span class="footer-count">{groupCount}</span></summary>
-                            <ul class="groups footer-tags">
-                                {#each model.groups as assetGroup}
-                                    <Tag
-                                        href={filterHref(currentSearch, "group", assetGroup)}
+                        <table aria-label={model.name + " asset information"}>
+                            <tbody>
+                                <tr><th scope="row">Groups</th><td>{groupCount}</td></tr>
+                                <tr><th scope="row">Special data</th><td>{capabilityCount}</td></tr>
+                                <tr><th scope="row">Extensions</th><td>{extensionCount}</td></tr>
+                                <tr><th scope="row">Metadata</th><td>{metadataCount}</td></tr>
+                            </tbody>
+                        </table>
+                        {#if groupCount || capabilityCount || extensionCount || metadataCount}
+                        <details class="asset-details">
+                            <summary><svg class="disclosure-chevron" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4" /></svg>Details</summary>
+                            <div class="details-content">
+                            {#if groupCount}
+                            <h4>Groups</h4>
+                            <ul class="groups">
+                                {#each model.groups ?? [] as assetGroup}
+                                    <Tag href={filterHref(currentSearch, "group", assetGroup)}
                                         excludeHref={filterHref(currentSearch, "group", assetGroup, true)}
-                                        selected={groupFilters.includes(assetGroup)}
-                                        excluded={groupExcludes.includes(assetGroup)}
-                                        name={assetGroup}
-                                        value={true}
-                                        showValue={false}
-                                    />
+                                        selected={groupFilters.includes(assetGroup)} excluded={groupExcludes.includes(assetGroup)}
+                                        name={assetGroup} value={true} showValue={false} />
                                 {/each}
                             </ul>
-                        </details>
-                        {:else}
-                        <div class="footer-row is-empty">
-                            <span class="footer-label">Groups</span><span class="footer-count">{groupCount}</span>
-                        </div>
-                        {/if}
-
-                        {#if capabilityCount}
-                        <details>
-                            <summary><span class="footer-label">Has special data</span><span class="footer-count">{capabilityCount}</span></summary>
-                            <ModelTags
-                                tags={capabilityEntries}
-                                includeFilters={tagFilters}
-                                excludeFilters={tagExcludes}
-                            />
-                        </details>
-                        {:else}
-                        <div class="footer-row is-empty">
-                            <span class="footer-label">Has special data</span><span class="footer-count">{capabilityCount}</span>
-                        </div>
-                        {/if}
-
-                        {#if extensionCount}
-                        <details>
-                            <summary><span class="footer-label">Extensions</span><span class="footer-count">{extensionCount}</span></summary>
-                            <ModelTags
-                                tags={extensionEntries}
-                                includeFilters={tagFilters}
-                                excludeFilters={tagExcludes}
-                            />
-                        </details>
-                        {:else}
-                        <div class="footer-row is-empty">
-                            <span class="footer-label">Extensions</span><span class="footer-count">{extensionCount}</span>
-                        </div>
-                        {/if}
-
-                        {#if metadataCount}
-                        <details>
-                            <summary><span class="footer-label">Metadata</span><span class="footer-count">{metadataCount}</span></summary>
+                            {/if}
+                            {#if capabilityCount}
+                            <h4>Special data</h4>
+                            <ModelTags tags={capabilityEntries} includeFilters={tagFilters} excludeFilters={tagExcludes} />
+                            {/if}
+                            {#if extensionCount}
+                            <h4>Extensions</h4>
+                            <ModelTags tags={extensionEntries} includeFilters={tagFilters} excludeFilters={tagExcludes} />
+                            {/if}
+                            {#if metadataCount}
+                            <h4>Metadata</h4>
                             <dl class="metadata-tags">
                                 {#each assetMetadataEntries as [key, value]}
-                                <div>
-                                    <dt>{key}</dt>
-                                    <dd title={String(value)}>{value}</dd>
-                                </div>
+                                <div><dt>{key}</dt><dd title={String(value)}>{value}</dd></div>
                                 {/each}
                             </dl>
+                            {/if}
+                                                    </div>
                         </details>
-                        {:else}
-                        <div class="footer-row is-empty">
-                            <span class="footer-label">Metadata</span><span class="footer-count">{metadataCount}</span>
-                        </div>
                         {/if}
                     </div>
                     {/if}
@@ -707,39 +719,131 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
 </div>
 
 <style>
-    :root {
-        --size: 160px;
-    }
-
-    @media only screen and (max-width: 600px) {
-        :root {
-            --size: min(40vw, 160px);
-        }
-    }
-
-    @media only screen and (max-width: 380px) {
-        :root {
-            --size: 80vw;
-        }
-    }
-
     .asset-browser {
         display: grid;
-        grid-template-columns: minmax(190px, 260px) minmax(0, 1fr);
-        gap: 28px;
+        grid-template-columns: 184px minmax(0, 1fr);
+        gap: 32px;
         align-items: start;
     }
 
     aside {
         position: sticky;
-        top: 16px;
-        max-height: calc(100vh - 32px);
+        top: 76px;
+        max-height: calc(100dvh - 92px);
         overflow: auto;
+        scrollbar-width: thin;
+        scrollbar-gutter: stable;
+        scrollbar-color: transparent transparent;
         padding-right: 8px;
+    }
+
+    aside:is(:hover, :focus-within) {
+        scrollbar-color: color-mix(in srgb, var(--color-text-muted) 25%, transparent) transparent;
     }
 
     main {
         min-width: 0;
+    }
+
+    .asset-search {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 8px;
+        border: 1px solid var(--color-border-subtle);
+        border-radius: 6px;
+        background: var(--workspace-elevated);
+        color: var(--color-text-muted);
+        margin: 0 4px 8px;
+    }
+
+    .asset-search input {
+        width: 100%;
+        min-width: 0;
+        border: 0;
+        padding: 0;
+        background: transparent;
+        outline: none;
+        color: var(--color-text-primary);
+        font: inherit;
+        font-size: 12px;
+    }
+
+    .asset-search:focus-within {
+        border-color: var(--color-border-strong);
+        outline: none;
+    }
+
+    .asset-search input:focus-visible {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .back-link {
+        display: block;
+        padding: 5px 4px;
+        margin: 0;
+        border: 0;
+        color: var(--color-text-secondary);
+        text-align: left;
+        cursor: pointer;
+        border-radius: 6px;
+        background: transparent;
+        font-weight: 400;
+    }
+
+    .back-link:disabled {
+        opacity: 0.4;
+        cursor: default;
+    }
+
+    .back-link:hover:not(:disabled) {
+        background: color-mix(in srgb, var(--color-text-muted) 7%, transparent);
+        color: var(--color-text-primary);
+        text-decoration: none;
+    }
+
+    .browser-heading {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .browser-heading h1 {
+        margin: 0;
+        font-size: 21px;
+        font-weight: 600;
+    }
+
+    .browser-heading .asset-count {
+        padding: 1px 6px;
+        border: 1px solid var(--color-border-subtle);
+        border-radius: 4px;
+        background: #fff;
+        color: var(--color-text-secondary);
+        font-size: 11px;
+        line-height: 1.5;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .browser-intro {
+        margin-bottom: 20px;
+        padding: 12px 16px;
+        border: 1px solid var(--color-border-subtle);
+        border-radius: 6px;
+        background: var(--workspace-elevated);
+    }
+
+    .browser-intro p {
+        max-width: 80ch;
+        margin: 0;
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 1.5;
+        text-wrap: balance;
+        color: var(--color-text-secondary);
     }
 
     .facet-section {
@@ -752,30 +856,53 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
         align-items: center;
         color: var(--color-text-muted);
         cursor: pointer;
-        font-size: 0.74rem;
+        font-size: 12px;
         font-weight: 700;
         line-height: 1.15;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        letter-spacing: normal;
+        text-transform: none;
         list-style: none;
+    }
+
+    .facet-section summary {
+        padding: 5px 4px;
+        border-radius: 4px;
+    }
+
+    .facet-section summary:focus-visible {
+        outline: 1px solid var(--color-border-strong);
+        outline-offset: -1px;
+        background: color-mix(in srgb, var(--color-text-muted) 5%, transparent);
+    }
+
+    .facet-section::details-content {
+        opacity: 0;
+        block-size: 0;
+        overflow: clip;
+        interpolate-size: allow-keywords;
+        transition: opacity 160ms ease, block-size 180ms ease, content-visibility 180ms allow-discrete;
+    }
+
+    .facet-section[open]::details-content {
+        opacity: 1;
+        block-size: auto;
     }
 
     .facet-section summary::-webkit-details-marker {
         display: none;
     }
 
-    .facet-section summary::before {
-        content: "";
-        width: 0;
-        height: 0;
-        border-top: 5px solid transparent;
-        border-bottom: 5px solid transparent;
-        border-left: 7px solid currentColor;
-        transform-origin: 35% 50%;
-        transition: transform 0.12s ease;
+    .facet-section summary .disclosure-chevron {
+        order: 1;
+        margin-left: auto;
     }
 
-    .facet-section[open] summary::before {
+    .disclosure-chevron {
+        flex-shrink: 0;
+        transition: transform 120ms ease;
+    }
+
+    details[open] > summary .disclosure-chevron {
         transform: rotate(90deg);
     }
 
@@ -789,14 +916,12 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
         margin-top: 0.5rem;
     }
 
-    .models li {
+    .models > li {
         display: flex;
-        flex-direction: column; 
-        max-width: var(--size);
-        transition: transform 0.1s ease-in-out, background-color 0.2s linear, margin 0.2s linear, padding 0.2s linear;
-
-        padding: 5px;
-        margin: 0px;  
+        flex-direction: column;
+        min-width: 0;
+        padding: 0;
+        margin: 0;
     }
 
     a {
@@ -805,7 +930,7 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
     }
 
     .models a {
-        max-width: var(--size);
+        min-width: 0;
     }
 
     .asset-main {
@@ -813,113 +938,81 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
     }
 
     .asset-footer {
-        width: var(--size);
-        max-width: var(--size);
-        margin-top: 6px;
-        font-size: 0.68rem;
+        margin: 0 2px;
+        font-size: 11px;
+        line-height: 1.5;
         color: var(--color-text-secondary);
     }
 
-    .asset-footer details,
-    .asset-footer .footer-row {
-        padding: 3px 0;
+    .asset-footer table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: inherit;
     }
 
-    .asset-footer summary,
-    .asset-footer .footer-row {
-        display: grid;
-        grid-template-columns: 11px minmax(0, 1fr) min-content;
-        column-gap: 5px;
-        align-items: center;
+    .asset-footer th,
+    .asset-footer td {
+        padding: 2px 0;
+        border-bottom: 1px solid color-mix(in srgb, var(--color-border-subtle) 55%, transparent);
+        font-weight: 400;
+        text-align: left;
+    }
+
+    .asset-footer td {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
         color: var(--color-text-muted);
-        font-weight: 700;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
     }
 
-    .asset-footer summary {
+    .asset-details summary {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 0;
         cursor: pointer;
         list-style: none;
+        color: var(--color-text-muted);
     }
 
-    .asset-footer summary::-webkit-details-marker {
+    .asset-details summary::-webkit-details-marker {
         display: none;
     }
 
-    .asset-footer summary::before {
-        content: "";
-        width: 0;
-        height: 0;
-        border-top: 5px solid transparent;
-        border-bottom: 5px solid transparent;
-        border-left: 7px solid currentColor;
-        transform-origin: 35% 50%;
-        transition: transform 0.12s ease;
+    .details-content {
+        padding-left: 17px;
     }
 
-    .asset-footer details[open] summary::before {
-        transform: rotate(90deg);
+    .asset-details h4 {
+        margin: 8px 0 2px;
+        font-size: inherit;
+        font-weight: 500;
     }
 
-    .asset-footer .footer-row::before {
-        content: "";
-    }
-
-    .asset-footer .is-empty {
-        color: color-mix(in srgb, var(--color-text-muted) 52%, transparent);
-        cursor: default;
-    }
-
-    .footer-label {
-        min-width: 0;
-    }
-
-    .footer-count {
-        color: var(--color-text-muted);
-        font-weight: 700;
-        justify-self: end;
-        min-width: 2ch;
-        text-align: right;
-    }
-
-    .asset-footer :global(.extensions) {
-        margin: 4px 0 0 16px;
-    }
-
-    .footer-tags {
-        margin: 4px 0 0 16px;
+    .asset-details :global(.extensions) {
+        margin: 0;
     }
 
     .metadata-tags {
-        margin: 4px 0 0 16px;
+        margin: 0;
         display: grid;
         gap: 4px;
     }
 
-    .metadata-tags div {
-        min-width: 0;
-    }
-
     .metadata-tags dt {
         color: var(--color-text-muted);
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
     }
 
     .metadata-tags dd {
-        margin: 1px 0 0;
+        margin: 0;
         overflow-wrap: anywhere;
-        white-space: normal;
-        color: var(--color-text-primary);
     }
 
     p {
         margin: 0;
         padding: 0;
         margin-top: 0.4rem;
-        font-weight: bold;
-        text-align: center;
+        font-weight: 500;
+        text-align: left;
         text-wrap-style: balance;
     }
 
@@ -931,6 +1024,13 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
         align-items: flex-start;
         margin: 0;
         padding: 0;
+    }
+
+    .models {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 160px), 1fr));
+        gap: 16px;
+        align-items: start;
     }
 
     .groups {
@@ -945,58 +1045,77 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
     .preview-wrap {
         display: grid;
         place-items: center;
-        width: var(--size);
-        height: var(--size);
-        background-color: var(--color-bg-panel);
-        border: 1px solid var(--color-border-subtle);
-        border-radius: var(--radius-card);
-        box-shadow: 0 1px 4px rgba(26, 26, 26, 0.08);
-        box-sizing: border-box;
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        overflow: hidden;
+        background: color-mix(in srgb, var(--color-bg-page) 94%, var(--color-text-secondary));
+        border-radius: 6px;
+        outline: 1px solid transparent;
+        outline-offset: -1px;
+        transition: transform 120ms ease, outline-color 120ms ease, box-shadow 120ms ease;
+    }
+
+    .models > li:is(:hover, :focus-within) .preview-wrap {
+        outline-color: var(--color-border-strong);
+        box-shadow: 0 2px 12px color-mix(in srgb, var(--color-text-primary) 9%, transparent);
+        transform: translateY(-2px);
     }
 
     img {
-        width: var(--size);
-        height: var(--size);
+        width: 100%;
+        height: 100%;
+        min-height: 0;
         object-fit: contain;
+    }
+
+    .item-details {
+        padding: 7px 2px 5px;
+    }
+
+    .name {
+        margin: 0;
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 1.4;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .subheadline {
         color: var(--color-text-muted);
-        font-size: 0.72rem;
-        line-height: 1.2;
-        text-align: center;
-    }
-
-    li:hover {
-        transform: scale(1.02);
-        background-color: var(--color-bg-panel);
-        padding: 10px;
-        margin: -5px;
-        border-radius: var(--radius-card);
-        border: 1px solid var(--color-border-subtle);
-        box-shadow: 0 4px 12px rgba(26, 26, 26, 0.08);
-        z-index: 10;
+        font-size: 12px;
+        margin-top: 3px;
+        line-height: 1.4;
+        text-align: left;
     }
 
     /* Needle brand "micro-label" type style */
     .title {
         color: var(--color-text-muted);
-        font-size: 0.74rem;
+        font-size: 12px;
         font-weight: 700;
         line-height: 1.15;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        letter-spacing: normal;
+        text-transform: none;
         margin-top: 1rem;
     }
 
-    @media only screen and (max-width: 760px) {
+    @media only screen and (max-width: 600px) {
         .asset-browser {
             grid-template-columns: 1fr;
         }
 
         aside {
             position: static;
-            max-height: 220px;
+            max-height: 300px;
+            margin-bottom: 16px;
+        }
+    }
+    @media (max-width: 400px) {
+        .models {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
         }
     }
 </style>
