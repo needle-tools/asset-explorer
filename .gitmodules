@@ -1,4 +1,4 @@
 [submodule "submodules/glTF-Sample-Assets"]
 	path = submodules/glTF-Sample-Assets
-	url = https://github.com/KhronosGroup/glTF-Sample-Assets.git
+	url = https://github.com/needle-tools/glTF-Sample-Assets.git
 	branch = asset-explorer

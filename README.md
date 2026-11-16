@@ -29,7 +29,9 @@ A clear goal is to allow you to download files for a specific usecase and check 
 ## Source Files
 
 - This page: <a href="https://github.com/needle-tools/asset-explorer" target="_blank">needle-tools/asset-explorer</a>  
-- The glTF sample assets: <a href="https://github.com/KhronosGroup/glTF-Sample-Assets" target="_blank">KhronosGroup/glTF-Sample-Assets</a>
+- Khronos sample assets: <a href="https://github.com/KhronosGroup/glTF-Sample-Assets" target="_blank">KhronosGroup/glTF-Sample-Assets</a>
+- Additional samples and conversion outputs: <a href="https://github.com/needle-tools/glTF-Sample-Assets/tree/asset-explorer" target="_blank">Needle's sample assets fork</a>
+- Source labels and collections distinguish Khronos samples, additions in the Needle fork, and modified Khronos samples. Attribution compares the source GLB files at pinned Git revisions; generated conversions do not change a sample's origin. Original creator credits and licenses remain in each asset's description.
 - Generated USDZ conversions and preview renders live next to the assets they were produced from, with provenance metadata for the converter family and version.
 
 ## Contributing

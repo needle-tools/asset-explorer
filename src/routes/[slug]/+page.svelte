@@ -67,7 +67,7 @@ $: modelJsonLd = model ? {
         {/if}
         <h2>Collections</h2>
         {#each data.categoryTree?.children ?? [] as collection}
-            <FolderTree node={collection} selected="glTF Sample Assets" highlightSelected={false} />
+            <FolderTree node={collection} selected={data.model?.provenance?.collection ?? "glTF Sample Assets"} highlightSelected={false} />
         {/each}
     </aside>
     <section>

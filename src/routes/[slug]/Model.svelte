@@ -248,7 +248,7 @@ onMount(() => {
 
     <div class="info">
         <div class="information-layout">
-        <section class="metadata-panel" id="asset-information"><h3>Asset information</h3><ModelInfo info={model.info} name={model.displayName} sourceUrl={model.sourceRepoUrl}>
+        <section class="metadata-panel" id="asset-information"><h3>Asset information</h3><ModelInfo info={model.info} name={model.displayName} sourceUrl={model.sourceRepoUrl} provenance={model.provenance}>
         <div class="meta credits">
             <p>glTF information extracted with <a href="https://gltf-transform.dev/" target="_blank">gltf-transform</a>.</p>
             <p>USDZ verification and preview image created with <a href="https://openusd.org/release/toolset.html#usdchecker" target="_blank">usdchecker</a> and <a href="https://openusd.org/release/toolset.html#usdrecord" target="_blank">usdrecord</a>.</p>

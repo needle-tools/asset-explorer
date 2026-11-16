@@ -13,6 +13,7 @@ type CategoryNode = {
 const INCLUDE_USD_WG_ASSETS = false;
 
 function displayCategoryName(name: string) {
+    if (["Khronos samples", "Needle fork additions", "Needle fork variants", "Unclassified samples"].includes(name)) return name;
     if (name === "glTF Sample Assets") return "glTF Sample Assets";
     if (name === "USD WG Assets") return "USD WG Assets";
     if (name === "full_assets") return "Full Assets";
@@ -94,7 +95,9 @@ export async function loadAssetCatalog(){
                 url: "/" + file.slug,
                 external: false,
                 groups: file.groups ?? [],
-                categoryPath: ["glTF Sample Assets"],
+                categoryPath: [file.provenance?.collection ?? "glTF Sample Assets"],
+                provenance: file.provenance,
+                subheadline: file.provenance?.label ?? "glTF asset",
                 extras: {
                     extensions: file.extensions,
                     info: file.info,

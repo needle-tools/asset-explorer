@@ -17,6 +17,8 @@ import { USDZExporter } from './USDZExporter';
 import { FileLoader, Cache, LoadingManager } from 'three';
 import subProcess from 'child_process';
 import { conversionFamilies } from './conversionFamilies';
+import assetSourceManifest from './lib/server/asset-sources.json';
+import { resolveAssetProvenance, rewriteAssetSourceLink } from './lib/assetProvenance';
 
 class NodeProgressEvent {}
 (globalThis as any)["ProgressEvent"] = NodeProgressEvent;
@@ -363,6 +365,7 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
             return out;
         },
         link(href: string, title: string, text: string) {
+            href = rewriteAssetSourceLink(assetSourceManifest, href);
             // TODO probably need to handle relative URLs and decide what to do with them.
             if (!href.startsWith("http"))
             { 
@@ -451,8 +454,13 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
         mdPath = baseUrlPath;
         mdDirName = dirName;
 
-        const readmeInRepo = originalRepoDir + "/tree/main/" + path.relative(sourceDir, readmePath);
-        const srcFileInRepo = originalRepoDir + "/tree/main/" + path.relative(sourceDir, file);
+        const relativeAssetPath = path.relative(sourceDir, file).replaceAll("\\", "/");
+        const relativeReadmePath = path.relative(sourceDir, readmePath).replaceAll("\\", "/");
+        const provenance = sourceDir === sampleAssetsDir
+            ? resolveAssetProvenance(assetSourceManifest, relativeAssetPath, relativeReadmePath)
+            : null;
+        const readmeInRepo = provenance?.readmeUrl ?? originalRepoDir + "/blob/main/" + relativeReadmePath;
+        const srcFileInRepo = provenance?.fileUrl ?? originalRepoDir + "/blob/main/" + relativeAssetPath;
 
         firstFoundH1 = null;
         firstFoundImage = null;
@@ -550,7 +558,7 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
             sparseAccessors,
             generator,
             copyright,
-            source: sourceDir === sampleAssetsDir ? "KhronosGroup/glTF-Sample-Assets" : "KhronosGroup/glTF-Sample-Models",
+            source: provenance?.repository ?? "KhronosGroup/glTF-Sample-Models",
         };
 
         for (const ext of usedExtensions) {
@@ -752,7 +760,8 @@ async function collectFileInformation(filter: string | undefined = undefined, ru
             downloadUri: basePath + "/downloads/" + path.parse(file).name + ".glb",
             readmeSrc: readmeInRepo,
             originalFileSrc: srcFileInRepo,
-            sourceRepoUrl: originalRepoDir,
+            sourceRepoUrl: provenance?.repositoryUrl ?? originalRepoDir,
+            provenance,
             conversions,
             groups: assetGroups,
             

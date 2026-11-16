@@ -45,6 +45,7 @@ export async function GET() {
 			screenshot,
 			thumbnail: screenshot,
 			tags: file.groups ?? [],
+			provenance: file.provenance ?? null,
 			variants,
 			variantThumbnails,
 		};

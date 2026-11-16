@@ -1,0 +1,2134 @@
+{
+  "schemaVersion": 1,
+  "upstream": {
+    "repository": "KhronosGroup/glTF-Sample-Assets",
+    "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+  },
+  "fork": {
+    "repository": "needle-tools/glTF-Sample-Assets",
+    "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+  },
+  "mergeBase": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf",
+  "summary": {
+    "khronos": 120,
+    "needleAdded": 21,
+    "needleModified": 0
+  },
+  "assets": {
+    "Models/ABeautifulGame/glTF-Binary-KTX-ETC1S-Draco/ABeautifulGame.glb": {
+      "kind": "khronos",
+      "blob": "a7035de2d606ae5e64dec06d56fa2f93957d2d76",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "a7035de2d606ae5e64dec06d56fa2f93957d2d76",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/ABeautifulGame/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/ABeautifulGame/glTF-Binary/ABeautifulGame.glb": {
+      "kind": "khronos",
+      "blob": "f950b8a26e97353ec8dede8e4137dcbb48b2a440",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "f950b8a26e97353ec8dede8e4137dcbb48b2a440",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/ABeautifulGame/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/AffineTransformationAnim/glTF-Binary/AffineTransformationAnim.glb": {
+      "kind": "needle-added",
+      "blob": "cf964cdb5f1635114dbde49d618dc9cec0429ac6",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/AffineTransformationAnim/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/AlphaBlendModeTest/glTF-Binary/AlphaBlendModeTest.glb": {
+      "kind": "khronos",
+      "blob": "f2483d76fa9c97af61a1c2c5b4f7ce548afcf60b",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "f2483d76fa9c97af61a1c2c5b4f7ce548afcf60b",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/AlphaBlendModeTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/AnimatedColorsCube/glTF-Binary/AnimatedColorsCube.glb": {
+      "kind": "khronos",
+      "blob": "0ece8fb4a68cd10f5d2fee3b7cf232a04e36edcd",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "0ece8fb4a68cd10f5d2fee3b7cf232a04e36edcd",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/AnimatedColorsCube/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/AnimatedMorphCube/glTF-Binary/AnimatedMorphCube.glb": {
+      "kind": "khronos",
+      "blob": "219d2ac524060e34f13d1253729f563cf76aca97",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "219d2ac524060e34f13d1253729f563cf76aca97",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/AnimatedMorphCube/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/AnimationPointerUVs/glTF-Binary/AnimationPointerUVs.glb": {
+      "kind": "khronos",
+      "blob": "1fd7b690793f8523e81d9ff5ecc24225c70160e7",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "1fd7b690793f8523e81d9ff5ecc24225c70160e7",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/AnimationPointerUVs/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/AnisotropyBarnLamp/glTF-Binary/AnisotropyBarnLamp.glb": {
+      "kind": "khronos",
+      "blob": "c402216f49148c10267391430391b505594d6305",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "c402216f49148c10267391430391b505594d6305",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/AnisotropyBarnLamp/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/AnisotropyDiscTest/glTF-Binary/AnisotropyDiscTest.glb": {
+      "kind": "khronos",
+      "blob": "0e6af4702e3ce4674e5ec0c25e8759f5f3d696d0",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "0e6af4702e3ce4674e5ec0c25e8759f5f3d696d0",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/AnisotropyDiscTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/AnisotropyRotationTest/glTF-Binary/AnisotropyRotationTest.glb": {
+      "kind": "khronos",
+      "blob": "a4f04c151d1f72e028e592aba82abd2599e04b13",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "a4f04c151d1f72e028e592aba82abd2599e04b13",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/AnisotropyRotationTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/AnisotropyStrengthTest/glTF-Binary/AnisotropyStrengthTest.glb": {
+      "kind": "khronos",
+      "blob": "6161291c6491c693acc44bbfa7dd1b9fb586f52b",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "6161291c6491c693acc44bbfa7dd1b9fb586f52b",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/AnisotropyStrengthTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/AntiqueCamera/glTF-Binary/AntiqueCamera.glb": {
+      "kind": "khronos",
+      "blob": "519534de08067d5371b5b5063b8e3700e24112b3",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "519534de08067d5371b5b5063b8e3700e24112b3",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/AntiqueCamera/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/AttenuationTest/glTF-Binary/AttenuationTest.glb": {
+      "kind": "khronos",
+      "blob": "070457de46c51570cb80963e6603e3979f30101a",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "070457de46c51570cb80963e6603e3979f30101a",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/AttenuationTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/Avocado/glTF-Binary/Avocado.glb": {
+      "kind": "khronos",
+      "blob": "dd79cb8043a835f8589bf9f8e55c9a2c672360b5",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "dd79cb8043a835f8589bf9f8e55c9a2c672360b5",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/Avocado/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/BarramundiFish/glTF-Binary/BarramundiFish.glb": {
+      "kind": "khronos",
+      "blob": "145f6e0fa39dbd0393e3002edb49907943f176d4",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "145f6e0fa39dbd0393e3002edb49907943f176d4",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/BarramundiFish/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/BoomBox/glTF-Binary/BoomBox.glb": {
+      "kind": "khronos",
+      "blob": "8d46a04283be023e3dd5154a4a8d65a68abf597c",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "8d46a04283be023e3dd5154a4a8d65a68abf597c",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/BoomBox/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/Box/glTF-Binary/Box.glb": {
+      "kind": "khronos",
+      "blob": "95ec886b6b92b134291fd41d34ac9d5349306e0a",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "95ec886b6b92b134291fd41d34ac9d5349306e0a",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/Box/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/BoxAnimated/glTF-Binary/BoxAnimated.glb": {
+      "kind": "khronos",
+      "blob": "69481ec3caeb57428c806fdac08bfbe40d19ff55",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "69481ec3caeb57428c806fdac08bfbe40d19ff55",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/BoxAnimated/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/BoxInterleaved/glTF-Binary/BoxInterleaved.glb": {
+      "kind": "khronos",
+      "blob": "25cb4046fc4d00d40738c9289f96516b40330220",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "25cb4046fc4d00d40738c9289f96516b40330220",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/BoxInterleaved/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/BoxTextured/glTF-Binary/BoxTextured.glb": {
+      "kind": "khronos",
+      "blob": "cfd92e78f50ecf81f4ae8a9663638b88513ab025",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "cfd92e78f50ecf81f4ae8a9663638b88513ab025",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/BoxTextured/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/BoxTexturedNonPowerOfTwo/glTF-Binary/BoxTexturedNonPowerOfTwo.glb": {
+      "kind": "khronos",
+      "blob": "03cd2acf941a0838722aa3e7243d33a8f459c22e",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "03cd2acf941a0838722aa3e7243d33a8f459c22e",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/BoxTexturedNonPowerOfTwo/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/BoxVertexColors/glTF-Binary/BoxVertexColors.glb": {
+      "kind": "khronos",
+      "blob": "875d95a9a761af7a0aa28e98d96204e8c2c89143",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "875d95a9a761af7a0aa28e98d96204e8c2c89143",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/BoxVertexColors/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/BrainStem/glTF-Binary/BrainStem.glb": {
+      "kind": "khronos",
+      "blob": "88fe89569bedb74926a35b460b8b29ff8b609d01",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "88fe89569bedb74926a35b460b8b29ff8b609d01",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/BrainStem/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CarConcept/GLB/CarConcept.glb": {
+      "kind": "khronos",
+      "blob": "391795d5e3f7daa5519ec2e077e8def16bcecdd7",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "391795d5e3f7daa5519ec2e077e8def16bcecdd7",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CarConcept/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CarConcept/glTF-Binary/CarConcept.glb": {
+      "kind": "khronos",
+      "blob": "c0f38c989a78cc4ba63253b5338705e0afb0142f",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "c0f38c989a78cc4ba63253b5338705e0afb0142f",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CarConcept/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CarbonFibre/glTF-Binary/CarbonFibre.glb": {
+      "kind": "khronos",
+      "blob": "9ed2885eba443d115246b2324cdb713ee0889009",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "9ed2885eba443d115246b2324cdb713ee0889009",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CarbonFibre/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CesiumMan/glTF-Binary/CesiumMan.glb": {
+      "kind": "khronos",
+      "blob": "8586c4e6a59bf8ef585c2a685c50a80d28503216",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "8586c4e6a59bf8ef585c2a685c50a80d28503216",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CesiumMan/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CesiumMilkTruck/glTF-Binary/CesiumMilkTruck.glb": {
+      "kind": "khronos",
+      "blob": "d5c7cf5a921c77a3a8d6011b9164c217db105008",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "d5c7cf5a921c77a3a8d6011b9164c217db105008",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CesiumMilkTruck/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/ChairDamaskPurplegold/glTF-Binary/ChairDamaskPurplegold.glb": {
+      "kind": "khronos",
+      "blob": "0f40b383c76e90b4e3fbc7410a870d75112de65d",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "0f40b383c76e90b4e3fbc7410a870d75112de65d",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/ChairDamaskPurplegold/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/ChronographWatch/glTF-Binary/ChronographWatch.glb": {
+      "kind": "khronos",
+      "blob": "de20dee50756f8720b2107b58591cce3505c96ab",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "de20dee50756f8720b2107b58591cce3505c96ab",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/ChronographWatch/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/ClearCoatCarPaint/glTF-Binary/ClearCoatCarPaint.glb": {
+      "kind": "khronos",
+      "blob": "6258704274c6b17609d4a542ad86ff98cd83bd3c",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "6258704274c6b17609d4a542ad86ff98cd83bd3c",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/ClearCoatCarPaint/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/ClearCoatTest/glTF-Binary/ClearCoatTest.glb": {
+      "kind": "khronos",
+      "blob": "d55c4ea500d813c4ebf02b0094decc91aedaeaf6",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "d55c4ea500d813c4ebf02b0094decc91aedaeaf6",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/ClearCoatTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/ClearcoatWicker/glTF-Binary/ClearcoatWicker.glb": {
+      "kind": "khronos",
+      "blob": "dd445122a87fb96132784b628366c609302a8e85",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "dd445122a87fb96132784b628366c609302a8e85",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/ClearcoatWicker/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/ColorSpaceUberTest/glTF-Binary/ColorSpaceUberTest.glb": {
+      "kind": "needle-added",
+      "blob": "10a777204a33d32a4e81a10a8edd2ee16476a1b4",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/ColorSpaceUberTest/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/CommercialRefrigerator/glTF-Binary/CommercialRefrigerator.glb": {
+      "kind": "khronos",
+      "blob": "dd6d605ad7e175978e18c8fe96ed80814e1a529d",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "dd6d605ad7e175978e18c8fe96ed80814e1a529d",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CommercialRefrigerator/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CompareAlphaCoverage/glTF-Binary/CompareAlphaCoverage.glb": {
+      "kind": "khronos",
+      "blob": "320b4467fbf2ceac4186aa812f9fa75242d67367",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "320b4467fbf2ceac4186aa812f9fa75242d67367",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CompareAlphaCoverage/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CompareAmbientOcclusion/glTF-Binary/CompareAmbientOcclusion.glb": {
+      "kind": "khronos",
+      "blob": "068fbe33c1c41fe8a4339f87410aaa3bd4ef2cfd",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "068fbe33c1c41fe8a4339f87410aaa3bd4ef2cfd",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CompareAmbientOcclusion/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CompareAnisotropy/glTF-Binary/CompareAnisotropy.glb": {
+      "kind": "khronos",
+      "blob": "ae878f6ac0e0d771dcf72e8f3f41c2bdd74241f3",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "ae878f6ac0e0d771dcf72e8f3f41c2bdd74241f3",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CompareAnisotropy/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CompareBaseColor/glTF-Binary/CompareBaseColor.glb": {
+      "kind": "khronos",
+      "blob": "efb08129080a95720c2c5cfe5d34949a992a8a16",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "efb08129080a95720c2c5cfe5d34949a992a8a16",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CompareBaseColor/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CompareClearcoat/glTF-Binary/CompareClearcoat.glb": {
+      "kind": "khronos",
+      "blob": "17147d4848034cecf926b32fa7182b9049bb6eb9",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "17147d4848034cecf926b32fa7182b9049bb6eb9",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CompareClearcoat/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CompareDispersion/glTF-Binary/CompareDispersion.glb": {
+      "kind": "khronos",
+      "blob": "b886731efc9abbfef69da96c4a237450ad077985",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "b886731efc9abbfef69da96c4a237450ad077985",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CompareDispersion/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CompareEmissiveStrength/glTF-Binary/CompareEmissiveStrength.glb": {
+      "kind": "khronos",
+      "blob": "70b44c57874f8a0be87a4734c47f355a9f985a9d",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "70b44c57874f8a0be87a4734c47f355a9f985a9d",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CompareEmissiveStrength/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CompareIor/glTF-Binary/CompareIor.glb": {
+      "kind": "khronos",
+      "blob": "26a70b0d4139ac71b468d8ccfe11a3e6c24c641d",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "26a70b0d4139ac71b468d8ccfe11a3e6c24c641d",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CompareIor/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CompareIridescence/glTF-Binary/CompareIridescence.glb": {
+      "kind": "khronos",
+      "blob": "834e01dbb1eea8724745160c76b458ce3ae5ed20",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "834e01dbb1eea8724745160c76b458ce3ae5ed20",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CompareIridescence/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CompareMetallic/glTF-Binary/CompareMetallic.glb": {
+      "kind": "khronos",
+      "blob": "b7f26161c660339eeaeac179ea14cedea0ed66a6",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "b7f26161c660339eeaeac179ea14cedea0ed66a6",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CompareMetallic/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CompareNormal/glTF-Binary/CompareNormal.glb": {
+      "kind": "khronos",
+      "blob": "8eafa055e2e67c42860c6e8c95905aaf216212d8",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "8eafa055e2e67c42860c6e8c95905aaf216212d8",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CompareNormal/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CompareRoughness/glTF-Binary/CompareRoughness.glb": {
+      "kind": "khronos",
+      "blob": "e91d1196de661142c212fb358a73c1137d629113",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "e91d1196de661142c212fb358a73c1137d629113",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CompareRoughness/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CompareSheen/glTF-Binary/CompareSheen.glb": {
+      "kind": "khronos",
+      "blob": "83fe9476f15daaa4fcb91cfda239502c72e2d8b3",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "83fe9476f15daaa4fcb91cfda239502c72e2d8b3",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CompareSheen/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CompareSpecular/glTF-Binary/CompareSpecular.glb": {
+      "kind": "khronos",
+      "blob": "7fecc3e812ae2a58896bf17e7958d203e06d8fe7",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "7fecc3e812ae2a58896bf17e7958d203e06d8fe7",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CompareSpecular/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CompareTransmission/glTF-Binary/CompareTransmission.glb": {
+      "kind": "khronos",
+      "blob": "063a440ab3efe4a10ae6481463256f53e5b3303d",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "063a440ab3efe4a10ae6481463256f53e5b3303d",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CompareTransmission/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CompareVolume/glTF-Binary/CompareVolume.glb": {
+      "kind": "khronos",
+      "blob": "1dce1aa63284c954777941fb4dc8ea7d89265e46",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "1dce1aa63284c954777941fb4dc8ea7d89265e46",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CompareVolume/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/ComplexTopologyLODs/glTF-Binary/ComplexTopologyLODs.glb": {
+      "kind": "needle-added",
+      "blob": "957e6d854334dc4b1b000a52cd750dd92c0363a1",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/ComplexTopologyLODs/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/Corset/glTF-Binary/Corset.glb": {
+      "kind": "khronos",
+      "blob": "d162de8a41dcaafeb72306a4e593e54f7b6a22e7",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "d162de8a41dcaafeb72306a4e593e54f7b6a22e7",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/Corset/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/CubeToSphere/glTF-Binary/CubeToSphere.glb": {
+      "kind": "needle-added",
+      "blob": "f4ac0222dfa87c39fa07ae73097a7e2b865c6ebe",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CubeToSphere/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/CubeToSphere/glTF-Draco/CubeToSphere.glb": {
+      "kind": "needle-added",
+      "blob": "b9808a1ff5cc0c886bd9c9192b7a52309492a6ce",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CubeToSphere/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/CubeToSphere/glTF-Meshopt/CubeToSphere.glb": {
+      "kind": "needle-added",
+      "blob": "2214cf46801b05e467bd856a8b3ec6f191c1716a",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CubeToSphere/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/CubeVisibility/glTF-Binary/CubeVisibility.glb": {
+      "kind": "khronos",
+      "blob": "48e06900a6c8d726d084f7205662fe6ed0347416",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "48e06900a6c8d726d084f7205662fe6ed0347416",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/CubeVisibility/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/DamagedHelmet/glTF-Binary/DamagedHelmet.glb": {
+      "kind": "khronos",
+      "blob": "2cee76d76a752c92458a8a8294ff3658fdc9d6c7",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "2cee76d76a752c92458a8a8294ff3658fdc9d6c7",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/DamagedHelmet/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/DiffuseTransmissionPlant/glTF-Binary/DiffuseTransmissionPlant.glb": {
+      "kind": "khronos",
+      "blob": "5ecabfb34b122c3440c9b008db1451b1983346ad",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "5ecabfb34b122c3440c9b008db1451b1983346ad",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/DiffuseTransmissionPlant/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/DiffuseTransmissionTeacup/glTF-Binary/DiffuseTransmissionTeacup.glb": {
+      "kind": "khronos",
+      "blob": "62a65993057147a8cb0c4a60a33d0062d522ad1f",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "62a65993057147a8cb0c4a60a33d0062d522ad1f",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/DiffuseTransmissionTeacup/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/DiffuseTransmissionTest/glTF-Binary/DiffuseTransmissionTest.glb": {
+      "kind": "khronos",
+      "blob": "2999416d31c96f6b08c2bef6c087f0c75fd227a5",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "2999416d31c96f6b08c2bef6c087f0c75fd227a5",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/DiffuseTransmissionTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/DirectionalLight/glTF-Binary/DirectionalLight.glb": {
+      "kind": "khronos",
+      "blob": "8a6ba0380a3b33472906b6f75b2a9b509229d9fb",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "8a6ba0380a3b33472906b6f75b2a9b509229d9fb",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/DirectionalLight/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/DispersionTest/glTF-Binary/DispersionTest.glb": {
+      "kind": "khronos",
+      "blob": "45472057f9fb2b25775d13f28c650dfb9191914a",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "45472057f9fb2b25775d13f28c650dfb9191914a",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/DispersionTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/DragonAttenuation/glTF-Binary/DragonAttenuation.glb": {
+      "kind": "khronos",
+      "blob": "e3dcfd79ee6f26e3b617fb47a89dc033fcb212d9",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "e3dcfd79ee6f26e3b617fb47a89dc033fcb212d9",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/DragonAttenuation/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/DragonDispersion/glTF-Binary/DragonDispersion.glb": {
+      "kind": "khronos",
+      "blob": "3d543293275af845e02e3ea7cdc32b7942f8801a",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "3d543293275af845e02e3ea7cdc32b7942f8801a",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/DragonDispersion/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/Duck/glTF-Binary/Duck.glb": {
+      "kind": "khronos",
+      "blob": "217170d2bd67051270be974292dc3b834eefe206",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "217170d2bd67051270be974292dc3b834eefe206",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/Duck/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/EmissiveStrengthTest/glTF-Binary/EmissiveStrengthTest.glb": {
+      "kind": "khronos",
+      "blob": "6020aa63ff3e45d5d28be01c11cabc1a6fd06315",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "6020aa63ff3e45d5d28be01c11cabc1a6fd06315",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/EmissiveStrengthTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/Fox/glTF-Binary/Fox.glb": {
+      "kind": "khronos",
+      "blob": "1ef5c0d05658caea339680fe581aa2c8302b3365",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "1ef5c0d05658caea339680fe581aa2c8302b3365",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/Fox/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/GlamVelvetSofa/glTF-Binary/GlamVelvetSofa.glb": {
+      "kind": "khronos",
+      "blob": "8deb5ebeb28e4c04a3ed3cd9b59a8679d541beeb",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "8deb5ebeb28e4c04a3ed3cd9b59a8679d541beeb",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/GlamVelvetSofa/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/GlassBrokenWindow/glTF-Binary/GlassBrokenWindow.glb": {
+      "kind": "khronos",
+      "blob": "2ee43b1c7bb054d71726bc0163e11316daf76061",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "2ee43b1c7bb054d71726bc0163e11316daf76061",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/GlassBrokenWindow/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/GlassHurricaneCandleHolder/glTF-Binary/GlassHurricaneCandleHolder.glb": {
+      "kind": "khronos",
+      "blob": "78d674e947ea15a6d140cc3edc40b3102c82cbb7",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "78d674e947ea15a6d140cc3edc40b3102c82cbb7",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/GlassHurricaneCandleHolder/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/GlassVaseFlowers/glTF-Binary/GlassVaseFlowers.glb": {
+      "kind": "khronos",
+      "blob": "6e093d3252b75f09c41247380969bb048342da90",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      },
+      "upstreamBlob": "3be38c754941576462ff7baa71d438c101fe2bec",
+      "upstreamChanged": true,
+      "readme": {
+        "path": "Models/GlassVaseFlowers/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/HDRIPreviewSpheres/glTF-Binary/HDRIPreviewSpheres.glb": {
+      "kind": "needle-added",
+      "blob": "2b51ccc855e49bbb06f30c0d190ff3358c702407",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/HDRIPreviewSpheres/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/IORTestGrid/glTF-Binary/IORTestGrid.glb": {
+      "kind": "khronos",
+      "blob": "d5122831c0754a3ed2fdfad47d75e01a400bdbc5",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "d5122831c0754a3ed2fdfad47d75e01a400bdbc5",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/IORTestGrid/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/InterpolationTest/glTF-Binary/InterpolationTest.glb": {
+      "kind": "khronos",
+      "blob": "4200fccc95261f36bf8af58e99f3180968333714",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "4200fccc95261f36bf8af58e99f3180968333714",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/InterpolationTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/IridescenceAbalone/glTF-Binary/IridescenceAbalone.glb": {
+      "kind": "khronos",
+      "blob": "ba1db49b02edd47b480b10a66fe98e18b09a07ea",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "ba1db49b02edd47b480b10a66fe98e18b09a07ea",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/IridescenceAbalone/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/IridescenceLamp/glTF-Binary/IridescenceLamp.glb": {
+      "kind": "khronos",
+      "blob": "464a54a6ed84321816ae60c1d18bd05f6aedc22f",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "464a54a6ed84321816ae60c1d18bd05f6aedc22f",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/IridescenceLamp/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/IridescenceSuzanne/glTF-Binary/IridescenceSuzanne.glb": {
+      "kind": "khronos",
+      "blob": "1d1d591cf59f99f1c7ec0268c5a5556a6f229857",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "1d1d591cf59f99f1c7ec0268c5a5556a6f229857",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/IridescenceSuzanne/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/IridescentDishWithOlives/glTF-Binary/IridescentDishWithOlives.glb": {
+      "kind": "khronos",
+      "blob": "0ecd1195d290e331716eed33c769cf8bf090417a",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "0ecd1195d290e331716eed33c769cf8bf090417a",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/IridescentDishWithOlives/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/Lantern/glTF-Binary/Lantern.glb": {
+      "kind": "khronos",
+      "blob": "0c97893aee066b6fa36f7725443b7536c3510d09",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "0c97893aee066b6fa36f7725443b7536c3510d09",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/Lantern/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/LightVisibility/glTF-Binary/LightVisibility.glb": {
+      "kind": "khronos",
+      "blob": "861a52358769162b1335b6d69f0c03978ca666d1",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "861a52358769162b1335b6d69f0c03978ca666d1",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/LightVisibility/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/LightsConstruct/glTF-Binary/LightsConstruct.glb": {
+      "kind": "needle-added",
+      "blob": "e033ae5180d1b80a75fa6246ab8afd31dba0d201",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/LightsConstruct/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/LightsPunctualLamp/glTF-Binary/LightsPunctualLamp.glb": {
+      "kind": "khronos",
+      "blob": "27744e15c3b362e5dd5341489571b91d636a863c",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "27744e15c3b362e5dd5341489571b91d636a863c",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/LightsPunctualLamp/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/LightsRoundtrip/glTF-Binary/LightsRoundtrip.glb": {
+      "kind": "needle-added",
+      "blob": "50c1da57d512305167439b17d1163a6cae283430",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/LightsRoundtrip/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/MaterialsVariantsShoe/glTF-Binary/MaterialsVariantsShoe.glb": {
+      "kind": "khronos",
+      "blob": "696dee7a453ec86294ed11f3f516f9cce79bc99b",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "696dee7a453ec86294ed11f3f516f9cce79bc99b",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/MaterialsVariantsShoe/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/MetalRoughSpheres/glTF-Binary/MetalRoughSpheres.glb": {
+      "kind": "khronos",
+      "blob": "4118e60506529f6470206593dbf6cb49bf566bec",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "4118e60506529f6470206593dbf6cb49bf566bec",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/MetalRoughSpheres/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/MetalRoughSpheresNoTextures/glTF-Binary/MetalRoughSpheresNoTextures.glb": {
+      "kind": "khronos",
+      "blob": "278b83ac0ffa12aeb025f7bd963b1a993b91a8d7",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "278b83ac0ffa12aeb025f7bd963b1a993b91a8d7",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/MetalRoughSpheresNoTextures/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/MixedTopologySphere/glTF-Binary/MixedTopologySphere.glb": {
+      "kind": "needle-added",
+      "blob": "94797a5bb9faa63f604b9c6eba3b5587fa6c15d4",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/MixedTopologySphere/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/MorphPrimitivesTest/glTF-Binary/MorphPrimitivesTest.glb": {
+      "kind": "khronos",
+      "blob": "47314c68348ffa50c1b9d70914e642a0c614d545",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "47314c68348ffa50c1b9d70914e642a0c614d545",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/MorphPrimitivesTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/MorphStressTest/glTF-Binary/MorphStressTest.glb": {
+      "kind": "khronos",
+      "blob": "bb892cc648e3e8b28c5009a3553c3534211e360b",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "bb892cc648e3e8b28c5009a3553c3534211e360b",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/MorphStressTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/MosquitoInAmber/glTF-Binary/MosquitoInAmber.glb": {
+      "kind": "khronos",
+      "blob": "aeb8918810ad43fb255dc4943171d00cb4e14eb7",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "aeb8918810ad43fb255dc4943171d00cb4e14eb7",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/MosquitoInAmber/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/MrFrog/glTF-Binary/MrFrog.glb": {
+      "kind": "needle-added",
+      "blob": "2f1d4b6c26f9f07efccc4b9e2228cf2ccb77f1ab",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/MrFrog/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/MultiMaterialPrimitives/glTF-Binary/MultiMaterialPrimitives.glb": {
+      "kind": "needle-added",
+      "blob": "e1eb11834c00c0d9489a6d62c6f2496a03c90e82",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/MultiMaterialPrimitives/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/MultiUVTest/glTF-Binary/MultiUVTest.glb": {
+      "kind": "khronos",
+      "blob": "69ed2fea3ec35f16485bd6106e059f7f5139b040",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "69ed2fea3ec35f16485bd6106e059f7f5139b040",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/MultiUVTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/NegativeScaleTest/glTF-Binary/NegativeScaleTest.glb": {
+      "kind": "khronos",
+      "blob": "00efdedf73eb7c6bf34191f30599dc4ccae40f03",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "00efdedf73eb7c6bf34191f30599dc4ccae40f03",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/NegativeScaleTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/NodePerformanceTest/glTF-Binary/NodePerformanceTest.glb": {
+      "kind": "khronos",
+      "blob": "52313fa8d7af19336a481665ecbe40679724b25d",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "52313fa8d7af19336a481665ecbe40679724b25d",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/NodePerformanceTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/NormalTangentMirrorTest/glTF-Binary/NormalTangentMirrorTest.glb": {
+      "kind": "khronos",
+      "blob": "fa9aa492a6293172f47577297714809b868ef069",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "fa9aa492a6293172f47577297714809b868ef069",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/NormalTangentMirrorTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/NormalTangentTest/glTF-Binary/NormalTangentTest.glb": {
+      "kind": "khronos",
+      "blob": "855bad5e79527b68e753b594a728b8054af30969",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "855bad5e79527b68e753b594a728b8054af30969",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/NormalTangentTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/OrientationTest/glTF-Binary/OrientationTest.glb": {
+      "kind": "khronos",
+      "blob": "f8a6b7e4fd3bd1a8596e80970c5a0d9edcefda20",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "f8a6b7e4fd3bd1a8596e80970c5a0d9edcefda20",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/OrientationTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/PlaysetLightTest/glTF-Binary/PlaysetLightTest.glb": {
+      "kind": "khronos",
+      "blob": "34014e3338cb741d550ebcc9f23f8c6ba50ee4ea",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "34014e3338cb741d550ebcc9f23f8c6ba50ee4ea",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/PlaysetLightTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/PointLightIntensityTest/glTF-Binary/PointLightIntensityTest.glb": {
+      "kind": "khronos",
+      "blob": "ff8ae9989257512288de8a40e0cf48a1c3076c56",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "ff8ae9989257512288de8a40e0cf48a1c3076c56",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/PointLightIntensityTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/PotOfCoals/glTF-Binary/PotOfCoals.glb": {
+      "kind": "khronos",
+      "blob": "6ac80144427c77fca947f46fd403332da4e35ad4",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "6ac80144427c77fca947f46fd403332da4e35ad4",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/PotOfCoals/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/PotOfCoalsAnimationPointer/glTF-Binary/PotOfCoalsAnimationPointer.glb": {
+      "kind": "khronos",
+      "blob": "70b80a453dbb315a2d2bf402368b6d8c22df68a2",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "70b80a453dbb315a2d2bf402368b6d8c22df68a2",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/PotOfCoalsAnimationPointer/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/RecursiveSkeletons/glTF-Binary/RecursiveSkeletons.glb": {
+      "kind": "khronos",
+      "blob": "fc3e6050900ba5662cec3c509478570f7cd0be4d",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "fc3e6050900ba5662cec3c509478570f7cd0be4d",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/RecursiveSkeletons/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/RiggedFigure/glTF-Binary/RiggedFigure.glb": {
+      "kind": "khronos",
+      "blob": "c505a33dfa5ba84bd5f3dd0a85f74ee4c9978322",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "c505a33dfa5ba84bd5f3dd0a85f74ee4c9978322",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/RiggedFigure/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/RiggedSimple/glTF-Binary/RiggedSimple.glb": {
+      "kind": "khronos",
+      "blob": "d56b94eef74fb085d7e7856a29cbafd0428fbfdc",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "d56b94eef74fb085d7e7856a29cbafd0428fbfdc",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/RiggedSimple/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/ScatteringSkull/glTF-Binary/ScatteringSkull.glb": {
+      "kind": "khronos",
+      "blob": "9e1927babc5791067ccf2004bda7e59a40cac753",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "9e1927babc5791067ccf2004bda7e59a40cac753",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/ScatteringSkull/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/SheenChair/glTF-Binary/SheenChair.glb": {
+      "kind": "khronos",
+      "blob": "6652347f769f090f76688b727134aef92a9213b9",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "6652347f769f090f76688b727134aef92a9213b9",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/SheenChair/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/SheenTestGrid/glTF-Binary/SheenTestGrid.glb": {
+      "kind": "khronos",
+      "blob": "4ecc2bdb26536ac7baa8c83ec471f2eba3cae0e7",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "4ecc2bdb26536ac7baa8c83ec471f2eba3cae0e7",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/SheenTestGrid/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/SheenWoodLeatherSofa/glTF-Binary/SheenWoodLeatherSofa.glb": {
+      "kind": "khronos",
+      "blob": "817b5249f77b4f9a1378defe01ab55da0a44d3fa",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "817b5249f77b4f9a1378defe01ab55da0a44d3fa",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/SheenWoodLeatherSofa/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/SimpleInstancing/glTF-Binary/SimpleInstancing.glb": {
+      "kind": "khronos",
+      "blob": "0b717bdb30c448a2c985af5d182da862444ebb1c",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "0b717bdb30c448a2c985af5d182da862444ebb1c",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/SimpleInstancing/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/SpecGlossVsMetalRough/glTF-Binary/SpecGlossVsMetalRough.glb": {
+      "kind": "khronos",
+      "blob": "bee1ac45bcf474f775355fb8ecc4a6fdeb544e6f",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "bee1ac45bcf474f775355fb8ecc4a6fdeb544e6f",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/SpecGlossVsMetalRough/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/SpecularSilkPouf/glTF-Binary/SpecularSilkPouf.glb": {
+      "kind": "khronos",
+      "blob": "42cf2085131b308464d829cb3bf12f11958fa67d",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "42cf2085131b308464d829cb3bf12f11958fa67d",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/SpecularSilkPouf/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/SpecularTest/glTF-Binary/SpecularTest.glb": {
+      "kind": "khronos",
+      "blob": "e128f88ff13ad48567e2734e722fe0f4862ff11c",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "e128f88ff13ad48567e2734e722fe0f4862ff11c",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/SpecularTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/SunglassesKhronos/glTF-Binary/SunglassesKhronos.glb": {
+      "kind": "khronos",
+      "blob": "c4e26fe077a52cb7be504f4f381074f46711d2b1",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "c4e26fe077a52cb7be504f4f381074f46711d2b1",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/SunglassesKhronos/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/SuzannaMAOS/glTF-Binary/SuzannaMAOS.glb": {
+      "kind": "needle-added",
+      "blob": "e097f4356d53474c57f5a50a850eb9c9a3f1ca65",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/SuzannaMAOS/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/TextureCoordinateTest/glTF-Binary/TextureCoordinateTest.glb": {
+      "kind": "khronos",
+      "blob": "39d3da6fb3abb421a271d9b67f3b15c8a351bc32",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "39d3da6fb3abb421a271d9b67f3b15c8a351bc32",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/TextureCoordinateTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/TextureEncodingTest/glTF-Binary/TextureEncodingTest.glb": {
+      "kind": "khronos",
+      "blob": "42500d87529f799a1355b1066378b58d233da933",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "42500d87529f799a1355b1066378b58d233da933",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/TextureEncodingTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/TextureLinearInterpolationTest/glTF-Binary/TextureLinearInterpolationTest.glb": {
+      "kind": "khronos",
+      "blob": "6505e24937c8c26c68751428e91ff86ea1b9465f",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "6505e24937c8c26c68751428e91ff86ea1b9465f",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/TextureLinearInterpolationTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/TexturePaletteCompression/glTF-Binary/TexturePaletteCompression.glb": {
+      "kind": "needle-added",
+      "blob": "01475479db54006ee386c0d802b4280a666619b5",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/TexturePaletteCompression/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/TexturePaletteCompression/glTF-KTX-BasisU-ETC1S/TexturePaletteCompression.glb": {
+      "kind": "needle-added",
+      "blob": "63fcab1f539858a82b93882583972fde54285dbc",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/TexturePaletteCompression/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/TexturePaletteCompression/glTF-KTX-BasisU-UASTC/TexturePaletteCompression.glb": {
+      "kind": "needle-added",
+      "blob": "1750edb10a8a9a75bc1b1db5e5faa8e4120182eb",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/TexturePaletteCompression/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/TexturePaletteCompression/glTF-WEBP/TexturePaletteCompression.glb": {
+      "kind": "needle-added",
+      "blob": "6c781573d15a5fc1c96aa8ea6db94b35dfb2b86c",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/TexturePaletteCompression/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/TextureSettingsTest/glTF-Binary/TextureSettingsTest.glb": {
+      "kind": "khronos",
+      "blob": "343cbb15fb4b404cc4efb5ea8e757ebbe7ea907c",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "343cbb15fb4b404cc4efb5ea8e757ebbe7ea907c",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/TextureSettingsTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/TextureTransformMultiTest/glTF-Binary/TextureTransformMultiTest.glb": {
+      "kind": "khronos",
+      "blob": "874c5775ed9e014abf14534442a52f765f409d97",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "874c5775ed9e014abf14534442a52f765f409d97",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/TextureTransformMultiTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/TextureWrapModes/glTF-Binary/TextureWrapModes.glb": {
+      "kind": "needle-added",
+      "blob": "92e33f646e5983bccbc5e1a4dac3299b6cf71262",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/TextureWrapModes/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/TopologiesWithoutIndices/glTF-Binary/TopologiesWithoutIndices.glb": {
+      "kind": "needle-added",
+      "blob": "91e35dd470fe2540e65d1bd0783f77bd5fc628e0",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/TopologiesWithoutIndices/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/ToyCar/glTF-Binary/ToyCar.glb": {
+      "kind": "khronos",
+      "blob": "6b3eaab83218894ab27bcf48fcc9a0f7a04be45e",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "6b3eaab83218894ab27bcf48fcc9a0f7a04be45e",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/ToyCar/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/TransmissionOrderTest/glTF-Binary/TransmissionOrderTest.glb": {
+      "kind": "khronos",
+      "blob": "bd86e21daa3f25ab4f127ebd2af735f8f13893e3",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "bd86e21daa3f25ab4f127ebd2af735f8f13893e3",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/TransmissionOrderTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/TransmissionRoughnessTest/glTF-Binary/TransmissionRoughnessTest.glb": {
+      "kind": "khronos",
+      "blob": "4be0cc05f3aed5bbe385abec110f8ed1cc74c4ad",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "4be0cc05f3aed5bbe385abec110f8ed1cc74c4ad",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/TransmissionRoughnessTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/TransmissionTest/glTF-Binary/TransmissionTest.glb": {
+      "kind": "khronos",
+      "blob": "feaa7f8164700fdc9e1acc12ad424b2fc184534f",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "feaa7f8164700fdc9e1acc12ad424b2fc184534f",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/TransmissionTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/TransmissionThinwallTestGrid/glTF-Binary/TransmissionThinwallTestGrid.glb": {
+      "kind": "khronos",
+      "blob": "e0cf6502969cfe8b995efbfadf0cf7d34005e006",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "e0cf6502969cfe8b995efbfadf0cf7d34005e006",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/TransmissionThinwallTestGrid/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/TransparentCat/glTF-Binary/TransparentCat.glb": {
+      "kind": "needle-added",
+      "blob": "c7a20ce72dd320fa21662a027144ed9f06d75c13",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/TransparentCat/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/TransparentGradients/glTF-Binary/TransparentGradients.glb": {
+      "kind": "needle-added",
+      "blob": "5679eca227d5f29d8c62374d9b553002723ad6f3",
+      "source": {
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      },
+      "upstreamBlob": null,
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/TransparentGradients/README.md",
+        "repository": "needle-tools/glTF-Sample-Assets",
+        "revision": "17944b48b052a64d069b6aeca9e3e8e2c097996d"
+      }
+    },
+    "Models/USDShaderBallForGltf/glTF-Binary/USDShaderBallForGltf.glb": {
+      "kind": "khronos",
+      "blob": "d5866377f7db9eda16eed69224ecb3e922f10ffb",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "d5866377f7db9eda16eed69224ecb3e922f10ffb",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/USDShaderBallForGltf/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/Unicode❤♻Test/glTF-Binary/Unicode❤♻Test.glb": {
+      "kind": "khronos",
+      "blob": "e5e8409b99be0b11febb69b48971f62651957c3b",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "e5e8409b99be0b11febb69b48971f62651957c3b",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/Unicode❤♻Test/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/UnlitTest/glTF-Binary/UnlitTest.glb": {
+      "kind": "khronos",
+      "blob": "6998aea6cf829c962002bee1970226829aa67c2c",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "6998aea6cf829c962002bee1970226829aa67c2c",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/UnlitTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/VertexColorTest/glTF-Binary/VertexColorTest.glb": {
+      "kind": "khronos",
+      "blob": "2bb5e14d57a711a0531abd59cd6dfb3d620d9a74",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "2bb5e14d57a711a0531abd59cd6dfb3d620d9a74",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/VertexColorTest/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/VirtualCity/glTF-Binary/VirtualCity.glb": {
+      "kind": "khronos",
+      "blob": "5399ac442c6f14cc48078ff182a83b2acd5a9306",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "5399ac442c6f14cc48078ff182a83b2acd5a9306",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/VirtualCity/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/WaterBottle/glTF-Binary/WaterBottle.glb": {
+      "kind": "khronos",
+      "blob": "27894ec0ce010ba689e04e4801520ebb5ccc849f",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "27894ec0ce010ba689e04e4801520ebb5ccc849f",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/WaterBottle/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    },
+    "Models/XmpMetadataRoundedCube/glTF-Binary/XmpMetadataRoundedCube.glb": {
+      "kind": "khronos",
+      "blob": "f7d4b4dbc3b8c434e175639fe04d8c373d8d5035",
+      "source": {
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "8f492390ddc7a2ae221a1369ef560589cf8c70fb"
+      },
+      "upstreamBlob": "f7d4b4dbc3b8c434e175639fe04d8c373d8d5035",
+      "upstreamChanged": false,
+      "readme": {
+        "path": "Models/XmpMetadataRoundedCube/README.md",
+        "repository": "KhronosGroup/glTF-Sample-Assets",
+        "revision": "2bac6f8c57bf471df0d2a1e8a8ec023c7801dddf"
+      }
+    }
+  }
+}

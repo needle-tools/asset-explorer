@@ -5,6 +5,7 @@ import { track } from "$lib/analytics";
 export let info: Record<string, any>;
 export let name = "";
 export let sourceUrl = "";
+export let provenance: { label: string; kind: string; comparisonUrl: string; upstreamUrl: string | null } | null = null;
 
 // Extensions are UPPER_SNAKE_CASE keys (KHR_*, EXT_*, ADOBE_*, …); everything else is scalar info.
 const isExtension = (k: string) => /^[A-Z][A-Z0-9]+_/.test(k);
@@ -76,6 +77,16 @@ $: extensions = entries.filter(([k, v]) => isExtension(k) && v).map(([k]) => k);
                     {:else}{displayValue(value)}{/if}
                 </td></tr>
             {/each}
+            {#if provenance}
+            <tr><th scope="row">Origin</th><td>{provenance.label}
+                {#if provenance.kind === "needle-added" || provenance.kind === "needle-modified"}
+                <a class="source-link comparison-link" href={provenance.comparisonUrl} target="_blank" rel="noopener noreferrer">Changes in Needle fork</a>
+                {/if}
+                {#if provenance.kind === "needle-modified" && provenance.upstreamUrl}
+                <a class="source-link comparison-link" href={provenance.upstreamUrl} target="_blank" rel="noopener noreferrer">Original Khronos file</a>
+                {/if}
+            </td></tr>
+            {/if}
             {#if capabilities.length}
             <tr>
                 <th scope="row">Has special data</th>
@@ -187,5 +198,11 @@ td {
 
 .source-link:hover {
     text-decoration-color: currentColor;
+}
+.comparison-link {
+    display: block;
+    margin-top: 3px;
+    color: var(--color-text-muted);
+    font-size: 11px;
 }
 </style>

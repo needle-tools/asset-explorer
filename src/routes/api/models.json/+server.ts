@@ -46,6 +46,7 @@ export async function GET() {
 			})),
 			size: file.size,
 			extensions,
+			provenance: file.provenance ?? null,
 			info
 		};
 	});

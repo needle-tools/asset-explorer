@@ -546,7 +546,9 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
         <button class="back-link" type="button" disabled={activeFilterCount === 0} on:click={resetFilters}>{activeFilterCount ? `Reset ${activeFilterCount} ${activeFilterCount === 1 ? "filter" : "filters"}` : "Reset filters"}</button>
         {#if showCollections}
         <h3 class="title">Collections</h3>
-        <FolderTree node={data.categoryTree} selected={category} />
+        {#each data.categoryTree.children as collection}
+            <FolderTree node={collection} selected={category} />
+        {/each}
         {/if}
 <details class="facet-section" open={facetSectionOpen.groups} on:toggle={(event) => onFacetSectionToggle(event, "groups")}>
     <summary><svg class="disclosure-chevron" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 4 4-4 4" /></svg><span>Groups</span><span>{visibleGroupEntries.length}</span></summary>

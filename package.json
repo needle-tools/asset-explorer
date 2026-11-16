@@ -11,6 +11,8 @@
 		"render:gltf-references": "node scripts/render-gltf-references.mjs",
 		"analyze:conversions": "PXR_PLUGINPATH_NAME=/Users/herbst/OpenUSD-26.05-native/plugin/usd PYTHONPATH=/Users/herbst/OpenUSD-26.05-native/lib/python DYLD_LIBRARY_PATH=/Users/herbst/OpenUSD-26.05-native/lib python3 scripts/analyze_conversions.py",
 		"compress:usdz-textures": "PXR_PLUGINPATH_NAME=/Users/herbst/OpenUSD-26.05-native/plugin/usd PYTHONPATH=/Users/herbst/OpenUSD-26.05-native/lib/python DYLD_LIBRARY_PATH=/Users/herbst/OpenUSD-26.05-native/lib python3 scripts/compress_usdz_textures.py",
+		"test:asset-sources": "node --test tests/asset-provenance.test.mjs",
+		"generate:asset-sources": "node scripts/generate-asset-sources.mjs",
 		"generate:usd-assets": "node scripts/generate-usd-assets-manifest.mjs",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
