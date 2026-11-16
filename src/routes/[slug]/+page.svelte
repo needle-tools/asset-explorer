@@ -113,8 +113,8 @@ $: modelJsonLd = model ? {
     }
 
     h2 {
-        font-size: 12px;
-        font-weight: 600;
+        font-size: 11px;
+        font-weight: 500;
         color: var(--color-text-secondary);
         margin: 14px 8px 4px;
     }
