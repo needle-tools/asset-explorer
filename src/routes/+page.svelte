@@ -305,7 +305,9 @@ $: generatorFilters = currentParams.getAll("generator");
 $: generatorExcludes = currentParams.getAll("notGenerator");
 $: category = currentParams.get('category') ?? "";
 $: searchQuery = currentParams.get("q") ?? "";
-$: hasActiveFilters = Boolean(searchQuery || category || tagFilters.length || tagExcludes.length || groupFilters.length || groupExcludes.length || generatorFilters.length || generatorExcludes.length);
+$: activeFilterCount = Number(Boolean(searchQuery.trim())) + Number(Boolean(category))
+    + tagFilters.length + tagExcludes.length + groupFilters.length + groupExcludes.length
+    + generatorFilters.length + generatorExcludes.length;
 
 function matchesSearch(asset: AssetCard, query: string) {
     return scoreAssetSearch(asset, query) > 0;
@@ -541,7 +543,7 @@ function onFacetSectionToggle(event: Event, section: FacetSectionId) {
             <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.5" /><path d="m10.5 10.5 3 3" /></svg>
             <input type="search" aria-label="Search assets" placeholder="Search assets" value={searchQuery} on:input={updateSearch} />
         </label>
-        <button class="back-link" type="button" disabled={!hasActiveFilters} on:click={resetFilters}>Reset filters</button>
+        <button class="back-link" type="button" disabled={activeFilterCount === 0} on:click={resetFilters}>{activeFilterCount ? `Reset ${activeFilterCount} ${activeFilterCount === 1 ? "filter" : "filters"}` : "Reset filters"}</button>
         {#if showCollections}
         <h3 class="title">Collections</h3>
         <FolderTree node={data.categoryTree} selected={category} />
