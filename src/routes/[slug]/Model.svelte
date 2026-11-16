@@ -511,7 +511,7 @@ onMount(() => {
     gap: 7px;
     margin-top: 6px;
     font-weight: 700;
-    font-size: 0.72rem;
+    font-size: 12px;
     letter-spacing: normal;
     text-transform: none;
     color: var(--color-text-muted);
